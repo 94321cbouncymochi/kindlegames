@@ -46,7 +46,7 @@
 </tr></table>
 
 <div class="help">
-  <p><b>How to play.</b> Waves never end: survive as long as you can. Pick a tower, then tap an empty white square to build it. Tap a tower to see its range. Enemies walk the gray path from &gt; to B. Each press of Next moves the game one turn. Auto plays a turn every half second until the wave is cleared (press Stop to pause).</p>
+  <p><b>How to play.</b> Waves never end: survive as long as you can. Pick a tower, then tap an empty white square to build it. Tap a tower to see its range. Enemies walk the gray path from &gt; to B. Each press of Next moves the game one turn. Auto plays a turn every half second and keeps sending waves; press Stop to pause and build or add road.</p>
   <p><b>Each turn:</b> bullets fly (*), then enemies step, then towers fire. Bullets start at the tower and take a turn or more to arrive, so aim ahead of the crowd.</p>
   <p><b>Towers.</b> Gun: range 2, 1 damage, fires every turn, bullet moves 1 square a turn. Cannon: range 2, 2 damage to everything within 1 square of impact, fires every 3 turns, bullet moves 2 squares a turn. Sniper: range 5, 3 damage, fires every 3 turns, bullet moves 3 squares a turn. Every tower you own makes the next one cost more (+25% of its base price per tower). Selling gives back half of what you paid.</p>
   <p><b>Add road.</b> Between waves, pay $100 to add a whole new section of road and ground. The base moves to the end of the new road, so enemies have farther to walk. The field grows wider twice, then grows downward (scroll to see it). Any tower standing where new road goes is removed and fully refunded.</p>
@@ -353,15 +353,16 @@ function nextFive() {
   render();
 }
 
-// Auto play: one turn every half second, pauses when a wave is cleared.
-var AUTO_MS = 1000, autoTimer = null;
+// Auto play: one turn every half second, runs straight into the next wave.
+var AUTO_MS = 500, autoTimer = null;
 
 function stopAuto() {
   if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
 }
 
 function autoStep() {
-  if (!tick()) stopAuto();
+  tick();
+  if (over) stopAuto();
   render();
 }
 
