@@ -23,6 +23,7 @@
   <td><button id="tG" onclick="setTool('G')">G Gun<br>$8</button></td>
   <td><button id="tC" onclick="setTool('C')">C Cannon<br>$15</button></td>
   <td><button id="tS" onclick="setTool('S')">S Sniper<br>$20</button></td>
+  <td><button id="tL" onclick="setTool('L')">L Grenade<br>$20</button></td>
   <td><button id="tX" onclick="setTool('X')">Sell<br>50%</button></td>
 </tr></table>
 
@@ -48,19 +49,20 @@
 <div class="help">
   <p><b>How to play.</b> Waves never end: survive as long as you can. Pick a tower, then tap an empty white square to build it. Tap a tower to see its range. Enemies walk the gray path from &gt; to B. Each press of Next moves the game one turn. Auto plays a turn every half second and keeps sending waves; press Stop to pause and build or add road.</p>
   <p><b>Each turn:</b> bullets fly (*), then enemies step, then towers fire. Bullets start at the tower and take a turn or more to arrive, so aim ahead of the crowd.</p>
-  <p><b>Towers.</b> Gun: range 2, 1 damage, fires every turn, bullet moves 1 square a turn. Cannon: range 2, 2 damage to everything within 1 square of impact, fires every 3 turns, bullet moves 2 squares a turn. Sniper: range 5, 3 damage, fires every 3 turns, bullet moves 3 squares a turn. Every tower you own makes the next one cost more (+25% of its base price per tower). Selling gives back half of what you paid.</p>
+  <p><b>Towers.</b> Gun: range 2, 1 damage, fires every turn, bullet moves 1 square a turn. Cannon: range 2, 2 damage to everything within 1 square of impact, fires every 3 turns, bullet moves 2 squares a turn. Sniper: range 5, 3 damage, fires every 3 turns, bullet moves 3 squares a turn. Grenade launcher (L): range 3, 2 damage to everything in a circle 4 squares across (up to 2 squares from impact), fires every 2 turns, grenade moves 2 squares a turn. Every tower you own makes every tower cost $1 more. Selling gives back half of what you paid.</p>
   <p><b>Add road.</b> Between waves, pay $100 to add a whole new section of road and ground. The base moves to the end of the new road, so enemies have farther to walk. The field grows wider twice, then grows downward (scroll to see it). Any tower standing where new road goes is removed and fully refunded.</p>
   <p><b>Enemies.</b> All enemies move 1 square a turn. Numbers show health. T = tank (extra health, costs 2 lives if it reaches the base). Bullets that chase too long (8 turns) fizzle.</p>
 </div>
 
 <script>
 var W, H;
-var PRICE_STEP = 0.1;
+var PRICE_STEP = 1; // each tower you own adds $1 to every tower's price
 var ROAD_COST = 100, MAX_WIDE = 2, hSections;
 var TYPES = {
   G: { name: 'Gun',    cost: 8,  range: 2, dmg: 1, cd: 1, speed: 1, splash: 0 },
   C: { name: 'Cannon', cost: 15, range: 2, dmg: 2, cd: 3, speed: 2, splash: 1 },
-  S: { name: 'Sniper', cost: 20, range: 5, dmg: 3, cd: 3, speed: 3, splash: 0 }
+  S: { name: 'Sniper', cost: 20, range: 5, dmg: 3, cd: 3, speed: 3, splash: 0 },
+  L: { name: 'Grenade launcher', cost: 20, range: 3, dmg: 2, cd: 2, speed: 2, splash: 2, circle: true }
 };
 var WAYPOINTS = [[0,1],[8,1],[8,3],[2,3],[2,5],[10,5]];
 
@@ -76,10 +78,10 @@ function towerCount() {
   return n;
 }
 
-// Current price of a tower type: base price, plus 25% of base for every tower you own.
+// Current price of a tower type: base price, plus $1 for every tower you own.
 function price(t) {
   var b = TYPES[t].cost;
-  return b + Math.floor(b * PRICE_STEP * towerCount());
+  return b + PRICE_STEP * towerCount();
 }
 
 function buildPath() {
@@ -239,7 +241,10 @@ function impact(b) {
     for (i = 0; i < enemies.length; i++) {
       e = enemies[i]; if (!e.alive) continue;
       p = path[e.pos];
-      if (Math.abs(p[0] - b.x) <= b.splash && Math.abs(p[1] - b.y) <= b.splash) hurt(e, b.dmg);
+      var ddx = p[0] - b.x, ddy = p[1] - b.y;
+      var hit = b.circle ? (ddx * ddx + ddy * ddy <= b.splash * b.splash)
+                         : (Math.abs(ddx) <= b.splash && Math.abs(ddy) <= b.splash);
+      if (hit) hurt(e, b.dmg);
     }
     return;
   }
@@ -309,7 +314,7 @@ function fireTowers() {
     }
     if (best) {
       bullets.push({ x: tx, y: ty, target: best.id, tx: path[best.pos][0], ty: path[best.pos][1],
-                     dmg: T.dmg, speed: T.speed, splash: T.splash, age: 0 });
+                     dmg: T.dmg, speed: T.speed, splash: T.splash, circle: !!T.circle, age: 0 });
       t.cd = T.cd;
     }
   }
@@ -468,13 +473,14 @@ function render() {
     }
   }
 
-  var ids = ['G', 'C', 'S', 'X'];
+  var ids = ['G', 'C', 'S', 'L', 'X'];
   for (i = 0; i < ids.length; i++) {
     document.getElementById('t' + ids[i]).className = (tool === ids[i]) ? 'on' : '';
   }
   document.getElementById('tG').innerHTML = 'G Gun<br>$' + price('G');
   document.getElementById('tC').innerHTML = 'C Cannon<br>$' + price('C');
   document.getElementById('tS').innerHTML = 'S Sniper<br>$' + price('S');
+  document.getElementById('tL').innerHTML = 'L Grenade<br>$' + price('L');
 
   var label = over ? 'Game over' : (waveActive ? 'Next turn' : 'Send wave ' + (wave + 1));
   var ns = ['bNext', 'bNext2', 'bFive', 'bFive2'];
@@ -496,7 +502,7 @@ function render() {
   if (selected && towers[selected]) {
     var tw = towers[selected], T = TYPES[tw.type];
     info = '<b>' + T.name + '</b>: range ' + T.range + ', ' + T.dmg + ' damage' +
-      (T.splash ? ' (splash)' : '') + ', fires every ' + T.cd + (T.cd > 1 ? ' turns' : ' turn') +
+      (T.splash ? (T.circle ? ' (circle blast, 4 across)' : ' (splash)') : '') + ', fires every ' + T.cd + (T.cd > 1 ? ' turns' : ' turn') +
       ', bullet speed ' + T.speed + '. ' +
       (tw.cd > 0 ? 'Reloading: ' + tw.cd + '.' : 'Ready.') +
       ' Sells for $' + Math.floor(tw.paid / 2) + '. Range is shaded.';
