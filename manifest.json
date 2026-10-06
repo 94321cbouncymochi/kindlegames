@@ -31,6 +31,12 @@
       "description": "Minesweeper, but infinite.",
       "html": "pages/infinite-minesweeper.html",
       "css": "pages/infinite-minesweeper.css"
+    },
+    {
+      "title": "Dungeon",
+      "description": "Fight the dungeon!",
+      "html": "pages/dungeon.html",
+      "css": "pages/dungeon.css"
     }
   ]
 }
