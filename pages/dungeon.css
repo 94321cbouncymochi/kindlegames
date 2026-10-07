@@ -44,6 +44,18 @@ h2 { font-size: 22px; margin: 16px 0 6px; }
 .map td.m { border: 2px solid #000; }                 /* monster */
 .map td.boss { background: #000; color: #fff; border: 3px double #fff; }
 
+/* elevator */
+.map td.el { border: 3px double #000; }
+.elev { width: 166px; font-size: 16px; }
+.elev .pick { font-size: 40px; font-weight: bold; line-height: 1.1; text-align: center; border: 3px solid #000; margin: 4px 0 6px; }
+.elev .steps { border-collapse: collapse; width: 100%; }
+.elev .steps td { padding: 0 4px 4px 0; width: 50%; }
+.btn.step { width: 100%; min-height: 44px; margin: 0; padding: 2px; font-size: 19px; }
+.btn.wide { display: block; width: 100%; margin: 0 0 6px; }
+.startpick { margin: 4px 0; }
+.startpick .btn.step { width: auto; min-width: 58px; margin: 0 6px 0 0; }
+.startpick .pick { display: inline-block; min-width: 100px; text-align: center; font-size: 24px; font-weight: bold; margin-right: 6px; vertical-align: middle; }
+
 /* controls */
 .pad { border-collapse: collapse; }
 .layout .pad td { padding: 2px; width: 54px; height: 54px; text-align: center; vertical-align: middle; }

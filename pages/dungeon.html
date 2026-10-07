@@ -17,13 +17,18 @@
   <ul>
     <li><code>@</code> is you (the black square).</li>
     <li>Letters are monsters: <code>r</code> rat, <code>b</code> bat, <code>g</code> goblin, <code>s</code> skeleton, <code>w</code> wolf, <code>o</code> orc, <code>k</code> knight, <code>t</code> troll, <code>m</code> mummy, <code>d</code> demon. A capital letter is a giant boss, found every 5 floors.</li>
-    <li><code>&gt;</code> is the stairs down, <code>$</code> is gold, and <code>!</code> is a potion.</li>
+    <li><code>&gt;</code> is the stairs down, <code>E</code> is the elevator, <code>$</code> is gold, and <code>!</code> is a potion.</li>
     <li>Dark gray squares are walls. Light gray squares are places you've seen but can't see right now, so monsters there are hidden.</li>
   </ul>
 
   <h3>Moving and fighting</h3>
   <p>Use the arrow buttons, or tap a square on the map to take one step toward it. Step into a monster to attack it. Every time you act, each awake monster also gets a turn: it moves one step toward you, or hits you if it's right next to you. Monsters can't attack diagonally, and neither can you.</p>
+  <p>Tap a square farther away that you've already seen, and you walk all the way there in one tap. You stop early if a monster comes into view or you pick something up, so you never walk into trouble blind.</p>
   <p><b>Wait</b> skips your turn, which is handy for letting a monster come to you.</p>
+
+  <h3>The elevator</h3>
+  <p>Every floor has an elevator <code>E</code> right where you arrive. Stand on it and tap <b>Elevator</b> (or tap yourself) to pick any floor from 1 down to your deepest, then tap Go. Riding it doesn't use a turn. Use it to skip straight back down to your record, or to go up to an easier floor when you're hurt.</p>
+  <p>At camp you can also start a run on any floor you've reached. Starting deeper gives you free levels so you aren't a beginner on a hard floor.</p>
 
   <h3>Getting stronger during a run</h3>
   <ul>
@@ -93,7 +98,7 @@ function fitMap() {
   el.innerHTML = '.map td{width:' + c + 'px;height:' + c + 'px;min-width:' + c + 'px;line-height:' + c +
                  'px;font-size:' + Math.round(c * 0.72) + 'px}';
 }
-var ui = { showCode: false, codeMsg: '' };
+var ui = { showCode: false, codeMsg: '', elev: false, pick: 1, startAt: 1 };
 
 // ---------- saving ----------
 function freshSave() {
@@ -105,6 +110,8 @@ function load() {
     if (raw) S = JSON.parse(raw);
   } catch (e) { S = null; }
   if (!S || !S.up) S = freshSave();
+  if (S.run && S.run.ex === undefined) { S.run.ex = -1; S.run.ey = -1; }
+  ui.startAt = S.best || 1;
 }
 function save() {
   try { window.localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
@@ -124,7 +131,7 @@ function loadCode() {
     ui.codeMsg = 'Save code loaded.';
     save();
   } catch (e) {
-    ui.codeMsg = 'That code didn\u2019t work. Check that you copied all of it.';
+    ui.codeMsg = 'That code didn\'t work. Check that you copied all of it.';
   }
   render();
 }
@@ -199,6 +206,7 @@ function genFloor() {
   r.map = map; r.seen = seen; r.mons = []; r.items = [];
   var start = rooms[0];
   r.px = start.cx; r.py = start.cy;
+  r.ex = start.cx; r.ey = start.cy;    // elevator: where you arrive on every floor
 
   // stairs go in the room farthest from the start
   var far = rooms[1], fd = -1;
@@ -247,19 +255,53 @@ function visible(x, y) {
 }
 
 // ---------- runs ----------
+function headStart(f) { return Math.max(0, Math.round(0.05 * f * f + 0.2 * f) - 1); }   // free levels when starting deep, about what you would have earned
 function startRun() {
-  var u = S.up;
-  S.run = { floor: 0, maxHp: 20 + 5 * u.hp, hp: 0, atk: 3 + u.atk, def: u.def, lv: 1, xp: 0,
-            potions: 1 + u.pot, goldRun: 0, kills: 0, log: [] };
+  var u = S.up, f = Math.max(1, Math.min(ui.startAt, S.best || 1)), extra = headStart(f);
+  S.run = { floor: f - 1, maxHp: 20 + 5 * u.hp + 4 * extra, hp: 0, atk: 3 + u.atk + extra, def: u.def,
+            lv: 1 + extra, xp: 0, potions: 1 + u.pot, goldRun: 0, kills: 0, log: [] };
   S.run.hp = S.run.maxHp;
   S.runs++;
   S.last = null;
+  ui.elev = false;
   nextFloor();
-  S.run.log = ['You enter the dungeon. Find the stairs (>) to go deeper.'];
+  if (f === 1) S.run.log = ['You enter the dungeon. Find the stairs (>) to go deeper.'];
+  else S.run.log = ['The elevator drops you on floor ' + f + '. You start at level ' + S.run.lv + '.'];
+  save(); render();
+}
+function onElevator() {
+  var r = S.run;
+  return r && r.px === r.ex && r.py === r.ey;
+}
+function openElevator() {
+  if (!onElevator()) return;
+  ui.elev = true; ui.pick = S.run.floor;
+  render();
+}
+function pickFloor(n, abs) {
+  var p = abs ? n : ui.pick + n;
+  ui.pick = Math.max(1, Math.min(S.best, p));
+  render();
+}
+function startPick(n, abs) {
+  var p = abs ? n : ui.startAt + n;
+  ui.startAt = Math.max(1, Math.min(S.best || 1, p));
+  render();
+}
+function rideElevator() {
+  var r = S.run;
+  if (!onElevator()) return;
+  ui.elev = false;
+  if (ui.pick === r.floor) { render(); return; }
+  r.floor = ui.pick;
+  genFloor();
+  r.log = ['The elevator takes you to floor ' + r.floor + '.'];
+  if (r.floor % 5 === 0) r.log.push('Something big lives on this floor\u2026');
   save(); render();
 }
 function nextFloor() {
   var r = S.run;
+  ui.elev = false;
   r.floor++;
   if (r.floor > S.best) S.best = r.floor;
   if (r.floor > 1) r.hp = Math.min(r.maxHp, r.hp + Math.ceil(r.maxHp / 10));
@@ -315,7 +357,7 @@ function pickup() {
     else { r.potions++; r.log.push('You find a potion.'); }
     r.items.splice(i, 1);
   }
-  if (r.px === r.sx && r.py === r.sy) r.log.push('You found the stairs. Tap Go down when you\u2019re ready.');
+  if (r.px === r.sx && r.py === r.sy) r.log.push('You found the stairs. Tap Go down when you\'re ready.');
 }
 
 function canStep(x, y) {
@@ -391,13 +433,61 @@ function drink() {
   endTurn();
 }
 
+function anyMonsterInView() {
+  var ms = S.run.mons;
+  for (var i = 0; i < ms.length; i++) if (visible(ms[i].x, ms[i].y)) return true;
+  return false;
+}
+// Shortest path over squares you've seen, avoiding walls and monsters.
+function findPath(tx, ty) {
+  var r = S.run, prev = {}, q = [[r.px, r.py]], D = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  prev[r.px + ',' + r.py] = null;
+  while (q.length) {
+    var c = q.shift();
+    if (c[0] === tx && c[1] === ty) {
+      var path = [];
+      while (prev[c[0] + ',' + c[1]]) { path.unshift(c); c = prev[c[0] + ',' + c[1]]; }
+      return path;
+    }
+    for (var d = 0; d < 4; d++) {
+      var nx = c[0] + D[d][0], ny = c[1] + D[d][1], k = nx + ',' + ny;
+      if (nx < 0 || ny < 0 || nx >= W || ny >= H || k in prev) continue;
+      if (!r.seen[ny][nx] || r.map[ny][nx] === 1 || monAt(nx, ny)) continue;
+      prev[k] = c; q.push([nx, ny]);
+    }
+  }
+  return null;
+}
+// Walk many steps in one tap. Monsters still take their turns; stops when one comes into view.
+function walkTo(path) {
+  var r = S.run;
+  r.log = [];
+  for (var i = 0; i < path.length; i++) {
+    var nx = path[i][0], ny = path[i][1];
+    if (monAt(nx, ny)) break;
+    var before = r.log.length;
+    r.px = nx; r.py = ny; pickup();
+    var killer = monstersAct();
+    if (killer) { endRun(killer); return; }
+    reveal();
+    if (r.log.length > before || anyMonsterInView()) break;
+  }
+  save(); render();
+}
+
 function tapCell(x, y) {
   var r = S.run;
   if (!r) return;
   var dx = x - r.px, dy = y - r.py;
   if (!dx && !dy) {
-    if (r.px === r.sx && r.py === r.sy) descend(); else act(0, 0);
+    if (r.px === r.sx && r.py === r.sy) descend();
+    else if (onElevator()) openElevator();
+    else act(0, 0);
     return;
+  }
+  if (Math.abs(dx) + Math.abs(dy) > 1 && !anyMonsterInView()) {
+    var path = findPath(x, y);
+    if (path && path.length) { walkTo(path); return; }
   }
   var sx = sign(dx), sy = sign(dy), mx = 0, my = 0;
   if (Math.abs(dx) >= Math.abs(dy)) { mx = sx; } else { my = sy; }
@@ -412,6 +502,18 @@ function tapCell(x, y) {
 function btn(label, call, cls, off) {
   return '<button class="btn' + (cls ? ' ' + cls : '') + '"' + (off ? ' disabled' : '') +
          ' onclick="' + call + '">' + label + '</button>';
+}
+
+function elevatorPanel() {
+  var r = S.run;
+  return '<div class="elev"><b>Elevator</b><br>Go to floor<div class="pick">' + ui.pick + '</div>' +
+    '<table class="steps"><tr><td>' + btn('&minus;10', 'pickFloor(-10)', 'step', ui.pick <= 1) + '</td><td>' +
+    btn('+10', 'pickFloor(10)', 'step', ui.pick >= S.best) + '</td></tr><tr><td>' +
+    btn('&minus;1', 'pickFloor(-1)', 'step', ui.pick <= 1) + '</td><td>' +
+    btn('+1', 'pickFloor(1)', 'step', ui.pick >= S.best) + '</td></tr></table>' +
+    btn('Deepest (' + S.best + ')', 'pickFloor(' + S.best + ',1)', 'wide') +
+    btn(ui.pick === r.floor ? 'Stay here' : 'Go to ' + ui.pick, 'rideElevator()', 'main wide') +
+    btn('Cancel', 'ui.elev=false;render()', 'wide small') + '</div>';
 }
 
 function renderRun() {
@@ -437,6 +539,7 @@ function renderRun() {
         else if (m) { cls += m.boss ? ' m boss' : ' m'; ch = m.ch; }
         else if (it >= 0) { ch = r.items[it].k === 'gold' ? '$' : '!'; cls += ' it'; }
         else if (x === r.sx && y === r.sy) { ch = '&gt;'; cls += ' st'; }
+        else if (x === r.ex && y === r.ey) { ch = 'E'; cls += ' el'; }
       }
       h += '<td class="' + cls + '" onclick="tapCell(' + x + ',' + y + ')">' + ch + '</td>';
     }
@@ -444,14 +547,15 @@ function renderRun() {
   }
   h += '</table>';
 
-  var onStairs = r.px === r.sx && r.py === r.sy;
-  var side = '<table class="pad">' +
+  var onStairs = r.px === r.sx && r.py === r.sy, onElev = onElevator();
+  var side = ui.elev && onElev ? elevatorPanel() : '<table class="pad">' +
        '<tr><td></td><td>' + btn('&uarr;', 'act(0,-1)', 'arrow') + '</td><td></td></tr>' +
        '<tr><td>' + btn('&larr;', 'act(-1,0)', 'arrow') + '</td><td>' + btn('Wait', 'act(0,0)', 'arrow wait') +
        '</td><td>' + btn('&rarr;', 'act(1,0)', 'arrow') + '</td></tr>' +
        '<tr><td></td><td>' + btn('&darr;', 'act(0,1)', 'arrow') + '</td><td></td></tr></table>' +
        '<div class="sidebtns">' +
        btn('Go down', 'descend()', onStairs ? 'main' : '', !onStairs) +
+       btn('Elevator', 'openElevator()', onElev ? 'main' : '', !onElev) +
        btn('Potion (' + r.potions + ')', 'drink()', '', r.potions < 1) + '</div>';
   if (stacked) h += '</td></tr><tr><td class="sidecol">' + side + '</td></tr></table>';
   else h += '</td><td class="sidecol">' + side + '</td></tr></table>';
@@ -481,7 +585,7 @@ function renderCamp() {
     h += '<div class="status">' +
          (L.killer ? 'A ' + L.killer + ' defeated you on floor ' + L.floor + '.' : 'You left the dungeon on floor ' + L.floor + '.') +
          ' You brought back ' + L.gold + ' gold.' +
-         (L.floor >= S.best && L.floor > 1 ? ' That\u2019s your deepest yet!' : '') + '</div>';
+         (L.floor >= S.best && L.floor > 1 ? ' That\'s your deepest yet!' : '') + '</div>';
   } else if (S.runs === 0) {
     h += '<div class="status">Welcome to camp. Head into the dungeon, grab gold, and see how deep you can go.</div>';
   }
@@ -496,7 +600,16 @@ function renderCamp() {
          '<td>' + btn('Buy for ' + c + ' gold', 'buy(\'' + u.id + '\')', '', S.gold < c) + '</td></tr>';
   }
   h += '</table>';
-  h += '<div class="actions">' + btn('Enter the dungeon', 'startRun()', 'main big') + '</div>';
+  if (S.best > 1) {
+    ui.startAt = Math.max(1, Math.min(ui.startAt, S.best));
+    var a = ui.startAt;
+    h += '<h2>Elevator</h2><p class="each">Start on any floor you\'ve reached. Starting deeper gives you free levels.</p>' +
+         '<div class="startpick">' + btn('&minus;10', 'startPick(-10)', 'step', a <= 1) + btn('&minus;1', 'startPick(-1)', 'step', a <= 1) +
+         '<span class="pick">Floor ' + a + '</span>' +
+         btn('+1', 'startPick(1)', 'step', a >= S.best) + btn('+10', 'startPick(10)', 'step', a >= S.best) + '</div>' +
+         '<div>' + btn('Floor 1', 'startPick(1,1)', 'small') + btn('Deepest (' + S.best + ')', 'startPick(' + S.best + ',1)', 'small') + '</div>';
+  }
+  h += '<div class="actions">' + btn(ui.startAt > 1 ? 'Enter on floor ' + ui.startAt : 'Enter the dungeon', 'startRun()', 'main big') + '</div>';
 
   h += '<div class="savebox"><h2>Save code</h2>';
   if (!ui.showCode) {
