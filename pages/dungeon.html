@@ -19,7 +19,7 @@
     <li><b>Two-letter codes are monsters</b>, like <code>RT</code> Rat, <code>GB</code> Goblin, <code>TR</code> Troll. A few have three, like <code>SC2</code> Scorpion. A code on a black square is a boss. A code with a double border is a champion, which carries treasure.</li>
     <li><code>&gt;</code> stairs down, <code>E</code> elevator.</li>
     <li><code>$</code> gold, <code>!</code> potion, <code>?</code> scroll, <code>*</code> treasure chest, <code>)</code> weapon, <code>[</code> armor.</li>
-    <li><code>&amp;</code> merchant, <code>+</code> shrine, <code>"</code> relic (a free perk), <code>{</code> enchanting table.</li>
+    <li><code>&amp;</code> merchant, <code>+</code> shrine, <code>"</code> relic (a free perk), <code>{</code> enchanting table, <code>p</code> pet.</li>
     <li>Floor dangers: <code>~</code> lava, <code>^</code> spikes, <code>:</code> poison gas, <code>#</code> shock floor. These hurt when you step on them.</li>
     <li>Other floors: <code>%</code> mushroom (heals you), <code>=</code> water, web, mud or sand (slows you), <code>-</code> ice (you slide), <code>O</code> portal (jumps you to the other portal).</li>
     <li><code>x</code> with a dotted border: a bomb or falling rock lands there next turn. Step off it!</li>
@@ -66,6 +66,11 @@
   </ul>
   <p>Below the map, <b>About this floor</b> explains what the current floor does, what each kind of floor square does, and every kind of monster on the floor and its tricks, even the ones you haven't seen yet.</p>
   <p>A <b>merchant</b> sells a potion, a scroll and a piece of gear for the gold you've found this run. A <b>shrine</b> lets you heal fully, or gain a random perk and lose some HP. An <b>enchanting table</b> gives your weapon a new random modifier. If you walk off one without choosing, step back on it or tap yourself while standing on it.</p>
+
+  <h3>Pets</h3>
+  <p>There are 300 pets, from Common to Mythical. Look for <code>p</code> on the map: some floors have a pet waiting, nests and breeding grounds have more, and bosses sometimes have one hiding with them.</p>
+  <p>When you find a pet, the game tells you if it's a <b>GOOD ADDITION</b> or a <b>BAD ADDITION</b> to your team, and why. You can have up to <b>5 pets</b> on your team. Only team pets help you in the dungeon. Every pet you find is kept in your collection at camp, so you never lose one. Finding a pet you already have makes it level up, up to level 5.</p>
+  <p>Some pets fight: they bite, blast, zap or freeze monsters every few turns. Others protect you (blocking hits, saving you from defeat, teleporting you to safety), heal you, let you see farther or show hidden monsters, or bring more gold and better loot. Each pet's card says what it does in the pet book, and "In this game" says exactly what it does here. At camp, <b>Manage pets</b> lets you change your team.</p>
 
   <h3>Bounties</h3>
   <p>Every floor has a bounty, shown under the messages, like "Defeat 2 Goblins", "Open a treasure chest" or "Reach the stairs within 30 turns". Finish it for extra gold, and sometimes a scroll.</p>
@@ -369,7 +374,7 @@ var CAPS = { crit: 50, thorns: 60, dodge: 40 };
 
 var S = null;          // everything that gets saved
 var stacked = false;   // narrow screens put the controls under the map
-var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1, book: '', bookTop: false };
+var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1, book: '', bookTop: false, pets: false };
 
 // Size the map so the map and every control fit on one screen.
 function fitMap() {
@@ -395,7 +400,7 @@ function fitMap() {
 // ================= SAVING =================
 function freshSave() {
   return { v: VERSION, gold: 0, up: {}, perkAt: {}, best: 0, runs: 0, run: null, last: null,
-           stats: {}, ach: {}, seen: {}, stars: 0, asc: 0, peak: 0 };
+           stats: {}, ach: {}, seen: {}, stars: 0, asc: 0, peak: 0, pets: {}, team: [] };
 }
 function fixSave() {
   for (var i = 0; i < UPS.length; i++) if (!S.up[UPS[i].id]) S.up[UPS[i].id] = 0;
@@ -406,6 +411,8 @@ function fixSave() {
   if (!S.stars) S.stars = 0;
   if (!S.asc) S.asc = 0;
   if (!S.peak) S.peak = 0;
+  if (!S.pets) S.pets = {};
+  if (!S.team) S.team = [];
   if (!S.stats.deep || S.stats.deep < S.best) S.stats.deep = S.best;
 }
 function load() {
@@ -433,7 +440,7 @@ function save() {
 }
 function saveCode() {
   return btoa(JSON.stringify({ g: S.gold, u: S.up, b: S.best, r: S.runs, p: S.perkAt, st: S.stats,
-                               a: S.ach, sn: S.seen, s: S.stars, as: S.asc, pk: S.peak }));
+                               a: S.ach, sn: S.seen, s: S.stars, as: S.asc, pk: S.peak, pt: S.pets, tm: S.team }));
 }
 function loadCode() {
   var box = document.getElementById('codeIn');
@@ -445,7 +452,7 @@ function loadCode() {
     S.up = {};
     for (var i = 0; i < UPS.length; i++) S.up[UPS[i].id] = d.u[UPS[i].id] || 0;
     S.perkAt = d.p || {}; S.stats = d.st || {}; S.ach = d.a || {}; S.seen = d.sn || {};
-    S.stars = d.s || 0; S.asc = d.as || 0; S.peak = d.pk || 0;
+    S.stars = d.s || 0; S.asc = d.as || 0; S.peak = d.pk || 0; S.pets = d.pt || {}; S.team = d.tm || [];
     fixSave();
     S.run = null; S.last = null;
     ui.codeMsg = 'Save code loaded.';
@@ -519,8 +526,9 @@ function zoneOf(f) {
 function curLevel() { return S.run.level ? levelInfo(S.run.level) : null; }
 function view() {
   var r = S.run, L = curLevel();
-  return ((L && L.dark) || zoneOf(r.floor).hz === 'dark') ? 2 : 4;
+  return ((L && L.dark) || zoneOf(r.floor).hz === 'dark') ? 2 + petSight() : 4 + petSight();
 }
+function petHpMul() { return 1 + 0.05 * petSum('hp') + 0.03 * petSum('allstats'); }
 function starMul() { return 1 + 0.1 * (S.stars || 0); }
 function harmful(t) { return t === 2 || t === 3 || t === 7 || t === 8; }
 
@@ -554,6 +562,8 @@ function fx(key) {
   else if (key === 'greed') v = 40 * p;
   else if (key === 'regen') v = p;
   v += gearFx(r.wpn, key) + gearFx(r.arm, key);
+  if (key === 'crit') v += 3 * petSum('crit');
+  else if (key === 'dodge') v += 3 * petSum('dodge');
   if (CAPS[key]) v = Math.min(CAPS[key], v);
   return v;
 }
@@ -564,9 +574,12 @@ function atkOf() {
   var r = S.run, a = (r.atk + (r.wpn ? r.wpn.atk : 0) + fx('fury')) * starMul();
   return Math.max(1, Math.round(r.weak > 0 ? a * 0.7 : a));
 }
-function defOf() { var r = S.run; return r.def + (r.arm ? r.arm.def : 0) + fx('guard'); }
+function defOf() {
+  var r = S.run, pa = Math.round((petSum('armor') + 0.5 * petSum('allstats')) * (1 + r.floor / 10));
+  return r.def + (r.arm ? r.arm.def : 0) + fx('guard') + pa;
+}
 function heal(n) { var r = S.run; r.hp = Math.min(r.maxHp, r.hp + n); }
-function goldAmt(v) { return Math.round(v * (1 + fx('greed') / 100) * starMul()); }
+function goldAmt(v) { return Math.round(v * (1 + fx('greed') / 100 + 0.08 * petSum('gold')) * starMul()); }
 function hurt(d, who) {
   var r = S.run;
   r.hp -= d; r.fd += d; r.lastHurt = who;
@@ -611,7 +624,7 @@ function sfxValue(k, f) {
   return 8;   // dodge
 }
 function rollRarity(f, minR) {
-  var ri = 0, p = 0.3 + Math.min(0.25, f / 200);
+  var ri = 0, p = 0.3 + Math.min(0.25, f / 200) + Math.min(0.15, 0.02 * petSum('loot'));
   while (ri < RAR.length - 1 && Math.random() < p) ri++;
   ri = Math.min(ri, 1 + Math.floor(f / 6));
   if (minR) ri = Math.max(ri, Math.min(minR, RAR.length - 1));
@@ -884,8 +897,18 @@ function monDesc(m) {
   return parts.length ? cap(parts.join(', ')) + '.' : '';
 }
 // Hidden monsters: burrowers underground, disguised ones pretending to be gold.
+function petSight() {
+  var s = 0;
+  for (var k = 0; k < S.team.length; k++) {
+    var e = PETS[S.team[k]][3], P = petPower(S.team[k]);
+    if (e === 'sight') s += P >= 4 ? 2 : 1;
+    else if ((e === 'reveal' && P < 3) || (e === 'seehidden' && P >= 3)) s += 1;
+  }
+  return Math.min(2, s);
+}
+function petHas(e) { for (var k = 0; k < S.team.length; k++) if (PETS[S.team[k]][3] === e) return true; return false; }
 function hiddenMon(m) {
-  if (m.revealed) return false;
+  if (m.revealed || petHas('seehidden')) return false;
   var r = S.run, d = cheb(m.x, m.y, r.px, r.py);
   if (d <= 1) { m.revealed = true; return false; }
   return has(m, 'burrow') || has(m, 'disguise');
@@ -1180,7 +1203,9 @@ function genFloor() {
   var scr = (LV.scr || 0) + (Math.random() < 0.4 ? 1 : 0);
   for (i = 0; i < scr; i++) addItem({ k: 'scroll', s: pick(SCROLLS).id });
   var chests = (Math.random() < 0.35 ? 1 : 0) + (LV.chest || 0);
-  for (i = 0; i < chests; i++) addItem({ k: 'chest' });
+  r.mimicP = LV.mimic ? LV.mimic * 100 : 15;
+  for (i = 0; i < chests; i++) addItem({ k: 'chest', mimic: f >= 3 && chance(r.mimicP) });
+  if (Math.random() < 0.22 + (LV.n === 'Nest' || LV.n === 'Monster Breeding Grounds' ? 0.5 : 0)) addItem({ k: 'pet', p: rollPet(f) });
   for (i = 0; i < (LV.gear || 0); i++) addItem({ k: 'gear', g: makeGear(f + 1, '', LV.rar || 0) });
   if (LV.cursed) addItem({ k: 'gear', g: makeGear(f + 2, 'wpn', 2, { cursed: true }) });
   if (LV.secret) addItem({ k: 'gear', g: makeGear(f + 3, 'wpn', 5, { secret: true }) });
@@ -1195,13 +1220,15 @@ function genFloor() {
       if (placeNear(r.items[i].x, r.items[i].y, cg, null)) r.mons.push(cg);
     }
   }
-  r.mimicP = LV.mimic ? LV.mimic * 100 : 15;
   r.chestRar = LV.rar || 0;
 
   r.ft = 0; r.fd = 0;
+  r.petShield = petHas('shieldfloor'); r.petTele = false;
   r.bounty = makeBounty();
   reveal();
-  if (LV.reveal) for (y = 0; y < H; y++) for (x = 0; x < W; x++) r.seen[y][x] = 1;
+  var petMap = false;
+  for (i = 0; i < S.team.length; i++) if (PETS[S.team[i]][3] === 'reveal' && petPower(S.team[i]) >= 3) petMap = true;
+  if (LV.reveal || petMap) for (y = 0; y < H; y++) for (x = 0; x < W; x++) r.seen[y][x] = 1;
 }
 
 // ================= BOUNTIES: a small goal on every floor =================
@@ -1305,11 +1332,11 @@ function floorIntro(first, showZone) {
 function headStart(f) { return Math.max(0, Math.round(0.24 * Math.pow(f, 1.5)) - 1); }   // free levels when starting deep
 function startRun() {
   var u = S.up, f = Math.max(1, Math.min(ui.startAt, S.best || 1)), extra = headStart(f), i, sm = starMul();
-  S.run = { floor: f - 1, maxHp: Math.round((20 + 5 * u.hp + 4 * extra) * sm), hp: 0,
+  S.run = { floor: f - 1, maxHp: Math.round((20 + 5 * u.hp + 4 * extra) * sm * petHpMul()), hp: 0,
             atk: 3 + u.atk + extra, def: u.def,
             lv: 1 + extra, xp: 0, potions: 1 + u.pot, scrolls: { fire: 0, freeze: 0, tele: 0, map: 0 },
             goldRun: 0, kills: 0, log: [], pf: {}, queue: [], poison: 0, weak: 0, slow: 0, hits: 0, turns: 0, panel: null,
-            level: '', wpn: null, arm: null, ft: 0, fd: 0, lastHurt: '', bounty: null, blasts: [], portals: [] };
+            level: '', wpn: null, arm: null, ft: 0, fd: 0, lastHurt: '', bounty: null, blasts: [], portals: [], petCd: {}, revived: false };
   var r = S.run;
   for (i = 0; i < u.scr; i++) r.scrolls[pick(SCROLLS).id]++;
   var saved = 0, free = 0;
@@ -1344,7 +1371,7 @@ function nextFloor(quiet) {
   if (r.floor > S.best) S.best = r.floor;
   if (r.floor > (S.stats.deep || 0)) S.stats.deep = r.floor;
   if (!quiet) stat('floors');
-  if (r.floor > 1) heal(Math.ceil(r.maxHp / 10));
+  if (r.floor > 1) heal(Math.ceil(r.maxHp / 10 + r.maxHp * 0.08 * petSum('floorheal')));
   genFloor();
   floorIntro('You reach floor ' + r.floor + '.');
 }
@@ -1528,6 +1555,7 @@ function reopenHere() {
   else if (it.k === 'shop') S.run.panel = { t: 'shop' };
   else if (it.k === 'shrine') S.run.panel = { t: 'shrine' };
   else if (it.k === 'altar') S.run.panel = { t: 'altar' };
+  else if (it.k === 'pet') S.run.panel = { t: 'pet' };
   else return false;
   render();
   return true;
@@ -1538,7 +1566,7 @@ function levelCheck() {
   var r = S.run;
   while (r.xp >= r.lv * 10) {
     r.xp -= r.lv * 10; r.lv++;
-    r.maxHp += Math.round(4 * starMul()); r.atk += 1;
+    r.maxHp += Math.round(4 * starMul() * petHpMul()); r.atk += 1;
     heal(Math.ceil(r.maxHp / 3));
     if (r.lv % 2 === 0) {
       var sp = S.perkAt['L' + r.lv];
@@ -1586,6 +1614,10 @@ function killMon(m) {
   if (m.kind === 'champ') stat('champs');
   say('You defeat ' + the(m.name) + '!' + (g ? ' +' + g + ' gold' : ''));
   if (fx('vamp')) heal(fx('vamp'));
+  if (m.kind === 'boss' && Math.random() < 0.35) {
+    var bp = rollPet(r.floor, 1);
+    if (dropAt(m.x, m.y, { k: 'pet', p: bp })) say('A pet was hiding with the boss: ' + petName(bp) + ' (p)!');
+  }
   if (m.drop) {
     var gear = makeGear(r.floor + 1, '', m.kind === 'boss' ? 2 : 1);
     if (dropAt(m.x, m.y, { k: 'gear', g: gear })) say('It dropped a ' + rarName(gear) + ' ' + gear.name + '!');
@@ -1623,7 +1655,7 @@ function strike(m, mult, primary, verb) {
   m.awake = true; m.revealed = true;
   if (primary && has(m, 'dodge') && chance(15)) { say(The(m.name) + ' dodges your attack!'); return; }
   if (m.shield) { m.shield = false; say(The(m.name) + '\'s shield blocks your hit! The shield breaks.'); return; }
-  var C = wcat(), mod = wmod(), def = Math.max(0, m.def - fx('pierce'));
+  var C = wcat(), mod = wmod(), def = Math.max(0, m.def - fx('pierce') - Math.round(petSum('armordmg') * (1 + r.floor / 15)));
   if (mod === 'piercing') def = Math.round(def * 0.8);
   if ((C && C.pierceAll) || (mod === 'spectral' && chance(15))) def = 0;
   var d = Math.max(1, Math.round(atkOf() * mult + rnd(-1, 1) - def)), notes = [];
@@ -1636,6 +1668,9 @@ function strike(m, mult, primary, verb) {
   }
   if (mod === 'unstable') { var u = rnd(1, 10); if (u === 1) { d *= 3; notes.push('Unstable: triple damage!'); } else if (u === 2) d = Math.max(1, Math.round(d / 2)); }
   if (mod === 'blessed' && TYPES[m.i].undead) d = Math.round(d * 1.2);
+  var pm = 1 + 0.03 * petSum('dmg') + 0.02 * petSum('allstats') + (m.kind === 'boss' || m.kind === 'champ' ? 0.06 * petSum('bossdmg') : 0) +
+           (TYPES[m.i].undead ? 0.08 * petSum('undeaddmg') : 0);
+  if (pm > 1) d = Math.round(d * pm);
   if (has(m, 'swarm')) d = Math.max(1, Math.ceil(d / 2));
   m.hp -= d;
   var lh = fx('leech') + (mod === 'leeching' ? r.wpn.mv : 0);
@@ -1697,6 +1732,8 @@ function attack(m) {
 function monHits(m, kind) {
   var r = S.run, dg = fx('dodge');
   if (dg && chance(dg)) { say('You dodge ' + the(m.name) + '!'); return; }
+  if (r.petShield) { r.petShield = false; say('Your pet\'s shield blocks ' + the(m.name) + '\'s attack!'); return; }
+  if (petSum('block') && chance(Math.min(50, 4 * petSum('block')))) { say('Your pet blocks ' + the(m.name) + '\'s attack!'); return; }
   var a = monAtk(m), slam = false;
   r.wasHit = true;
   if (!kind && has(m, 'slam')) { m.ac++; if (m.ac % 3 === 0) { a *= 2; slam = true; } }
@@ -1713,7 +1750,7 @@ function monHits(m, kind) {
   if (has(m, 'vamp')) m.hp = Math.min(m.max, m.hp + d);
   if (has(m, 'poison')) { if (!r.poison) say('You are poisoned!'); r.poison = 3; }
   if (has(m, 'weaken')) { if (!r.weak) say('You feel weaker!'); r.weak = 3; }
-  if (has(m, 'slowhit') && chance(25)) { if (!r.slow) say('You are slowed!'); r.slow = 2; }
+  if (has(m, 'slowhit') && chance(25) && !slowResist()) { if (!r.slow) say('You are slowed!'); r.slow = 2; }
   if (has(m, 'push') && kind === 'archer') {
     var px = r.px + sign(r.px - m.x), py = r.py + sign(r.py - m.y);
     if (px >= 0 && py >= 0 && px < W && py < H && r.map[py][px] !== 1 && !monAt(px, py)) {
@@ -1891,14 +1928,16 @@ function monstersAct(moveOnly) {
 }
 
 // ================= TURNS =================
+function hazardDmg(d) { return Math.max(1, Math.round(d * (1 - Math.min(0.9, 0.15 * petSum('hazard'))))); }
+function slowResist() { return chance(Math.min(90, 15 * petSum('slowres'))); }
 function stepOn() {
   var r = S.run, t = r.map[r.py][r.px], d;
-  if (t === 2) { d = Math.max(2, Math.ceil(r.maxHp * 0.15)); hurt(d, 'lava'); say('The lava burns you for ' + d + '!'); }
-  else if (t === 3) { d = Math.max(1, Math.ceil(r.maxHp * 0.1)); hurt(d, 'spikes'); say('Spikes! You take ' + d + ' damage.'); }
+  if (t === 2) { d = hazardDmg(Math.ceil(r.maxHp * 0.15)); hurt(d, 'lava'); say('The lava burns you for ' + d + '!'); }
+  else if (t === 3) { d = hazardDmg(Math.ceil(r.maxHp * 0.1)); hurt(d, 'spikes'); say('Spikes! You take ' + d + ' damage.'); }
   else if (t === 4) { d = Math.ceil(r.maxHp * 0.25); heal(d); r.map[r.py][r.px] = 0; say('You eat a mushroom. +' + d + ' HP.'); }
-  else if (t === 5) { if (!r.slow) say('The ' + r.slowName + ' slows you down.'); r.slow = Math.max(r.slow, 1); }
+  else if (t === 5 && !slowResist()) { if (!r.slow) say('The ' + r.slowName + ' slows you down.'); r.slow = Math.max(r.slow, 1); }
   else if (t === 7) { if (!r.poison) say('You breathe poison gas!'); r.poison = 3; }
-  else if (t === 8) { d = Math.max(1, Math.ceil(r.maxHp * 0.12)); hurt(d, 'a shock'); say('Zap! The floor shocks you for ' + d + '.'); }
+  else if (t === 8) { d = hazardDmg(Math.ceil(r.maxHp * 0.12)); hurt(d, 'a shock'); say('Zap! The floor shocks you for ' + d + '.'); }
   else if (t === 9 && r.portals.length === 2) {
     var o = r.portals[0][0] === r.px && r.portals[0][1] === r.py ? r.portals[1] : r.portals[0];
     if (!monAt(o[0], o[1])) { r.px = o[0]; r.py = o[1]; say('The portal pulls you through!'); reveal(); }
@@ -1933,6 +1972,7 @@ function pickup() {
     else if (it.k === 'shop') { say('A merchant waves at you.'); r.panel = { t: 'shop' }; }
     else if (it.k === 'shrine') { say('You find a shrine.'); r.panel = { t: 'shrine' }; }
     else if (it.k === 'altar') { say('You find an enchanting table.'); r.panel = { t: 'altar' }; }
+    else if (it.k === 'pet') { say('You found ' + PETS[it.p][0] + '!'); r.panel = { t: 'pet' }; }
   }
   if (r.px === r.sx && r.py === r.sy) {
     say('You found the stairs. Tap Go down when you\'re ready.');
@@ -1943,7 +1983,7 @@ function openChest(i) {
   var r = S.run, it = r.items[i];
   stat('chests');
   bountyEvent('chest');
-  if (r.floor >= 3 && chance(r.mimicP)) {
+  if (it.mimic === undefined ? (r.floor >= 3 && chance(r.mimicP)) : it.mimic) {
     var m = makeMimic(r.floor);
     if (placeNear(r.px, r.py, m, null)) {
       r.items.splice(r.items.indexOf(it), 1);
@@ -1967,6 +2007,7 @@ function blastsTick() {
     if (b.t > 0) { keep.push(b); continue; }
     if (r.px === b.x && r.py === b.y) {
       var d = Math.max(1, b.d - Math.floor(defOf() / 2));
+      if (b.who === 'a falling rock') d = hazardDmg(d);
       hurt(d, b.who); say('Boom! ' + cap(b.who) + ' hits you for ' + d + '.');
     }
     var m = monAt(b.x, b.y);
@@ -1988,18 +2029,33 @@ function passTurn() {
   var r = S.run;
   r.turns++; r.ft++;
   blastsTick();
+  if (r.hp > 0) petsAct();
   if (r.hp > 0) monstersAct(false);
   if (r.hp > 0 && (r.slow > 0 || r.extraStep)) monstersAct(true);
   r.extraStep = false;
   if (r.slow > 0) r.slow--;
   if (r.weak > 0) r.weak--;
   if (r.hp > 0 && r.poison > 0) {
-    var pd = 1 + Math.floor(r.floor / 6);
-    hurt(pd, 'poison'); r.poison--;
-    say('Poison hurts you for ' + pd + '.');
+    var pd = Math.round((1 + Math.floor(r.floor / 6)) * (1 - Math.min(0.9, 0.2 * petSum('poisonres'))));
+    r.poison--;
+    if (pd > 0) { hurt(pd, 'poison'); say('Poison hurts you for ' + pd + '.'); }
+  }
+  if (r.hp <= 0 && petHas('revive') && !r.revived) {
+    var rv = 0;
+    for (var q = 0; q < S.team.length; q++) if (PETS[S.team[q]][3] === 'revive') { rv = S.team[q]; break; }
+    r.revived = true; r.hp = Math.max(1, Math.round(r.maxHp * Math.min(0.8, 0.1 * petPower(rv))));
+    say(petName(rv) + ' saves you from defeat! You get back up with ' + r.hp + ' HP.');
   }
   if (r.hp <= 0) { endRun(r.lastHurt || 'the dungeon'); return true; }
   if (fx('regen') && r.turns % 3 === 0) heal(fx('regen'));
+  if (petSum('regen') && r.turns % 4 === 0) heal(Math.max(1, Math.round(r.maxHp * 0.01 * petSum('regen'))));
+  if (petHas('teleport') && !r.petTele && r.hp < r.maxHp * 0.25) {
+    var spots = [], tx, ty;
+    for (ty = 0; ty < H; ty++) for (tx = 0; tx < W; tx++) {
+      if (r.map[ty][tx] === 0 && !monAt(tx, ty) && itemAt(tx, ty) < 0 && Math.abs(tx - r.px) + Math.abs(ty - r.py) > 5) spots.push([tx, ty]);
+    }
+    if (spots.length) { var sp = pick(spots); r.px = sp[0]; r.py = sp[1]; r.petTele = true; say('Your pet teleports you to safety!'); }
+  }
   var b = r.bounty;
   if (b && b.state === 'on' && b.t === 'speed' && r.ft > b.need) { b.state = 'failed'; say('Bounty failed: too slow.'); }
   reveal();
@@ -2059,7 +2115,7 @@ function drink() {
   ui.bag = false; ui.elev = false;
   r.log = [];
   r.potions--;
-  heal(Math.ceil(r.maxHp / 2));
+  heal(Math.ceil(r.maxHp / 2 * (1 + 0.1 * petSum('potion'))));
   r.poison = 0; r.weak = 0;
   say('You drink a potion. HP ' + r.hp + '/' + r.maxHp + '.');
   endTurn();
@@ -2203,6 +2259,7 @@ function itemGlyph(it) {
   if (it.k === 'shrine') return '+';
   if (it.k === 'relic') return '&quot;';
   if (it.k === 'altar') return '{';
+  if (it.k === 'pet') return 'p';
   return '';
 }
 
@@ -2365,6 +2422,8 @@ function panelHTML() {
          choice('Rest', 'Heal fully and cure poison', 'shrineUse(\'rest\')') +
          choice('Pray', 'Gain a random perk, but lose 1/4 of your max HP', 'shrineUse(\'pray\')') +
          btn('Leave', 'closePanel()', 'wide');
+  } else if (P.t === 'pet' && it && it.k === 'pet') {
+    h += petPanel(it);
   } else if (P.t === 'altar' && it && it.k === 'altar') {
     h += '<b class="ptitle">Enchanting table</b><p>Give your weapon a new random modifier. Works once.</p>' +
          (r.wpn ? '<p class="now">Now: <b>' + r.wpn.name + '</b><br><span class="desc">' + modInfo(r.wpn.mod).n + ': ' + modInfo(r.wpn.mod).d + '</span></p>' : '') +
@@ -2412,7 +2471,7 @@ function renderRun() {
           ch = m.ch;
         }
         else if (blastAt[x + ',' + y]) { ch = 'x'; cls += ' blast'; }
-        else if (it >= 0) { ch = itemGlyph(r.items[it]); cls += ' it'; }
+        else if (it >= 0) { ch = itemGlyph(r.items[it]); cls += ' it' + (r.items[it].k === 'chest' && r.items[it].mimic && petHas('mimicwarn') ? ' mim' : ''); }
         else if (x === r.sx && y === r.sy) { ch = '&gt;'; cls += ' st'; }
         else if (x === r.ex && y === r.ey) { ch = 'E'; cls += ' el'; }
         else if (TILE_GLYPH[t]) ch = TILE_GLYPH[t];
@@ -2469,7 +2528,8 @@ function renderRun() {
   }
   h += '<div class="gear"><div><b>Weapon:</b> ' + (r.wpn ? r.wpn.name + ' (' + rarName(r.wpn) + '). ' + gearDesc(r.wpn) : 'bare hands') + '</div>' +
        '<div><b>Armor:</b> ' + (r.arm ? r.arm.name + ' (' + rarName(r.arm) + '). ' + gearDesc(r.arm) : 'none') + '</div>' +
-       '<div><b>Perks:</b> ' + (perks.length ? perks.join(', ') : 'none yet') + '</div></div>';
+       '<div><b>Perks:</b> ' + (perks.length ? perks.join(', ') : 'none yet') + '</div>' +
+       '<div><b>Pets:</b> ' + (S.team.length ? petTeamNames() : 'none yet (look for p on the map)') + '</div></div>';
 
   h += '<div class="footer"><span>' + zoneOf(r.floor).n + '. Deepest floor: ' + S.best +
        (S.stars ? '. Stars: ' + S.stars : '') + '</span>' + btn('Encyclopedia', 'openBook()', 'small') + btn('End run', 'giveUp()', 'small') + '</div>';
@@ -2479,7 +2539,7 @@ function renderRun() {
 
 // ================= ENCYCLOPEDIA: every enemy, weapon, modifier and feature =================
 var BOOK_TABS = [['enemies', 'Enemies'], ['weapons', 'Weapons'], ['mods', 'Modifiers'], ['traits', 'Traits'],
-                 ['floors', 'Floor types'], ['zones', 'Zones'], ['more', 'Perks & items']];
+                 ['floors', 'Floor types'], ['zones', 'Zones'], ['pets', 'Pets'], ['more', 'Perks & items']];
 var FAMILY_NAME = { B: 'Basic', H: 'Heavy', F: 'Fast', R: 'Ranged', T: 'Tricky', E: 'Elemental', U: 'Undead', I: 'Insect', X: 'Elite / boss', Y: 'Helper' };
 function openBook(tab) { ui.book = tab || 'enemies'; ui.bookTop = true; render(); }
 function found(yes) { return yes ? ' <span class="found">Found</span>' : ''; }
@@ -2533,6 +2593,16 @@ function renderBook() {
     h += '<div class="entry"><h3>Rarity</h3>' + RAR.join(', ') + '. Rarer gear has more bonuses: ' +
          'weapons can get Leeching (heal per hit), Thunder (double damage), Greed (more gold), Fury (more attack) or Piercing (ignore armor); ' +
          'armor can get Thorns, Life (more HP), Shadows (dodge), Mending (heal over time) or the Turtle (more armor).</div>';
+  } else if (tab === 'pets') {
+    h += '<p class="each">All 300 pets. Up to ' + TEAM_MAX + ' can be on your team. "In this game" says exactly what each one does here.</p>';
+    for (var ri = 0; ri < PRAR.length; ri++) {
+      h += '<h3>' + PRAR[ri] + ' pets</h3>';
+      for (i = 0; i < PETS.length; i++) {
+        if (PETS[i][2] !== ri) continue;
+        h += '<div class="entry"><b>' + PETS[i][0] + '</b>' + (S.pets[i] ? ' <span class="found">Found' + (S.pets[i] > 1 ? ', level ' + S.pets[i] : '') + '</span>' : '') +
+             '<br><span class="each">' + PETS[i][1] + '</span><br><b>In this game:</b> ' + petEffectText(i, Math.max(1, S.pets[i] || 1)) + '.</div>';
+      }
+    }
   } else if (tab === 'mods') {
     h += '<p class="each">Every weapon has one modifier at the start of its name, like "Flaming Moonblade". You\'ve found ' + countSeen('o') + ' of ' + MODS.length + '.</p>';
     for (i = 0; i < MODS.length; i++) {
@@ -2591,6 +2661,204 @@ function renderBook() {
   return h + '</div>';
 }
 
+
+// ================= PETS =================
+// 300 pets: [name, what it does in the pet book, rarity 0-5, game effect]
+var PETS = [["Nibbles the Rat", "Finds extra coins after battles.", 0, "gold"], ["Pebble the Slime", "Grants 2 bonus maximum HP.", 0, "hp"], ["Pip the Cave Bat", "Reveals nearby room entrances.", 0, "sight"], ["Button the Beetle", "Occasionally blocks a small hit.", 0, "block"], ["Scraps the Goblinling", "Finds extra crafting materials.", 0, "gold"], ["Dusty the Skeleton Pup", "Slightly increases critical-hit chance.", 0, "crit"], ["Puddle the Frog", "Reduces slow-effect duration.", 0, "slowres"], ["Thread the Spiderling", "Occasionally avoids a trap.", 0, "hazard"], ["Cinder the Fire Moth", "Grants fire resistance.", 0, "hazard"], ["Mallow the Mushroom", "Restores a little HP after cleared rooms.", 0, "floorheal"], ["Biscuit the Cave Puppy", "Finds hidden food.", 0, "potion"], ["Pebbles the Hamster", "Collects nearby coins.", 0, "gold"], ["Wiggles the Worm", "Detects buried loot.", 0, "gold"], ["Tippy the Toad", "Warns about poisonous floors.", 0, "poisonres"], ["Flint the Firefly", "Lights dark rooms.", 0, "sight"], ["Buttons the Snail", "Reduces floor-hazard damage.", 0, "hazard"], ["Chirp the Cricket", "Warns of nearby enemies.", 0, "seehidden"], ["Mittens the Cave Kitten", "Slightly improves dodge chance.", 0, "dodge"], ["Doodle the Dust Bunny", "Finds small hidden objects.", 0, "gold"], ["Bramble the Hedgehog", "Occasionally damages melee attackers.", 0, "bite"], ["Poppy the Ladybug", "Improves healing-item drop chances.", 0, "potion"], ["Crumb the Mouse", "Finds food in containers.", 0, "potion"], ["Splash the Tadpole", "Grants water-hazard resistance.", 0, "hazard"], ["Waffle the Duckling", "Moves faster through water.", 0, "hazard"], ["Tumble the Armadillo", "Reduces knockback.", 0, "slowres"], ["Dot the Moth", "Detects nearby light sources.", 0, "sight"], ["Squeak the Batling", "Reveals enemies around corners.", 0, "seehidden"], ["Mossy the Snail", "Marks explored paths.", 0, "sight"], ["Dewdrop the Slug", "Reduces poison duration.", 0, "poisonres"], ["Pogo the Grasshopper", "Helps cross small floor hazards.", 0, "hazard"], ["Bubbles the Minnow", "Reveals underwater treasure.", 0, "gold"], ["Ruffles the Chick", "Occasionally finds feathers.", 0, "gold"], ["Tater the Mole", "Detects buried treasure.", 0, "gold"], ["Flicker the Glowworm", "Illuminates hidden passages.", 0, "sight"], ["Patches the Raccoon Kit", "Improves container loot.", 0, "loot"], ["Acorn the Squirrel", "Finds energy-restoring nuts.", 0, "regen"], ["Munch the Mini Boar", "Performs a tiny charge attack.", 0, "bite"], ["Clover the Field Mouse", "Slightly improves luck.", 0, "loot"], ["Skippy the Gerbil", "Briefly boosts speed after collecting loot.", 0, "gold"], ["Tinsel the Silverfish", "Detects cracks in walls.", 0, "sight"], ["Blinky the Eyeball", "Reveals nearby hidden enemies.", 0, "seehidden"], ["Misty the Puffball", "Creates a small concealment cloud.", 0, "dodge"], ["Coco the Cave Bat", "Reduces darkness penalties.", 0, "sight"], ["Noodle the Snakelet", "Grants minor poison resistance.", 0, "poisonres"], ["Sprout the Mandrake", "Finds medicinal plants.", 0, "regen"], ["Ringo the Rock Crab", "Reduces falling-rock damage.", 0, "hazard"], ["Dandy the Dandelion Sprite", "Moves faster through grass.", 0, "dodge"], ["Pipkin the Baby Turtle", "Grants a small armor bonus.", 0, "armor"], ["Zippy the Ferret", "Collects nearby dropped items.", 0, "gold"], ["Marble the Pebble Golem", "Occasionally blocks projectile damage.", 0, "block"], ["Pickles the Mimic Cub", "Warns when a chest is a mimic.", 1, "mimicwarn"], ["Echo the Ghost", "Reveals enemies through walls.", 1, "seehidden"], ["Copper the Clockwork Mouse", "Opens simple mechanical locks.", 1, "hazard"], ["Mossback the Turtle", "Reduces incoming damage.", 1, "armor"], ["Zipper the Ferret", "Dashes toward nearby loot.", 1, "gold"], ["Bubbles the Water Sprite", "Extinguishes nearby fire tiles.", 1, "hazard"], ["Soot the Baby Salamander", "Launches a tiny fireball.", 1, "bolt"], ["Tinker the Cave Cricket", "Helps detect pressure plates.", 1, "hazard"], ["Clover the Meadow Hare", "Warns of enemy ambushes.", 1, "seehidden"], ["Pogo the Pocket Golem", "Pushes small enemies backward.", 1, "freeze"], ["Glimmer the Cave Moth", "Highlights valuable objects.", 1, "gold"], ["Rattle the Bone Snake", "Reduces skeleton enemies' damage.", 1, "undeaddmg"], ["Miso the Lantern Lizard", "Reveals secret doors in dark rooms.", 1, "sight"], ["Whisk the Dust Fox", "Improves movement speed on sand.", 1, "hazard"], ["Chisel the Stone Mouse", "Finds extra ore.", 1, "gold"], ["Marshmallow the Bog Sprite", "Reduces swamp movement penalties.", 1, "hazard"], ["Creak the Wooden Owl", "Detects nearby moving traps.", 1, "hazard"], ["Tumbleweed the Desert Mouse", "Finds water in desert rooms.", 1, "regen"], ["Glint the Copper Beetle", "Improves coin drops from enemies.", 1, "gold"], ["Frosty the Snow Hare", "Grants cold resistance.", 1, "hazard"], ["Bramblebud the Thornling", "Occasionally roots an attacker.", 1, "freeze"], ["Sproing the Spring Frog", "Jumps over one floor hazard.", 1, "hazard"], ["Whisper the Tiny Ghost", "Makes footsteps quieter.", 1, "dodge"], ["Murk the Marsh Eel", "Detects enemies in shallow water.", 1, "seehidden"], ["Penny the Coin Sprite", "Occasionally duplicates a small coin pickup.", 1, "gold"], ["Gasket the Tin Beetle", "Resists mechanical traps.", 1, "hazard"], ["Shiver the Ice Moth", "Reduces ice damage.", 1, "hazard"], ["Scribble the Ink Slime", "Marks enemies on the map.", 1, "seehidden"], ["Dapple the Fawn", "Improves movement through forest rooms.", 1, "dodge"], ["Rivet the Clockwork Cricket", "Disables one simple mechanism.", 1, "hazard"], ["Mimsy the Mimic Mouse", "Finds hidden compartments in chests.", 1, "loot"], ["Glowcap the Mushroom", "Reveals nearby healing items.", 1, "potion"], ["Skitter the Sand Spider", "Reduces damage from sand traps.", 1, "hazard"], ["Fizzle the Spark Sprite", "Deals a little lightning damage.", 1, "bolt"], ["Crumble the Clay Pup", "Reduces damage from falling debris.", 1, "hazard"], ["Breezy the Wind Wisp", "Occasionally increases movement speed.", 1, "dodge"], ["Gingersnap the Ember Fox", "Improves fire resistance.", 1, "hazard"], ["Taffy the Candy Slime", "Makes food restore slightly more HP.", 1, "potion"], ["Pebblehorn the Mini Goat", "Resists knockback.", 1, "slowres"], ["Murmur the Bat Owl", "Detects secret rooms.", 1, "reveal"], ["Dizzy the Spinning Beetle", "Occasionally dodges a projectile.", 1, "dodge"], ["Buttonhook the Sprite", "Finds keys in ordinary containers.", 1, "gold"], ["Cobbles the Rock Toad", "Reduces stone-floor hazard damage.", 1, "hazard"], ["Rainbell the Cloud Sprite", "Reduces lightning-hazard damage.", 1, "hazard"], ["Fanglet the Wolf Pup", "Deals a small bonus attack.", 1, "bite"], ["Candlewick the Candle Imp", "Lights nearby hidden symbols.", 1, "sight"], ["Pipsqueak the Clockwork Chick", "Improves reload or cooldown speed slightly.", 1, "haste"], ["Sundae the Frost Slime", "Slows nearby enemies occasionally.", 1, "freeze"], ["Digger the Mole Pup", "Finds secret tunnels.", 1, "sight"], ["Goldie the Cave Carp", "Improves underwater treasure drops.", 1, "gold"], ["Emberfang the Fox", "Boosts fire damage.", 2, "dmg"], ["Glimmerwing the Crystal Moth", "Improves rare-loot chances.", 2, "loot"], ["Wicket the Mini Troll", "Occasionally staggers enemies.", 2, "freeze"], ["Hush the Shadow Cat", "Reduces enemy ambush chances.", 2, "seehidden"], ["Rumble the Rockling", "Resists knockback and interrupts nearby foes.", 2, "slowres"], ["Frostbit the Snow Fox", "Slows enemies with a frost puff.", 2, "freeze"], ["Vial the Potion Ooze", "Improves potion effectiveness.", 2, "potion"], ["Lantern the Will-o'-Wisp", "Reveals hidden objects in a room.", 2, "gold"], ["Quill the Porcupine", "Fires a small quill volley.", 2, "bolt"], ["Rook the Raven", "Hints at the nearest unexplored room.", 2, "reveal"], ["Cobalt the Crystal Crab", "Grants extra armor.", 2, "armor"], ["Ashen the Cinder Wolf", "Deals bonus damage to burning enemies.", 2, "bite"], ["Velvet the Night Ferret", "Improves dodge chance in darkness.", 2, "dodge"], ["Sapphire the Ice Sprite", "Boosts ice damage.", 2, "dmg"], ["Thistle the Thorn Fox", "Roots enemies with thorny vines.", 2, "freeze"], ["Whirl the Wind Hawk", "Occasionally knocks back enemies.", 2, "freeze"], ["Runeclaw the Glyph Cat", "Improves magical damage.", 2, "dmg"], ["Gloom the Cave Panther", "Deals extra damage to unaware enemies.", 2, "bite"], ["Coppercoil the Serpent", "Improves mechanical crafting drops.", 2, "gold"], ["Starling the Astral Bird", "Reveals hidden magical items.", 2, "gold"], ["Magma the Lava Pup", "Grants fire immunity for a brief moment after taking fire damage.", 2, "hazard"], ["Tundra the Snow Owl", "Improves cold resistance.", 2, "hazard"], ["Prism the Rainbow Slime", "Randomly grants a minor elemental bonus.", 2, "allstats"], ["Gravelfang the Badger", "Deals bonus damage to armored foes.", 2, "armordmg"], ["Vesper the Ghost Moth", "Reveals invisible enemies.", 2, "seehidden"], ["Bolt the Storm Mouse", "Occasionally chains lightning to a second enemy.", 2, "chain"], ["Mender the Healing Sprite", "Periodically restores a small amount of HP.", 2, "regen"], ["Garnet the Crystal Beetle", "Finds gemstones.", 2, "gold"], ["Rift the Portal Kitten", "Teleports a short distance to a clear tile.", 2, "teleport"], ["Thumper the Cave Ram", "Performs a knockback charge.", 2, "slowres"], ["Sable the Shadow Raven", "Reveals enemy patrol routes.", 2, "seehidden"], ["Crescent the Moon Hare", "Improves critical-hit chance at night or in dark rooms.", 2, "crit"], ["Solstice the Sun Moth", "Improves light-based damage.", 2, "dmg"], ["Boulderback the Mini Bear", "Reduces damage from heavy attacks.", 2, "armor"], ["Hex the Spell Toad", "Occasionally weakens enemy magic.", 2, "freeze"], ["Fangora the Spider Fox", "Applies a short slow effect.", 2, "freeze"], ["Dynamo the Electric Eel", "Improves lightning resistance and damage.", 2, "hazard"], ["Mirage the Sand Cat", "Creates a brief decoy.", 2, "dodge"], ["Hollow the Bone Crow", "Finds bones used for crafting.", 2, "gold"], ["Opal the Crystal Hare", "Improves gem drops.", 2, "gold"], ["Briar the Hedge Wolf", "Deals bonus damage to rooted enemies.", 2, "bite"], ["Mistral the Breeze Sprite", "Reduces ability cooldowns slightly.", 2, "haste"], ["Cinderbell the Fire Beetle", "Leaves a short-lived burning trail.", 2, "pulse"], ["Moonstone the Cave Deer", "Reveals nearby healing shrines.", 2, "regen"], ["Grit the Iron Mole", "Improves mining speed.", 2, "gold"], ["Riptide the Water Fox", "Improves water movement and water damage.", 2, "hazard"], ["Dreadwing the Mini Gargoyle", "Reduces fear and confusion effects.", 2, "slowres"], ["Lumen the Prism Wisp", "Reveals secret symbols and magical doors.", 2, "sight"], ["Rascal the Treasure Imp", "Improves treasure-room rewards.", 2, "loot"], ["Ironwhisker the Steel Rat", "Reduces damage from mechanical enemies.", 2, "armor"], ["Sir Pounce the Lion Cub", "Boosts melee damage and pounces on enemies.", 3, "bite"], ["Volt the Storm Sprite", "Deals chain lightning damage.", 3, "chain"], ["Rune the Baby Dragon", "Boosts weapon damage and breathes fire.", 3, "bolt"], ["Velvetwing the Vampire Bat", "Restores a little HP after several defeats.", 3, "floorheal"], ["Bramblefang the Thorn Wolf", "Roots enemies and boosts damage against slowed foes.", 3, "freeze"], ["Gearbox the Mini Mech", "Deploys a shield against projectiles.", 3, "shieldfloor"], ["Oracle the Owl", "Reveals all enemies in a room.", 3, "seehidden"], ["Doodle the Living Spellbook", "Casts a random low-level spell.", 3, "bolt"], ["Prismtail the Crystal Fox", "Detects hidden gems and ore.", 3, "gold"], ["Sprocket the Clockwork Spider", "Disarms an ordinary trap.", 3, "hazard"], ["Tempest the Thunder Hawk", "Calls a lightning strike.", 3, "bolt"], ["Aegis the Shield Turtle", "Absorbs part of the next incoming hit.", 3, "block"], ["Inferno the Ember Drake", "Breathes a cone of fire.", 3, "pulse"], ["Glacier the Ice Wolf", "Freezes a weak enemy briefly.", 3, "freeze"], ["Nightshade the Shadow Lynx", "Improves damage from stealth.", 3, "dmg"], ["Starforge the Astral Golem", "Improves weapon crafting.", 3, "gold"], ["Quasar the Cosmic Jellyfish", "Emits a pulse that damages nearby enemies.", 3, "pulse"], ["Warden the Miniature Gargoyle", "Reduces damage from elite enemies.", 3, "bossdmg"], ["Mirrormask the Mimic", "Copies a small portion of an enemy's defense.", 3, "armordmg"], ["Lifebloom the Forest Spirit", "Gradually heals the player between battles.", 3, "floorheal"], ["Stormcoil the Sky Serpent", "Boosts lightning attacks.", 3, "bite"], ["Obsidian the Shadow Bear", "Grants a large armor bonus.", 3, "armor"], ["Sunbeam the Solar Fox", "Fires a beam of light.", 3, "bolt"], ["Frostcrown the Ice Stag", "Slows every enemy in a small radius.", 3, "freeze"], ["Venomveil the Serpent", "Adds poison damage to pet attacks.", 3, "bite"], ["Goldcrest the Treasure Phoenix", "Improves chest rewards.", 3, "loot"], ["Chronicle the Time Owl", "Briefly slows enemies in a room.", 3, "freeze"], ["Runebark the Ancient Treant", "Creates a temporary protective barrier.", 3, "shieldfloor"], ["Voidwhisker the Rift Cat", "Teleports the player to a nearby clear tile.", 3, "teleport"], ["Magnetron the Metal Golem", "Pulls nearby coins and metal drops toward the player.", 3, "gold"], ["Thunderhoof the Storm Ram", "Charges through a line of enemies.", 3, "pulse"], ["Dreamdust the Sleep Sprite", "May put a weak enemy to sleep.", 3, "freeze"], ["Cavern King the Crystal Mole", "Reveals most hidden mineral deposits.", 3, "sight"], ["Ashwing the Phoenix Fox", "Boosts fire damage and burn duration.", 3, "dmg"], ["Fable the Storybook Dragon", "Grants a random small buff upon entering a new floor.", 3, "allstats"], ["Ironbloom the Steel Treant", "Improves armor and trap resistance.", 3, "hazard"], ["Tidecaller the Sea Serpent", "Creates a wave that pushes enemies back.", 3, "freeze"], ["Galeclaw the Wind Griffin", "Improves movement and dodge chance.", 3, "dodge"], ["Hexspark the Arcane Imp", "Occasionally weakens an enemy's defenses.", 3, "armordmg"], ["Moonveil the Lunar Wolf", "Improves critical damage in dark rooms.", 3, "crit"], ["Crystalheart the Gem Golem", "Improves gemstone rewards.", 3, "loot"], ["Flaretail the Comet Fox", "Dashes through enemies with a fire trail.", 3, "pulse"], ["Fungalord the Mushroom Sprite", "Releases healing spores.", 3, "regen"], ["Riftguard the Portal Tortoise", "Creates a brief barrier near the player.", 3, "shieldfloor"], ["Banshee Belle the Ghost", "Screams to interrupt enemy abilities.", 3, "freeze"], ["Dreadscale the Cave Drake", "Deals bonus damage to bosses.", 3, "bossdmg"], ["Spellstorm the Arcane Owl", "Reduces spell cooldowns.", 3, "haste"], ["Silvershade the Phantom Deer", "Reveals traps and hidden enemies.", 3, "hazard"], ["Embercore the Magma Golem", "Creates a short-lived lava patch.", 3, "pulse"], ["Skyshard the Crystal Griffin", "Improves loot quality in elite rooms.", 3, "loot"], ["Sol the Phoenix Chick", "Once per dungeon run, prevents defeat and restores some HP.", 4, "revive"], ["Umbra the Void Kitten", "Teleports to a nearby safe tile and improves dodge.", 4, "dodge"], ["Atlas the Miniature Titan", "Grants bonus maximum HP and stuns nearby small enemies.", 4, "freeze"], ["Chrono the Time Wisp", "Reduces cooldowns and briefly slows all enemies.", 4, "haste"], ["Midas the Golden Beetle", "Improves coin drops substantially.", 4, "gold"], ["Nyx the Night Dragon", "Fires a line of shadow energy.", 4, "pulse"], ["Aurora the Star Deer", "Improves elemental resistance and restores HP with a star pulse.", 4, "hazard"], ["Levi the Pocket Hydra", "Attacks with three different elements.", 4, "chain"], ["Cipher the Ancient Mimic", "Improves chest rewards and opens ordinary locked chests.", 4, "loot"], ["Dungeonling the Living Core", "Improves health, damage, and defense.", 4, "allstats"], ["Eclipse the Sun-Moon Fox", "Alternates between light and shadow attacks.", 4, "chain"], ["Worldroot the Ancient Treant", "Heals the player and roots nearby enemies.", 4, "freeze"], ["Tempora the Clockwork Dragon", "Briefly freezes enemy movement.", 4, "freeze"], ["Aether the Celestial Griffin", "Boosts all elemental damage.", 4, "dmg"], ["Voidfang the Rift Wolf", "Deals extra damage to elite enemies.", 4, "bossdmg"], ["Starheart the Cosmic Slime", "Randomly grants a temporary defensive buff.", 4, "allstats"], ["Everfrost the Ice Phoenix", "Freezes a group of weak enemies.", 4, "freeze"], ["Infernal Crown the Fire Drake", "Releases a powerful fire burst.", 4, "pulse"], ["Titanbolt the Storm Golem", "Calls down lightning on a strong enemy.", 4, "bolt"], ["Dreamweaver the Moon Moth", "Reveals hidden paths and sleeping enemies.", 4, "seehidden"], ["Fortuna the Luck Sprite", "Improves treasure and rare-item chances.", 4, "loot"], ["Kingshard the Crystal Lion", "Boosts damage against bosses.", 4, "bossdmg"], ["Astralune the Cosmic Owl", "Reveals secret rooms on the current floor.", 4, "reveal"], ["Gravemarch the Bone Dragon", "Weakens undead enemies.", 4, "undeaddmg"], ["Seraphina the Light Phoenix", "Emits a healing burst.", 4, "healburst"], ["Dreadking the Shadow Panther", "Improves damage after dodging.", 4, "dmg"], ["Stormveil the Thunder Serpent", "Chains lightning through a group of enemies.", 4, "chain"], ["Worldcoil the Ancient Serpent", "Grants resistance to several hazard types.", 4, "hazard"], ["Prismarch the Rainbow Dragon", "Cycles through elemental attacks.", 4, "chain"], ["Runebreaker the Stone Titan", "Deals bonus damage to armored enemies.", 4, "armordmg"], ["Miracle the Healing Star", "Provides periodic healing and improves potions.", 4, "potion"], ["Blackstar the Void Raven", "Reveals hidden enemies and weak points.", 4, "armordmg"], ["Sunforge the Golden Golem", "Improves crafting and equipment upgrades.", 4, "gold"], ["Moonbreaker the Lunar Stag", "Sends a shockwave that slows enemies.", 4, "freeze"], ["Riftwing the Dimension Bat", "Teleports the player out of a dangerous tile.", 4, "teleport"], ["Crownfire the Royal Phoenix", "Boosts fire damage and burn resistance.", 4, "dmg"], ["Frostnova the Glacier Dragon", "Creates an area-of-effect frost blast.", 4, "pulse"], ["Ironoracle the Ancient Mech", "Reveals enemy weaknesses.", 4, "armordmg"], ["Soulbell the Spirit Deer", "Improves rewards from elite encounters.", 4, "loot"], ["Gemkeeper the Crystal Dragon", "Detects every gemstone in a room.", 4, "gold"], ["Abyssal the Deep-Sea Hydra", "Deals bonus damage in flooded rooms.", 4, "bite"], ["Thunderstar the Celestial Hawk", "Boosts critical hits after lightning attacks.", 4, "crit"], ["Evergreen the Elder Dryad", "Restores a little HP after each cleared floor.", 4, "floorheal"], ["Nightcomet the Shadow Dragon", "Dashes through enemies with void damage.", 4, "pulse"], ["Golden Hour the Time Fox", "Briefly slows enemies when entering combat.", 4, "freeze"], ["Skybreaker the Storm Griffin", "Knocks back enemies with a powerful gust.", 4, "freeze"], ["Ancient Echo the Spirit Whale", "Reveals the map around the player.", 4, "reveal"], ["Infinity the Rune Serpent", "Improves all ability cooldowns.", 4, "haste"], ["Dawnkeeper the Radiant Lion", "Grants a protective shield at low HP.", 4, "shieldfloor"], ["The First Spark", "Improves one random pet ability for the current dungeon.", 4, "allstats"], ["Worldender the Star Dragon", "Unleashes a massive elemental burst with a long cooldown.", 5, "pulse"], ["Genesis the Primordial Slime", "Adapts its passive bonus to the current floor.", 5, "allstats"], ["Omniscale the Cosmic Serpent", "Gains resistance to the most common enemy damage type.", 5, "hazard"], ["Eternity the Time Phoenix", "Once per run, refreshes a used pet ability.", 5, "haste"], ["Dreamking the Astral Stag", "Reveals hidden rooms and weakens enemies briefly.", 5, "freeze"], ["Oblivion the Void Hydra", "Attacks several enemies with shadow energy.", 5, "chain"], ["Celestia the Star Whale", "Reveals a large portion of the dungeon map.", 5, "reveal"], ["Paradox the Time Cat", "Occasionally repeats a small beneficial effect.", 5, "allstats"], ["Primus the Ancient Golem", "Grants a powerful defensive bonus.", 5, "armor"], ["Nightfall the Eclipse Dragon", "Deals extra damage in dark rooms and creates darkness.", 5, "bite"], ["Dawnstar the Solar Griffin", "Heals the player and damages undead foes.", 5, "undeaddmg"], ["Omnibloom the World Tree Sprite", "Gradually restores HP and energy.", 5, "regen"], ["Abyssheart the Deep Leviathan", "Creates a wave that damages and pushes enemies.", 5, "freeze"], ["Null the Silence Wisp", "Temporarily prevents nearby enemies from using special abilities.", 5, "freeze"], ["Infinitywing the Cosmic Moth", "Reduces cooldowns for all equipped pets.", 5, "haste"], ["Runesovereign the Ancient Owl", "Reveals enemy weaknesses and secret runes.", 5, "armordmg"], ["Cataclysm the Magma Titan", "Creates a powerful ground eruption.", 5, "pulse"], ["Absolute Zero the Ice Dragon", "Freezes weak enemies within a large radius.", 5, "freeze"], ["Heavenshard the Crystal Phoenix", "Improves rare loot and gemstone drops.", 5, "loot"], ["Soulkeeper the Eternal Raven", "Reveals spirit caches and hidden rewards.", 5, "undeaddmg"], ["Starweaver the Cosmic Spider", "Creates a web that slows many enemies.", 5, "freeze"], ["Realitybender the Rift Fox", "Teleports the player to a nearby room entrance.", 5, "teleport"], ["Worldheart the Living Core", "Improves health and grants a periodic shield.", 5, "shieldfloor"], ["Thunderlord the Storm Dragon", "Calls down several lightning strikes.", 5, "bolt"], ["Fatewhisper the Oracle Serpent", "Hints at the next room's danger and reward.", 5, "reveal"], ["Goldrealm the Treasure Dragon", "Greatly improves treasure-room rewards.", 5, "loot"], ["Nightmare the Dream Wolf", "Weakens enemies when combat begins.", 5, "freeze"], ["Mirrormoon the Lunar Sprite", "Creates a decoy that draws enemy attacks.", 5, "bite"], ["Evergale the Wind Phoenix", "Grants a temporary burst of movement and dodge.", 5, "dodge"], ["Gravitas the Gravity Golem", "Pulls nearby enemies together.", 5, "freeze"], ["Riftmaw the Dimension Drake", "Bites through enemy defenses.", 5, "armordmg"], ["Starforged the Celestial Mech", "Improves crafted equipment and armor.", 5, "armor"], ["Lifebringer the Dawn Sprite", "Provides a strong heal with a long cooldown.", 5, "healburst"], ["Doombell the Spectral Whale", "Interrupts enemy abilities with a resonant pulse.", 5, "freeze"], ["Frostrealm the Snow Dragon", "Creates an icy zone that slows enemies.", 5, "freeze"], ["Embereternal the Phoenix King", "Boosts fire damage and burn resistance.", 5, "dmg"], ["Verdant Crown the Forest Dragon", "Roots enemies and restores a little HP.", 5, "freeze"], ["The Silent Monarch", "Improves stealth and reduces enemy detection.", 5, "dodge"], ["The Crystal Architect", "Reveals secret doors and improves gem rewards.", 5, "loot"], ["The Forgotten Star", "Grants a random powerful buff upon entering a boss room.", 5, "allstats"], ["The Last Guardian", "Provides a protective barrier against boss attacks.", 5, "shieldfloor"], ["The Hollow Emperor", "Weakens undead enemies and reveals hidden graves.", 5, "undeaddmg"], ["The Astral Librarian", "Reveals lore rooms and improves spell power.", 5, "bolt"], ["The Infinite Mimic", "Improves chest loot and warns about mimics.", 5, "loot"], ["The Clockwork Sovereign", "Reduces cooldowns and disables one mechanism per floor.", 5, "haste"], ["The Eternal Lantern", "Reveals hidden objects, traps, and secret passages.", 5, "hazard"], ["The World Seraph", "Improves elemental resistance and periodically heals.", 5, "hazard"], ["The Abyssal Crown", "Boosts damage against elite enemies and bosses.", 5, "bossdmg"], ["The First Guardian", "Grants a shield at the start of each floor.", 5, "shieldfloor"], ["The Dungeon Heart", "Gains a small bonus to health, damage, and defense for every boss defeated.", 5, "allstats"]];
+var PRAR = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythical'];
+var PRM = [1, 1.4, 1.9, 2.5, 3.2, 4];
+var TEAM_MAX = 5;
+var PET_ACTIVE = { bite: 1, bolt: 1, chain: 1, pulse: 1, freeze: 1, healburst: 1 };
+var PET_WEIGHT = { bite: 1.3, bolt: 1.3, chain: 1.3, pulse: 1.3, freeze: 1.3, revive: 1.6, healburst: 1.1, shieldfloor: 1.1,
+                   block: 1.1, armor: 1.1, allstats: 1.2, dmg: 1.1, hp: 1.1, crit: 1, dodge: 1, regen: 1, floorheal: 1,
+                   bossdmg: 1, armordmg: 1, teleport: 0.9, undeaddmg: 0.8, potion: 0.8, hazard: 0.8, loot: 0.8, gold: 0.7,
+                   seehidden: 0.7, reveal: 0.9, sight: 0.6, poisonres: 0.6, slowres: 0.6, haste: 0.8, mimicwarn: 0.6 };
+function petName(i) { var n = PETS[i][0]; return n.indexOf(' the ') > 0 ? n.split(' the ')[0] : n; }
+function petLv(i) { return S.pets[i] || 0; }
+function petPower(i, lv) { return PRM[PETS[i][2]] * (1 + 0.15 * ((lv || petLv(i) || 1) - 1)); }
+function petScore(i, lv) { return petPower(i, lv) * (PET_WEIGHT[PETS[i][3]] || 1); }
+// Total power of every team pet with this effect.
+function petSum(e) {
+  var s = 0;
+  if (!S || !S.team) return 0;
+  for (var k = 0; k < S.team.length; k++) if (PETS[S.team[k]][3] === e) s += petPower(S.team[k]);
+  return s;
+}
+function petHaste() { return Math.min(3, Math.round(petSum('haste') / 2.5)); }
+function petCd(e, P) {
+  var base = e === 'bite' ? 4 - Math.floor(P / 2) : (e === 'bolt' ? 7 - Math.floor(P) : (e === 'chain' ? 8 - Math.floor(P) :
+             (e === 'pulse' ? 9 - Math.floor(P) : (e === 'freeze' ? 8 - Math.floor(P) : 20))));
+  return Math.max(e === 'bite' ? 2 : 3, base - (e === 'healburst' ? 0 : petHaste()));
+}
+function petEffectText(i, lv) {
+  var e = PETS[i][3], P = petPower(i, lv), R = Math.round;
+  switch (e) {
+    case 'gold': return '+' + R(8 * P) + '% gold';
+    case 'loot': return 'Better gear rarity from chests and drops';
+    case 'hazard': return 'Lava, spikes, gas, shock floors and falling rocks hurt ' + Math.min(90, R(15 * P)) + '% less';
+    case 'poisonres': return 'Poison hurts ' + Math.min(90, R(20 * P)) + '% less';
+    case 'slowres': return Math.min(90, R(15 * P)) + '% chance to shrug off being slowed';
+    case 'freeze': return 'Every ' + petCd(e, P) + ' turns, freezes the nearest monster for ' + (P >= 3 ? 2 : 1) + ' turn' + (P >= 3 ? 's' : '');
+    case 'pulse': return 'Every ' + petCd(e, P) + ' turns, hurts every monster within 2 squares (' + R(12 * P) + '% of your attack)';
+    case 'bolt': return 'Every ' + petCd(e, P) + ' turns, hits the nearest monster you can see (' + R(15 * P) + '% of your attack)';
+    case 'chain': return 'Every ' + petCd(e, P) + ' turns, hits up to 3 monsters you can see (' + R(9 * P) + '% of your attack each)';
+    case 'bite': return 'Every ' + petCd(e, P) + ' turns, bites a monster next to you (' + R(12 * P) + '% of your attack)';
+    case 'healburst': return 'When your HP drops below 40%, heals ' + R(20 + 10 * P) + '% of it (every 20 turns)';
+    case 'seehidden': return 'Shows hidden monsters (burrowers and disguises)' + (P >= 3 ? ', and you see 1 square farther' : '');
+    case 'reveal': return P >= 3 ? 'Shows the whole map on every floor' : 'You see 1 square farther';
+    case 'sight': return P >= 4 ? 'You see 2 squares farther' : 'You see 1 square farther';
+    case 'regen': return 'Heals ' + Math.max(1, R(P)) + '% of your max HP every 4 turns';
+    case 'floorheal': return 'Heals ' + R(8 * P) + '% of your max HP on every new floor';
+    case 'potion': return 'Potions heal ' + R(10 * P) + '% more';
+    case 'hp': return '+' + R(5 * P) + '% max HP';
+    case 'crit': return '+' + R(3 * P) + '% critical';
+    case 'dodge': return '+' + R(3 * P) + '% dodge';
+    case 'armor': return '+' + R(P) + ' armor, more on deeper floors';
+    case 'block': return Math.min(50, R(4 * P)) + '% chance to block a hit completely';
+    case 'shieldfloor': return 'Blocks the first hit on every floor';
+    case 'teleport': return 'Once per floor, teleports you away when your HP drops below 25%';
+    case 'revive': return 'Once per run, saves you from defeat with ' + Math.min(80, R(10 * P)) + '% HP';
+    case 'bossdmg': return '+' + R(6 * P) + '% damage to bosses and champions';
+    case 'undeaddmg': return '+' + R(8 * P) + '% damage to undead';
+    case 'armordmg': return 'Your hits ignore ' + R(P) + '+ monster armor (more on deeper floors)';
+    case 'dmg': return '+' + R(3 * P) + '% damage';
+    case 'allstats': return '+' + R(2 * P) + '% damage, +' + R(3 * P) + '% max HP and a little armor';
+    case 'haste': return 'Your other pets use their abilities sooner';
+    case 'mimicwarn': return 'Marks treasure chests that are really Mimics';
+  }
+  return '';
+}
+function petLine(i, lv) {
+  return '<b>' + PETS[i][0] + '</b> <i>(' + PRAR[PETS[i][2]] + (petLv(i) > 1 || lv > 1 ? ', level ' + (lv || petLv(i)) : '') + ')</i>';
+}
+function rollPet(f, bonus) {
+  var ri = 0, p = 0.28 + Math.min(0.3, f / 120), i;
+  while (ri < 5 && Math.random() < p) ri++;
+  ri = Math.min(5, Math.min(ri, 1 + Math.floor(f / 7)) + (bonus || 0));
+  var all = [], fresh = [];
+  for (i = 0; i < PETS.length; i++) if (PETS[i][2] === ri) { all.push(i); if (!S.pets[i]) fresh.push(i); }
+  return fresh.length && Math.random() < 0.7 ? pick(fresh) : pick(all);
+}
+function weakestPet() {
+  var w = -1;
+  for (var k = 0; k < S.team.length; k++) if (w < 0 || petScore(S.team[k]) < petScore(S.team[w])) w = k;
+  return w;
+}
+// Is a newly found pet a good addition to your team?
+function petVerdict(i) {
+  var lv = petLv(i);
+  if (lv >= 5) return { good: false, why: 'You already have ' + petName(i) + ' at the top level (5). Taking it gives you gold instead.' };
+  if (lv > 0) return { good: true, why: 'You already have ' + petName(i) + '. Another one makes it level ' + (lv + 1) + ' and stronger.' };
+  if (S.team.length < TEAM_MAX) return { good: true, why: 'You have a free pet slot (' + S.team.length + ' of ' + TEAM_MAX + ' used).' };
+  var w = weakestPet();
+  if (petScore(i, 1) > petScore(S.team[w]) * 1.05) return { good: true, swap: w, why: 'It is stronger than ' + petName(S.team[w]) + ', your weakest pet.' };
+  return { good: false, why: 'It is weaker than all ' + TEAM_MAX + ' of your pets. It still joins your collection at camp.' };
+}
+function petTake(how) {
+  var r = S.run, it = hereItem();
+  if (!it || it.k !== 'pet') { closePanel(); return; }
+  var i = it.p, lv = petLv(i);
+  r.items.splice(r.items.indexOf(it), 1);
+  if (lv >= 5) { var g = goldAmt(30 + 10 * PETS[i][2] * PETS[i][2] + r.floor); r.goldRun += g; r.log = [petName(i) + ' is already the top level. You get ' + g + ' gold.']; closePanel(); return; }
+  if (lv > 0) { S.pets[i] = lv + 1; r.log = [petName(i) + ' grows stronger! It is now level ' + (lv + 1) + '.']; closePanel(); return; }
+  S.pets[i] = 1;
+  if (how === 'add' && S.team.length < TEAM_MAX) { S.team.push(i); r.log = [petName(i) + ' joins your team!']; }
+  else if (how === 'swap' && S.team.length) {
+    var w = weakestPet(), old = S.team[w];
+    S.team[w] = i;
+    r.log = [petName(i) + ' joins your team. ' + petName(old) + ' goes back to camp.'];
+  } else r.log = [petName(i) + ' goes to your pet collection at camp.'];
+  closePanel();
+}
+function petPanel(it) {
+  var i = it.p, v = petVerdict(i), lv = petLv(i), h = '<b class="ptitle">You found a pet!</b>';
+  h += '<div class="verdict ' + (v.good ? 'better' : 'worse') + '">' + (v.good ? 'GOOD ADDITION' : 'BAD ADDITION') + '</div>' +
+       '<span class="desc">' + v.why + '</span>' +
+       '<p>' + petLine(i, lv ? Math.min(5, lv + 1) : 1) + '<br><span class="desc">' + PETS[i][1] + '<br><b>In this game:</b> ' +
+       petEffectText(i, lv ? Math.min(5, lv + 1) : 1) + '.</span></p>';
+  if (lv >= 5) h += btn('Take the gold', 'petTake(\'gold\')', 'main wide');
+  else if (lv > 0) h += btn('Level up ' + petName(i), 'petTake(\'lvl\')', 'main wide');
+  else {
+    if (S.team.length < TEAM_MAX) h += btn('Add to team', 'petTake(\'add\')', 'main wide');
+    else h += btn('Swap for ' + petName(S.team[weakestPet()]), 'petTake(\'swap\')', (v.good ? 'main ' : '') + 'wide');
+    h += btn('Send to camp', 'petTake(\'camp\')', 'wide small');
+  }
+  return h;
+}
+// Pets with attacks act once per turn, after you.
+function petsAct() {
+  var r = S.run, k, j;
+  if (!S.team.length) return;
+  if (!r.petCd) r.petCd = {};
+  for (k = 0; k < S.team.length; k++) {
+    var i = S.team[k], e = PETS[i][3];
+    if (!PET_ACTIVE[e]) continue;
+    if (r.petCd[i] > 0) { r.petCd[i]--; continue; }
+    var P = petPower(i), nm = petName(i), acted = false, ms = seenMonsters(), m, d;
+    if (e === 'healburst') {
+      if (r.hp < r.maxHp * 0.4) { var hv = Math.round(r.maxHp * (0.2 + 0.1 * P)); heal(hv); say(nm + ' heals you for ' + hv + '!'); acted = true; }
+    } else if (e === 'bite') {
+      for (j = 0; j < ms.length; j++) if (Math.abs(ms[j].x - r.px) + Math.abs(ms[j].y - r.py) === 1) { m = ms[j]; break; }
+      if (m) { petHit(m, 0.12 * P, nm, 'bites'); acted = true; }
+    } else if (ms.length) {
+      ms.sort(function (a, b) { return (Math.abs(a.x - r.px) + Math.abs(a.y - r.py)) - (Math.abs(b.x - r.px) + Math.abs(b.y - r.py)); });
+      if (e === 'bolt') { petHit(ms[0], 0.15 * P, nm, 'blasts'); acted = true; }
+      else if (e === 'chain') { for (j = 0; j < ms.length && j < 3; j++) petHit(ms[j], 0.09 * P, nm, 'zaps'); acted = true; }
+      else if (e === 'pulse') {
+        var near = [];
+        for (j = 0; j < ms.length; j++) if (cheb(ms[j].x, ms[j].y, r.px, r.py) <= 2) near.push(ms[j]);
+        if (near.length) { say(nm + ' unleashes a burst!'); for (j = 0; j < near.length; j++) petHit(near[j], 0.12 * P, '', ''); acted = true; }
+      } else if (e === 'freeze') {
+        m = ms[0];
+        if (!TYPES[m.i].heart) { m.frozen = Math.max(m.frozen, P >= 3 ? 2 : 1); say(nm + ' freezes ' + the(m.name) + '!'); acted = true; }
+      }
+    }
+    if (acted) r.petCd[i] = petCd(e, P);
+  }
+}
+function petHit(m, frac, nm, verb) {
+  if (S.run.mons.indexOf(m) < 0) return;
+  var d = Math.max(1, Math.round(atkOf() * frac - m.def / 2));
+  m.hp -= d; m.awake = true;
+  if (nm) say(nm + ' ' + verb + ' ' + the(m.name) + ' for ' + d + '.');
+  if (m.hp <= 0) killMon(m);
+}
+function petTeamNames() {
+  var out = [];
+  for (var k = 0; k < S.team.length; k++) out.push(petName(S.team[k]));
+  return out.join(', ');
+}
+// Camp: team and collection screen
+function openPets() { ui.pets = true; ui.bookTop = true; render(); }
+function petAdd(i) { if (S.team.length < TEAM_MAX && S.team.indexOf(i) < 0 && S.pets[i]) { S.team.push(i); save(); render(); } }
+function petRemove(i) { var k = S.team.indexOf(i); if (k >= 0) { S.team.splice(k, 1); save(); render(); } }
+function renderPets() {
+  var h = '<div class="book"><h2>Pets</h2><div class="tabs">' + btn('Back to camp', 'ui.pets=false;render()', 'small') + '</div>', i, k;
+  var owned = [];
+  for (i = 0; i < PETS.length; i++) if (S.pets[i]) owned.push(i);
+  h += '<p class="each">You can have up to ' + TEAM_MAX + ' pets on your team. Only team pets help you in the dungeon. You\'ve found ' + owned.length + ' of 300. ' +
+       'Finding a pet you already have makes it level up (up to level 5).</p>';
+  h += '<h3>Your team (' + S.team.length + ' of ' + TEAM_MAX + ')</h3>';
+  if (!S.team.length) h += '<p>No pets yet. Look for <code>p</code> on the map.</p>';
+  for (k = 0; k < S.team.length; k++) {
+    i = S.team[k];
+    h += '<div class="entry">' + petLine(i) + '<br><span class="each">' + petEffectText(i) + '.</span><br>' + btn('Remove from team', 'petRemove(' + i + ')', 'small') + '</div>';
+  }
+  owned.sort(function (a, b) { return petScore(b) - petScore(a); });
+  h += '<h3>Collection (strongest first)</h3>';
+  var shown = 0;
+  for (k = 0; k < owned.length; k++) {
+    i = owned[k];
+    if (S.team.indexOf(i) >= 0) continue;
+    shown++;
+    h += '<div class="entry">' + petLine(i) + '<br><span class="each">' + petEffectText(i) + '.</span><br>' +
+         btn('Add to team', 'petAdd(' + i + ')', 'small', S.team.length >= TEAM_MAX) + '</div>';
+  }
+  if (!shown) h += '<p class="each">Pets you find but don\'t put on your team wait here.</p>';
+  h += '<div class="tabs bottom">' + btn('Back to top', 'window.scrollTo(0,0)', 'small') + btn('Back to camp', 'ui.pets=false;render()', 'small') + '</div>';
+  return h + '</div>';
+}
+
 function traitCount() {
   var n = 0;
   for (var k in AB) if (AB.hasOwnProperty(k)) n++;
@@ -2633,6 +2901,8 @@ function renderCamp() {
          '<div>' + btn('Floor 1', 'startPick(1,1)', 'small') + btn('Deepest (' + S.best + ')', 'startPick(' + S.best + ',1)', 'small') + '</div>';
   }
   h += '<div class="actions">' + btn(ui.startAt > 1 ? 'Enter on floor ' + ui.startAt : 'Enter the dungeon', 'startRun()', 'main big') + '</div>';
+  h += '<h2>Pets</h2><p class="each">Team (' + S.team.length + ' of ' + TEAM_MAX + '): ' + (S.team.length ? petTeamNames() : 'none yet. Look for p on the map.') + '</p>' +
+       btn('Manage pets', 'openPets()', '');
 
   // collection
   h += '<h2>Collection</h2><table class="shop ach">' +
@@ -2641,7 +2911,8 @@ function renderCamp() {
        '<tr><td><b>Weapons found:</b> ' + countSeen('w') + ' of 300</td></tr>' +
        '<tr><td><b>Weapon modifiers found:</b> ' + countSeen('o') + ' of ' + MODS.length + '</td></tr>' +
        '<tr><td><b>Kinds of floors visited:</b> ' + countSeen('l') + ' of ' + LEVELS.length + '</td></tr>' +
-       '<tr><td><b>Zones visited:</b> ' + countSeen('z') + '</td></tr></table>';
+       '<tr><td><b>Zones visited:</b> ' + countSeen('z') + '</td></tr>' +
+       '<tr><td><b>Pets found:</b> ' + (function () { var n = 0; for (var k in S.pets) if (S.pets.hasOwnProperty(k)) n++; return n; })() + ' of 300</td></tr></table>';
 
   // achievements
   h += '<h2>Achievements</h2><p class="each">Every achievement has endless levels. Each new level pays gold.</p><table class="shop ach">';
@@ -2694,8 +2965,9 @@ function renderCamp() {
 }
 
 function render() {
-  document.body.className = ui.book ? 'inbook' : (S.run ? 'inrun' : '');
-  document.getElementById('game').innerHTML = ui.book ? renderBook() : (S.run ? renderRun() : renderCamp());
+  if (ui.pets && S.run) ui.pets = false;
+  document.body.className = ui.book || ui.pets ? 'inbook' : (S.run ? 'inrun' : '');
+  document.getElementById('game').innerHTML = ui.book ? renderBook() : (ui.pets ? renderPets() : (S.run ? renderRun() : renderCamp()));
   if (ui.bookTop) { ui.bookTop = false; window.scrollTo(0, 0); }
 }
 window.onresize = function () { fitMap(); if (S) render(); };
