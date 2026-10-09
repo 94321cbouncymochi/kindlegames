@@ -47,7 +47,7 @@
     <li><b>Swift</b>: weaker, but can hit again or give you a free turn. <b>Cursed</b>: stronger, with a 10% chance of double damage that also costs you a little HP.</li>
     <li>From floor 8, rarer ones appear: <b>Poisoned</b>, <b>Vampiric</b>, <b>Explosive</b>, <b>Piercing</b>, <b>Lucky</b>, <b>Unstable</b>, <b>Blessed</b> (extra damage to undead), <b>Spectral</b>, <b>Regenerating</b> and <b>Echoing</b>.</li>
   </ul>
-  <p>Weapons and armor also have a <b>rarity</b>: Common, Uncommon, Rare, Epic, Legendary, Mythic, Ancient, Celestial and Cosmic. Rarer gear has more bonuses. Better gear shows up deeper, and past the last weapon name, gear keeps going: +1, +2, +3 and so on forever. Step on a piece of gear to compare it with yours and choose Equip or Leave it.</p>
+  <p>Weapons and armor also have a <b>rarity</b>: Common, Uncommon, Rare, Epic, Legendary, Mythic, Ancient, Celestial and Cosmic. Rarer gear has more bonuses. Better gear shows up deeper, and past the last weapon name, gear keeps going: +1, +2, +3 and so on forever. Step on a piece of gear and the game tells you if it's <b>BETTER</b>, <b>WORSE</b> or <b>ABOUT THE SAME</b> as what you're using, with the numbers side by side. Choose Equip, or Leave it, which destroys it.</p>
 
   <h3>Monsters</h3>
   <p>There are 100 kinds of monsters. New kinds keep appearing as you go deeper, all the way past floor 50. Each kind has its own tricks: archers and mages shoot from a distance, ghosts float through walls, slimes split, healers heal other monsters, bombardiers throw bombs, burrowers hide underground, and shapeshifters pretend to be gold. The list under the map tells you what every monster you can see does.</p>
@@ -90,6 +90,7 @@
   <h3>Camp</h3>
   <ul>
     <li><b>Upgrades</b> last forever: max HP, attack, armor, starting potions, starting scrolls, and Blessing (extra perks at the start of every run).</li>
+    <li><b>Encyclopedia</b> (at camp, or at the bottom of the screen during a run) lists every enemy, weapon, modifier, monster trait, floor type, zone, perk, scroll and map symbol. The ones you've found are marked.</li>
     <li><b>Collection</b> shows how many of the 100 monsters, 300 weapons, 20 modifiers and 50 kinds of floors you've found.</li>
     <li><b>Achievements</b> never run out. Monster Slayer, Explorer, Treasure Hunter and the rest each have endless levels, and every new level pays gold.</li>
     <li><b>Ascend</b>: when you get stuck, you can start over from floor 1 with your gold, upgrades and deepest floor reset. In return you earn stars (1 for every 5 floors past floor 20 on your deepest-ever floor). Each star gives +10% attack, HP and gold forever, so every time you ascend you can go deeper than before. Saved perks, achievements and your collection stay.</li>
@@ -368,7 +369,7 @@ var CAPS = { crit: 50, thorns: 60, dodge: 40 };
 
 var S = null;          // everything that gets saved
 var stacked = false;   // narrow screens put the controls under the map
-var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1 };
+var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1, book: '', bookTop: false };
 
 // Size the map so the map and every control fit on one screen.
 function fitMap() {
@@ -687,6 +688,57 @@ function noteGear(g) {
   S.seen['w' + g.base.replace(/ \+\d+$/, '')] = 1;
   S.seen['o' + g.mod] = 1;
 }
+
+// ================= GEAR COMPARISON =================
+var GOOD_MODS = { sharp: 0.08, leeching: 0.1, flaming: 0.1, frozen: 0.06, shocking: 0.07, heavy: 0.06, swift: 0.1, cursed: 0.05,
+                  poisoned: 0.08, vampiric: 0.08, explosive: 0.08, piercing: 0.06, lucky: 0.05, unstable: 0.06, blessed: 0.05,
+                  spectral: 0.06, regenerating: 0.06, echoing: 0.08, dull: 0.04, rusty: 0.06 };
+// One number for how good a piece of gear is, so two pieces can be compared.
+function gearScore(g) {
+  if (!g) return 0;
+  var s = 0, i, f;
+  if (g.slot === 'wpn') {
+    var C = WCATS[g.cat || 0];
+    s = g.atk * (1 + (GOOD_MODS[g.mod] || 0) + (C.crit || 0) / 100 + (C.range ? 0.1 : 0) + (C.sweep ? 0.1 : 0) + (C.dbl ? 0.12 : 0) + (C.stun ? 0.05 : 0));
+    for (i = 0; i < g.fxs.length; i++) {
+      f = g.fxs[i];
+      if (f.fx === 'fury' || f.fx === 'leech' || f.fx === 'pierce') s += f.v;
+      else if (f.fx === 'crit') s += g.atk * f.v / 100;
+      else s += 1;
+    }
+  } else {
+    s = g.def * 3;
+    for (i = 0; i < g.fxs.length; i++) {
+      f = g.fxs[i];
+      if (f.fx === 'guard') s += f.v * 3;
+      else if (f.fx === 'life') s += f.v / 3;
+      else if (f.fx === 'regen') s += 3;
+      else if (f.fx === 'dodge') s += f.v / 2;
+      else s += f.v / 8;
+    }
+  }
+  return s;
+}
+// "Better", "Worse" or "About the same", with the main numbers side by side.
+function compareHTML(g) {
+  var r = S.run, cur = g.slot === 'wpn' ? r.wpn : r.arm, a = gearScore(g), b = gearScore(cur);
+  var verdict, cls;
+  if (!cur || a > b * 1.05) { verdict = 'BETTER'; cls = 'better'; }
+  else if (a < b * 0.95) { verdict = 'WORSE'; cls = 'worse'; }
+  else { verdict = 'ABOUT THE SAME'; cls = 'same'; }
+  var line = g.slot === 'wpn' ? 'Attack ' + g.atk + ' vs ' + (cur ? cur.atk : 0) : 'Armor ' + g.def + ' vs ' + (cur ? cur.def : 0);
+  var extra = cur ? ' Bonuses: ' + g.fxs.length + ' vs ' + cur.fxs.length + '.' : '';
+  if (g.slot === 'wpn' && cur && g.cat !== cur.cat) extra += ' Different family: ' + WCATS[g.cat].n + ' instead of ' + WCATS[cur.cat].n + '.';
+  return '<div class="verdict ' + cls + '">' + verdict + '</div><span class="desc">' + line + '.' + extra + '</span>';
+}
+function destroyHere() {
+  var r = S.run, it = hereItem();
+  if (!it || it.k !== 'gear') { closePanel(); return; }
+  r.items.splice(r.items.indexOf(it), 1);
+  r.log = ['You leave the ' + it.g.name + ' behind. It crumbles to dust.'];
+  closePanel();
+}
+
 function equip(g) {
   var r = S.run;
   noteGear(g);
@@ -1298,7 +1350,7 @@ function nextFloor(quiet) {
 }
 function blocked() {
   var r = S.run;
-  return !r || r.panel || ui.elev || ui.bag;
+  return !r || r.panel || ui.elev || ui.bag || ui.book;
 }
 function descend() {
   var r = S.run;
@@ -2290,16 +2342,21 @@ function panelHTML() {
     }
   } else if (P.t === 'loot' && it && it.k === 'gear') {
     var g = it.g, cur = g.slot === 'wpn' ? r.wpn : r.arm;
-    h += '<b class="ptitle">You found</b><p><i>' + rarName(g) + '</i><br><b>' + g.name + '</b><br><span class="desc">' + gearDesc(g) + '</span></p>' +
+    h += '<b class="ptitle">You found</b>' + compareHTML(g) +
+         '<p><i>' + rarName(g) + '</i><br><b>' + g.name + '</b><br><span class="desc">' + gearDesc(g) + '</span></p>' +
          '<p class="now">Now using:<br>' + (cur ? '<i>' + rarName(cur) + '</i> ' + cur.name + '<br><span class="desc">' + gearDesc(cur) + '</span>' : 'nothing') + '</p>' +
-         btn('Equip', 'equipHere()', 'main wide') + btn('Leave it', 'closePanel()', 'wide');
+         btn('Equip', 'equipHere()', 'main wide') + btn('Leave it (destroys it)', 'destroyHere()', 'wide small');
   } else if (P.t === 'shop' && it && it.k === 'shop') {
     h += '<b class="ptitle">Merchant</b><p>You have ' + r.goldRun + ' gold. Gold you spend here doesn\'t go home.</p>';
     for (i = 0; i < it.stock.length; i++) {
       var s = it.stock[i], label, desc;
       if (s.k === 'potion') { label = 'Potion'; desc = 'Heals half your HP'; }
       else if (s.k === 'scroll') { label = scrollInfo(s.s).n + ' scroll'; desc = scrollInfo(s.s).d; }
-      else { label = rarName(s.g) + ' ' + s.g.name; desc = gearDesc(s.g); }
+      else {
+        var sa = gearScore(s.g), sb = gearScore(s.g.slot === 'wpn' ? r.wpn : r.arm);
+        label = rarName(s.g) + ' ' + s.g.name + (sa > sb * 1.05 ? ' (BETTER)' : (sa < sb * 0.95 ? ' (WORSE)' : ' (SAME)'));
+        desc = gearDesc(s.g);
+      }
       h += choice(label, (s.sold ? 'Sold' : desc + '<br><b>' + s.price + ' gold</b>'), 'shopBuy(' + i + ')', s.sold || r.goldRun < s.price);
     }
     h += btn('Leave', 'closePanel()', 'wide');
@@ -2415,8 +2472,123 @@ function renderRun() {
        '<div><b>Perks:</b> ' + (perks.length ? perks.join(', ') : 'none yet') + '</div></div>';
 
   h += '<div class="footer"><span>' + zoneOf(r.floor).n + '. Deepest floor: ' + S.best +
-       (S.stars ? '. Stars: ' + S.stars : '') + '</span>' + btn('End run', 'giveUp()', 'small') + '</div>';
+       (S.stars ? '. Stars: ' + S.stars : '') + '</span>' + btn('Encyclopedia', 'openBook()', 'small') + btn('End run', 'giveUp()', 'small') + '</div>';
   return h;
+}
+
+
+// ================= ENCYCLOPEDIA: every enemy, weapon, modifier and feature =================
+var BOOK_TABS = [['enemies', 'Enemies'], ['weapons', 'Weapons'], ['mods', 'Modifiers'], ['traits', 'Traits'],
+                 ['floors', 'Floor types'], ['zones', 'Zones'], ['more', 'Perks & items']];
+var FAMILY_NAME = { B: 'Basic', H: 'Heavy', F: 'Fast', R: 'Ranged', T: 'Tricky', E: 'Elemental', U: 'Undead', I: 'Insect', X: 'Elite / boss', Y: 'Helper' };
+function openBook(tab) { ui.book = tab || 'enemies'; ui.bookTop = true; render(); }
+function found(yes) { return yes ? ' <span class="found">Found</span>' : ''; }
+function abText(T) {
+  var out = [];
+  for (var j = 0; j < T.ab.length; j++) out.push(T.ab[j] === 'summon' ? 'calls ' + (T.spawn === 'random' ? 'monsters' : plural(T.spawn)) + ' to help' : AB[T.ab[j]]);
+  return out.length ? cap(out.join(', ')) + '.' : 'No special tricks.';
+}
+function zoneFloors(i) {
+  var out = [];
+  for (var k = 0; k < 3; k++) {
+    var start = (i + k * ZONES.length) * 10 + 1;
+    out.push(start + '-' + (start + 9));
+  }
+  return 'Floors ' + out.join(', ') + ', and so on';
+}
+function renderBook() {
+  var tab = ui.book, h = '<div class="book"><h2>Encyclopedia</h2><div class="tabs">', i, j;
+  for (i = 0; i < BOOK_TABS.length; i++) {
+    h += btn(BOOK_TABS[i][1], 'openBook(\'' + BOOK_TABS[i][0] + '\')', 'small' + (tab === BOOK_TABS[i][0] ? ' main' : ''));
+  }
+  h += btn('Close', 'ui.book=\'\';render()', 'small') + '</div>';
+
+  if (tab === 'enemies') {
+    h += '<p class="each">All ' + TYPES.length + ' monsters, in the order they first show up. You\'ve found ' + countSeen('t') +
+         '. Every monster gets stronger the deeper you go, and deeper ones can also have random traits.</p>';
+    var order = [];
+    for (i = 0; i < TYPES.length; i++) order.push(i);
+    order.sort(function (a, b) { return TYPES[a].tier - TYPES[b].tier || a - b; });
+    for (i = 0; i < order.length; i++) {
+      var T = TYPES[order[i]], when;
+      if (T.chest) when = 'Hides in treasure chests from floor 3';
+      else if (T.heart) when = 'Guards The Dungeon Core every 50 floors';
+      else if (T.elite) when = 'Boss from floor ' + T.tier;
+      else when = 'From floor ' + T.tier;
+      h += '<div class="entry"><b class="tag">' + T.c + '</b> <b>' + T.n + '</b>' + found(S.seen['t' + order[i]]) +
+           '<br><span class="each">' + FAMILY_NAME[T.fam] + '. ' + when + '.' + (T.undead ? ' Undead.' : '') + '</span><br>' + abText(T) + '</div>';
+    }
+  } else if (tab === 'weapons') {
+    h += '<p class="each">All 300 weapons in 10 families. Names in <b>bold</b> are ones you\'ve found (' + countSeen('w') +
+         ' so far). Names further down a list show up deeper. Past the last name, weapons keep going as +1, +2, +3 and so on.</p>';
+    for (i = 0; i < WCATS.length; i++) {
+      var C = WCATS[i], names = [];
+      for (j = 0; j < WNAMES[i].length; j++) {
+        var nmj = WNAMES[i][j];
+        names.push(S.seen['w' + nmj] ? '<b>' + nmj + '</b>' : nmj);
+      }
+      h += '<div class="entry"><h3>' + C.n + '</h3><span class="each">' + cap(C.d) + '. Damage x' + C.mult + '.</span><br>' + names.join(', ') + '.</div>';
+    }
+    h += '<div class="entry"><h3>Armor</h3>' + ARM.join(', ') + ', then +1, +2 and so on.</div>';
+    h += '<div class="entry"><h3>Rarity</h3>' + RAR.join(', ') + '. Rarer gear has more bonuses: ' +
+         'weapons can get Leeching (heal per hit), Thunder (double damage), Greed (more gold), Fury (more attack) or Piercing (ignore armor); ' +
+         'armor can get Thorns, Life (more HP), Shadows (dodge), Mending (heal over time) or the Turtle (more armor).</div>';
+  } else if (tab === 'mods') {
+    h += '<p class="each">Every weapon has one modifier at the start of its name, like "Flaming Moonblade". You\'ve found ' + countSeen('o') + ' of ' + MODS.length + '.</p>';
+    for (i = 0; i < MODS.length; i++) {
+      var M = MODS[i];
+      h += '<div class="entry"><b>' + M.n + '</b>' + found(S.seen['o' + M.id]) + '<br><span class="each">' +
+           (M.pct ? (M.pct > 0 ? '+' : '') + M.pct + '% damage. ' : 'Normal damage. ') + (M.opt ? 'Shows up from floor 8.' : '') + '</span><br>' +
+           cap(M.id === 'leeching' ? 'heals you a few HP on every hit (more on deeper weapons)' : M.d) + '.</div>';
+    }
+  } else if (tab === 'traits') {
+    h += '<p class="each">Things monsters can do. Some kinds are born with them, and deeper monsters can get random extra ones. You\'ve seen ' + countSeen('a') + '.</p>';
+    for (var k in AB) if (AB.hasOwnProperty(k)) {
+      var mi = -1;
+      for (j = 0; j < MUTS.length; j++) if (MUTS[j].id === k) mi = j;
+      h += '<div class="entry"><b>' + (mi >= 0 ? MUTS[mi].adj : cap(k)) + '</b>' + found(S.seen['a' + k]) + '<br>' + cap(AB[k]) + '.' +
+           (mi >= 0 ? ' <span class="each">Random trait from floor ' + Math.max(6, 5 * (mi - 2)) + '.</span>' : '') + '</div>';
+    }
+  } else if (tab === 'floors') {
+    h += '<p class="each">The 50 kinds of floors. Most floors roll one of these. You\'ve visited ' + countSeen('l') + '.</p>';
+    for (i = 0; i < LEVELS.length; i++) {
+      var L = LEVELS[i], when2 = L.secret ? 'Very rare secret floor' : (L.heart ? 'Every 50 floors' : (L.bossLevel ? 'Boss floors (every 5)' : (L.minF ? 'From floor ' + L.minF : 'Any floor')));
+      h += '<div class="entry"><b>' + L.n + '</b>' + found(S.seen['l' + L.n]) + '<br><span class="each">' + when2 + '.</span><br>' + L.note + ' ' +
+           levelEffects(L, 999).join('. ') + '.</div>';
+    }
+  } else if (tab === 'zones') {
+    h += '<p class="each">A new zone every 10 floors. After all 8, they come back tougher as II, III, IV and so on, forever.</p>';
+    for (i = 0; i < ZONES.length; i++) {
+      var Z = ZONES[i], lay = { rooms: 'rooms and corridors', caves: 'open caves', maze: 'a maze', pillars: 'big halls with pillars' }[Z.lay];
+      h += '<div class="entry"><b>' + Z.n + '</b>' + found(S.seen['z' + Z.n]) + '<br><span class="each">' + zoneFloors(i) + '. Map: ' + lay + '.</span><br>' + Z.note +
+           (Z.fav.length ? ' More ' + typeNames(Z.fav, 999).join(', ') + '.' : '') + (Z.mut ? ' Some monsters are ' + mutAdj(Z.mut) + '.' : '') + '</div>';
+    }
+  } else {
+    h += '<h3>Perks</h3><p class="each">You pick one every 2 levels. Each pick is saved for that level.</p>';
+    for (i = 0; i < PERKS.length; i++) h += '<div class="entry"><b>' + PERKS[i].n + '</b>: ' + PERKS[i].d + '.</div>';
+    h += '<h3>Scrolls and potions</h3><div class="entry"><b>Potion</b>: Heals half your max HP and cures poison and weakness.</div>';
+    for (i = 0; i < SCROLLS.length; i++) h += '<div class="entry"><b>' + SCROLLS[i].n + ' scroll</b>: ' + SCROLLS[i].d + '.</div>';
+    h += '<h3>Things on the map</h3>' +
+      '<div class="entry"><code>$</code> gold. <code>!</code> potion. <code>?</code> scroll. <code>*</code> treasure chest (some are Mimics). ' +
+      '<code>)</code> weapon. <code>[</code> armor. <code>&amp;</code> merchant. <code>+</code> shrine. <code>"</code> relic (free perk). ' +
+      '<code>{</code> enchanting table (new weapon modifier). <code>&gt;</code> stairs. <code>E</code> elevator.</div>' +
+      '<h3>Floor squares</h3>' +
+      '<div class="entry"><code>~</code> Lava: burns you for 15% of your max HP.</div>' +
+      '<div class="entry"><code>^</code> Spikes: hurt you for 10% of your max HP.</div>' +
+      '<div class="entry"><code>:</code> Poison gas: poisons you for 3 turns.</div>' +
+      '<div class="entry"><code>#</code> Shock floor: hurts you for 12% of your max HP.</div>' +
+      '<div class="entry"><code>=</code> Water, web, mud or sand: slows you, so monsters get extra steps.</div>' +
+      '<div class="entry"><code>-</code> Ice: you slide until something stops you.</div>' +
+      '<div class="entry"><code>%</code> Mushroom: heals you for 25% of your max HP.</div>' +
+      '<div class="entry"><code>O</code> Portal: jumps you to the other portal.</div>' +
+      '<div class="entry"><code>x</code> A bomb or falling rock lands here next turn. Step off it!</div>' +
+      '<h3>Camp upgrades</h3>';
+    for (i = 0; i < UPS.length; i++) h += '<div class="entry"><b>' + UPS[i].name + '</b>: ' + UPS[i].each + (UPS[i].max ? ' (up to ' + UPS[i].max + ')' : '') + '.</div>';
+    h += '<h3>Achievements</h3>';
+    for (i = 0; i < ACH.length; i++) h += '<div class="entry"><b>' + ACH[i].n + '</b>: ' + ACH[i].what + '. Endless levels, each pays gold.</div>';
+  }
+  h += '<div class="tabs bottom">' + btn('Back to top', 'window.scrollTo(0,0)', 'small') + btn('Close', 'ui.book=\'\';render()', 'small') + '</div>';
+  return h + '</div>';
 }
 
 function traitCount() {
@@ -2439,7 +2611,8 @@ function renderCamp() {
   }
 
   h += '<div class="bank"><span>Gold: <b>' + S.gold + '</b></span><span>Deepest floor: <b>' + S.best + '</b></span>' +
-       '<span>Runs: <b>' + S.runs + '</b></span>' + (S.stars ? '<span>Stars: <b>' + S.stars + '</b></span>' : '') + '</div>';
+       '<span>Runs: <b>' + S.runs + '</b></span>' + (S.stars ? '<span>Stars: <b>' + S.stars + '</b></span>' : '') + '</div>' +
+       '<div>' + btn('Encyclopedia', 'openBook()', '') + '</div>';
 
   h += '<h2>Upgrades</h2><table class="shop">';
   for (i = 0; i < UPS.length; i++) {
@@ -2521,13 +2694,14 @@ function renderCamp() {
 }
 
 function render() {
-  document.body.className = S.run ? 'inrun' : '';
-  document.getElementById('game').innerHTML = S.run ? renderRun() : renderCamp();
+  document.body.className = ui.book ? 'inbook' : (S.run ? 'inrun' : '');
+  document.getElementById('game').innerHTML = ui.book ? renderBook() : (S.run ? renderRun() : renderCamp());
+  if (ui.bookTop) { ui.bookTop = false; window.scrollTo(0, 0); }
 }
 window.onresize = function () { fitMap(); if (S) render(); };
 
 document.onkeydown = function (e) {
-  if (!S || !S.run) return;
+  if (!S || !S.run || ui.book) return;
   var k = e.keyCode;
   if (k === 37) act(-1, 0); else if (k === 38) act(0, -1);
   else if (k === 39) act(1, 0); else if (k === 40) act(0, 1);

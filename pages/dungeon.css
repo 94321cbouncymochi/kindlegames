@@ -64,6 +64,10 @@ h2 { font-size: 22px; margin: 16px 0 6px; }
 .panel .ptitle { display: block; font-size: 20px; margin-bottom: 2px; }
 .panel .now { border-top: 1px solid #000; padding-top: 4px; }
 .panel .desc { font-size: 13px; }
+.panel .verdict { font-size: 20px; font-weight: bold; text-align: center; padding: 2px 0; margin: 4px 0 2px; border: 3px solid #000; }
+.panel .verdict.better { background: #000; color: #fff; }
+.panel .verdict.worse { border-style: dashed; }
+.panel .verdict.same { border-style: double; }
 .panel .zone { text-align: center; font-style: italic; }
 .panel .pick { font-size: 40px; font-weight: bold; line-height: 1.1; text-align: center; border: 3px solid #000; margin: 4px 0 6px; }
 .panel .steps { border-collapse: collapse; width: 100%; }
@@ -144,6 +148,19 @@ h2 { font-size: 22px; margin: 16px 0 6px; }
   padding: 6px;
   margin-bottom: 6px;
 }
+
+/* encyclopedia */
+.inbook h1, .inbook .rules { display: none; }
+.book h2 { font-size: 26px; margin: 0 0 6px; }
+.book h3 { font-size: 19px; margin: 12px 0 4px; }
+.book .tabs { margin: 0 0 8px; }
+.book .tabs .btn { margin: 0 6px 6px 0; }
+.book .tabs.bottom { border-top: 2px solid #000; padding-top: 8px; margin-top: 12px; }
+.book .entry { border-top: 1px solid #000; padding: 6px 0; font-size: 15px; line-height: 1.35; }
+.book .found { border: 1px solid #000; padding: 0 4px; font-size: 12px; font-weight: bold; }
+.book .tag { display: inline-block; min-width: 30px; border: 2px solid #000; text-align: center;
+             font-family: "Courier New", Courier, monospace; font-size: 13px; }
+.book code { font-family: "Courier New", Courier, monospace; font-weight: bold; font-size: 17px; }
 
 /* how to play */
 .rules {
