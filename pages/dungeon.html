@@ -67,6 +67,9 @@
   <p>Below the map, <b>About this floor</b> explains what the current floor does, what each kind of floor square does, and every kind of monster on the floor and its tricks, even the ones you haven't seen yet.</p>
   <p>A <b>merchant</b> sells a potion, a scroll and a piece of gear for the gold you've found this run. A <b>shrine</b> lets you heal fully, or gain a random perk and lose some HP. An <b>enchanting table</b> gives your weapon a new random modifier. If you walk off one without choosing, step back on it or tap yourself while standing on it.</p>
 
+  <h3>Classes</h3>
+  <p>At camp, <b>Classes</b> opens the class list: 300 classes in 10 tiers, from Beginners up to Ultimate. Buy any class in any order with your camp gold, and equip any class you own (one at a time). Switching between classes you own is free, and classes stay yours forever, even after you ascend. Each class shows its description and an "In this game" line saying exactly what it does here, like more damage, defense or HP, crits, dodge, more gold, stronger pets, shields, saving you from defeat, or powers that freeze or blast monsters every few turns. Everyone starts as a Novice.</p>
+
   <h3>Pets</h3>
   <p>There are 300 pets, from Common to Mythical. Look for <code>p</code> on the map: some floors have a pet waiting, nests and breeding grounds have more, and bosses sometimes have one hiding with them.</p>
   <p>When you find a pet, the game tells you if it's a <b>GOOD ADDITION</b> or a <b>BAD ADDITION</b> to your team, and why. You can have up to <b>5 pets</b> on your team. Only team pets help you in the dungeon. Every pet you find is kept in your collection at camp, so you never lose one. Finding a pet you already have makes it level up, up to level 5.</p>
@@ -103,6 +106,7 @@
 
   <h3>Saving</h3>
   <p>The game saves after every move, even in the middle of a run. If your Kindle clears its saved data, you'd lose progress, so open <b>Save code</b> at camp now and then and copy the code somewhere safe. Paste it back in to restore everything.</p>
+  <p>To start completely over, use <b>Reset all progress</b> at the bottom of camp. You have to tap it twice, so it can't happen by accident.</p>
 
   <h3>Tips</h3>
   <ul>
@@ -374,7 +378,7 @@ var CAPS = { crit: 50, thorns: 60, dodge: 40 };
 
 var S = null;          // everything that gets saved
 var stacked = false;   // narrow screens put the controls under the map
-var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1, book: '', bookTop: false, pets: false };
+var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1, book: '', bookTop: false, pets: false, classes: false, clsTier: 1 };
 
 // Size the map so the map and every control fit on one screen.
 function fitMap() {
@@ -400,7 +404,7 @@ function fitMap() {
 // ================= SAVING =================
 function freshSave() {
   return { v: VERSION, gold: 0, up: {}, perkAt: {}, best: 0, runs: 0, run: null, last: null,
-           stats: {}, ach: {}, seen: {}, stars: 0, asc: 0, peak: 0, pets: {}, team: [] };
+           stats: {}, ach: {}, seen: {}, stars: 0, asc: 0, peak: 0, pets: {}, team: [], cls: 0, clsOwn: { 0: 1 } };
 }
 function fixSave() {
   for (var i = 0; i < UPS.length; i++) if (!S.up[UPS[i].id]) S.up[UPS[i].id] = 0;
@@ -413,6 +417,8 @@ function fixSave() {
   if (!S.peak) S.peak = 0;
   if (!S.pets) S.pets = {};
   if (!S.team) S.team = [];
+  if (!S.clsOwn) S.clsOwn = { 0: 1 };
+  if (!S.cls || !S.clsOwn[S.cls]) S.cls = 0;
   if (!S.stats.deep || S.stats.deep < S.best) S.stats.deep = S.best;
 }
 function load() {
@@ -440,7 +446,7 @@ function save() {
 }
 function saveCode() {
   return btoa(JSON.stringify({ g: S.gold, u: S.up, b: S.best, r: S.runs, p: S.perkAt, st: S.stats,
-                               a: S.ach, sn: S.seen, s: S.stars, as: S.asc, pk: S.peak, pt: S.pets, tm: S.team }));
+                               a: S.ach, sn: S.seen, s: S.stars, as: S.asc, pk: S.peak, pt: S.pets, tm: S.team, cl: S.cls, co: S.clsOwn }));
 }
 function loadCode() {
   var box = document.getElementById('codeIn');
@@ -452,7 +458,7 @@ function loadCode() {
     S.up = {};
     for (var i = 0; i < UPS.length; i++) S.up[UPS[i].id] = d.u[UPS[i].id] || 0;
     S.perkAt = d.p || {}; S.stats = d.st || {}; S.ach = d.a || {}; S.seen = d.sn || {};
-    S.stars = d.s || 0; S.asc = d.as || 0; S.peak = d.pk || 0; S.pets = d.pt || {}; S.team = d.tm || [];
+    S.stars = d.s || 0; S.asc = d.as || 0; S.peak = d.pk || 0; S.pets = d.pt || {}; S.team = d.tm || []; S.cls = d.cl || 0; S.clsOwn = d.co || { 0: 1 };
     fixSave();
     S.run = null; S.last = null;
     ui.codeMsg = 'Save code loaded.';
@@ -463,6 +469,7 @@ function loadCode() {
   }
   render();
 }
+
 
 // ================= HELPERS =================
 function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
@@ -526,9 +533,9 @@ function zoneOf(f) {
 function curLevel() { return S.run.level ? levelInfo(S.run.level) : null; }
 function view() {
   var r = S.run, L = curLevel();
-  return ((L && L.dark) || zoneOf(r.floor).hz === 'dark') ? 2 + petSight() : 4 + petSight();
+  return ((L && L.dark) || zoneOf(r.floor).hz === 'dark') ? 2 + petSight() + cv('sight') : 4 + petSight() + cv('sight');
 }
-function petHpMul() { return 1 + 0.05 * petSum('hp') + 0.03 * petSum('allstats'); }
+function petHpMul() { return (1 + 0.05 * petSum('hp') + 0.03 * petSum('allstats')) * clsHpMul(); }
 function starMul() { return 1 + 0.1 * (S.stars || 0); }
 function harmful(t) { return t === 2 || t === 3 || t === 7 || t === 8; }
 
@@ -565,6 +572,8 @@ function fx(key) {
   if (key === 'crit') v += 3 * petSum('crit');
   else if (key === 'dodge') v += 3 * petSum('dodge');
   if (CAPS[key]) v = Math.min(CAPS[key], v);
+  if (key === 'crit') v = Math.min(90, v + cv('crit'));
+  else if (key === 'dodge') v = Math.min(60, v + cv('dodge'));
   return v;
 }
 function capped(id) { return CAPS[id] && fx(id) >= CAPS[id]; }
@@ -579,7 +588,7 @@ function defOf() {
   return r.def + (r.arm ? r.arm.def : 0) + fx('guard') + pa;
 }
 function heal(n) { var r = S.run; r.hp = Math.min(r.maxHp, r.hp + n); }
-function goldAmt(v) { return Math.round(v * (1 + fx('greed') / 100 + 0.08 * petSum('gold')) * starMul()); }
+function goldAmt(v) { return Math.round(v * (1 + fx('greed') / 100 + 0.08 * petSum('gold') + cv('gold') / 100) * starMul()); }
 function hurt(d, who) {
   var r = S.run;
   r.hp -= d; r.fd += d; r.lastHurt = who;
@@ -624,7 +633,7 @@ function sfxValue(k, f) {
   return 8;   // dodge
 }
 function rollRarity(f, minR) {
-  var ri = 0, p = 0.3 + Math.min(0.25, f / 200) + Math.min(0.15, 0.02 * petSum('loot'));
+  var ri = 0, p = 0.3 + Math.min(0.25, f / 200) + Math.min(0.15, 0.02 * petSum('loot')) + Math.min(0.15, 0.015 * cv('loot'));
   while (ri < RAR.length - 1 && Math.random() < p) ri++;
   ri = Math.min(ri, 1 + Math.floor(f / 6));
   if (minR) ri = Math.max(ri, Math.min(minR, RAR.length - 1));
@@ -908,7 +917,7 @@ function petSight() {
 }
 function petHas(e) { for (var k = 0; k < S.team.length; k++) if (PETS[S.team[k]][3] === e) return true; return false; }
 function hiddenMon(m) {
-  if (m.revealed || petHas('seehidden')) return false;
+  if (m.revealed || petHas('seehidden') || cv('seehidden')) return false;
   var r = S.run, d = cheb(m.x, m.y, r.px, r.py);
   if (d <= 1) { m.revealed = true; return false; }
   return has(m, 'burrow') || has(m, 'disguise');
@@ -1224,6 +1233,7 @@ function genFloor() {
 
   r.ft = 0; r.fd = 0;
   r.petShield = petHas('shieldfloor'); r.petTele = false;
+  r.clsShield = cv('shieldfloor'); r.clsTele = false; r.clsLow = false; r.clsRevF = false; r.ks = 0;
   r.bounty = makeBounty();
   reveal();
   var petMap = false;
@@ -1608,7 +1618,8 @@ function killMon(m) {
   if (idx < 0) return;
   r.mons.splice(idx, 1);
   var g = goldAmt(m.gold) + m.stolen;
-  r.goldRun += g; r.kills++; r.xp += m.xp;
+  r.goldRun += g; r.kills++; r.xp += Math.round(m.xp * (1 + cv('xp') / 100));
+  r.ks = (r.ks || 0) + 1; if (cv('killbuff')) r.kb = 3;
   if (!m.minion) stat('kills');
   if (m.kind === 'boss') stat('bosses');
   if (m.kind === 'champ') stat('champs');
@@ -1652,15 +1663,20 @@ function setDot(m, frac, turns, w) {
 function strike(m, mult, primary, verb) {
   var r = S.run;
   if (!m || r.mons.indexOf(m) < 0) return;
+  var wasAwake = m.awake, far = Math.abs(m.x - r.px) + Math.abs(m.y - r.py) > 1;
   m.awake = true; m.revealed = true;
   if (primary && has(m, 'dodge') && chance(15)) { say(The(m.name) + ' dodges your attack!'); return; }
   if (m.shield) { m.shield = false; say(The(m.name) + '\'s shield blocks your hit! The shield breaks.'); return; }
   var C = wcat(), mod = wmod(), def = Math.max(0, m.def - fx('pierce') - Math.round(petSum('armordmg') * (1 + r.floor / 15)));
   if (mod === 'piercing') def = Math.round(def * 0.8);
+  if (cv('pierce')) def = Math.round(def * (1 - cv('pierce') / 100));
   if ((C && C.pierceAll) || (mod === 'spectral' && chance(15))) def = 0;
   var d = Math.max(1, Math.round(atkOf() * mult + rnd(-1, 1) - def)), notes = [];
   var cc = fx('crit') + (C && C.crit ? C.crit : 0) + (mod === 'lucky' ? 5 : 0);
-  if (cc > 0 && chance(cc)) { d *= 2; notes.push('Critical hit!'); }
+  if (cc > 0 && chance(cc)) {
+    d = Math.round(d * (2 + cv('critdmg') / 100)); notes.push('Critical hit!');
+    if (cv('critheal')) heal(Math.max(1, Math.round(r.maxHp * cv('critheal') / 200)));
+  }
   if (mod === 'sharp' && chance(15)) { d = Math.round(d * 1.5); notes.push('Sharp hit!'); }
   if (mod === 'cursed' && chance(10)) {
     d *= 2; notes.push('The curse doubles your damage, and bites you!');
@@ -1670,6 +1686,13 @@ function strike(m, mult, primary, verb) {
   if (mod === 'blessed' && TYPES[m.i].undead) d = Math.round(d * 1.2);
   var pm = 1 + 0.03 * petSum('dmg') + 0.02 * petSum('allstats') + (m.kind === 'boss' || m.kind === 'champ' ? 0.06 * petSum('bossdmg') : 0) +
            (TYPES[m.i].undead ? 0.08 * petSum('undeaddmg') : 0);
+  // class bonuses
+  var cpct = clsAll('dmg') + (far ? cv('ranged') : cv('melee')) + ((C && C.n === 'Staff') ? cv('magic') : 0) +
+             ((C && C.n === 'Sword') ? cv('sword') : 0) + ((C && C.n === 'Spear') ? cv('spear') : 0) +
+             ((TYPES[m.i].fam === 'F' || TYPES[m.i].fam === 'I') ? cv('beast') : 0) + (TYPES[m.i].undead ? cv('undead') : 0) +
+             (m.kind === 'boss' || m.kind === 'champ' || TYPES[m.i].elite ? cv('boss') : 0) + (r.hp < r.maxHp / 2 ? cv('lowhp') : 0) +
+             (r.kb > 0 ? cv('killbuff') : 0) + Math.min(10, r.ks || 0) * cv('killstack') + (!wasAwake ? cv('unaware') : 0);
+  pm += cpct / 100;
   if (pm > 1) d = Math.round(d * pm);
   if (has(m, 'swarm')) d = Math.max(1, Math.ceil(d / 2));
   m.hp -= d;
@@ -1692,6 +1715,8 @@ function strike(m, mult, primary, verb) {
   }
   if (m.hp <= 0) { killMon(m); return; }
   // effects on a monster that's still standing
+  if (cv('burnhit') && chance(cv('burnhit'))) setDot(m, 0.4, 2, 'burning');
+  if (cv('slowhit') && chance(cv('slowhit'))) m.slowT = 2;
   if (mod === 'dull' && chance(20)) { m.frozen = Math.max(m.frozen, 1); say(The(m.name) + ' is stunned.'); }
   if (C && C.stun && chance(C.stun)) { m.frozen = Math.max(m.frozen, 1); say(The(m.name) + ' is stunned.'); }
   if (mod === 'rusty' && chance(20)) setDot(m, 0.4, 3, 'bleeding');
@@ -1713,6 +1738,7 @@ function strike(m, mult, primary, verb) {
     }
     if (mod === 'echoing' && r.hits % 4 === 0) strike(m, mult * 0.35, false, 'echo-hit');
     if (mod === 'swift' && chance(15)) strike(m, mult * 0.5, false, 'quickly hit');
+    if (cv('double') && chance(cv('double'))) strike(m, mult * 0.5, false, 'strike again and hit');
     if (C && C.dbl && chance(C.dbl)) strike(m, mult * 0.6, false, 'hit again');
     if (mod === 'swift' && chance(20)) r.freeTurn = true;
     if (mod === 'heavy' && chance(15)) r.extraStep = true;
@@ -1733,12 +1759,14 @@ function monHits(m, kind) {
   var r = S.run, dg = fx('dodge');
   if (dg && chance(dg)) { say('You dodge ' + the(m.name) + '!'); return; }
   if (r.petShield) { r.petShield = false; say('Your pet\'s shield blocks ' + the(m.name) + '\'s attack!'); return; }
+  if (r.clsShield > 0) { r.clsShield--; say('Your class shield blocks ' + the(m.name) + '\'s attack!'); return; }
   if (petSum('block') && chance(Math.min(50, 4 * petSum('block')))) { say('Your pet blocks ' + the(m.name) + '\'s attack!'); return; }
   var a = monAtk(m), slam = false;
   r.wasHit = true;
   if (!kind && has(m, 'slam')) { m.ac++; if (m.ac % 3 === 0) { a *= 2; slam = true; } }
   if (kind === 'charge') a = Math.round(a * 1.5);
   var d = Math.max(1, Math.round((kind === 'archer' ? Math.max(1, a - 1) : a) + rnd(-1, 1) - defOf()));
+  if (clsDefRed()) d = Math.max(1, Math.round(d * (1 - clsDefRed())));
   hurt(d, aName(m.name));
   var v = TYPES[m.i].v || (has(m, 'archer') && !TYPES[m.i].ab.length ? 'spits at' : 'shoots');
   if (kind === 'archer') say(The(m.name) + ' ' + v + ' you for ' + d + '.');
@@ -1928,7 +1956,7 @@ function monstersAct(moveOnly) {
 }
 
 // ================= TURNS =================
-function hazardDmg(d) { return Math.max(1, Math.round(d * (1 - Math.min(0.9, 0.15 * petSum('hazard'))))); }
+function hazardDmg(d) { return Math.max(1, Math.round(d * (1 - Math.min(0.9, 0.15 * petSum('hazard') + cv('hazard') / 100)))); }
 function slowResist() { return chance(Math.min(90, 15 * petSum('slowres'))); }
 function stepOn() {
   var r = S.run, t = r.map[r.py][r.px], d;
@@ -2030,15 +2058,34 @@ function passTurn() {
   r.turns++; r.ft++;
   blastsTick();
   if (r.hp > 0) petsAct();
+  if (r.hp > 0) classAct();
   if (r.hp > 0) monstersAct(false);
   if (r.hp > 0 && (r.slow > 0 || r.extraStep)) monstersAct(true);
   r.extraStep = false;
   if (r.slow > 0) r.slow--;
   if (r.weak > 0) r.weak--;
+  if (r.kb > 0) r.kb--;
   if (r.hp > 0 && r.poison > 0) {
     var pd = Math.round((1 + Math.floor(r.floor / 6)) * (1 - Math.min(0.9, 0.2 * petSum('poisonres'))));
     r.poison--;
     if (pd > 0) { hurt(pd, 'poison'); say('Poison hurts you for ' + pd + '.'); }
+  }
+  if (r.hp <= 0 && cv('reviveFloor') && !r.clsRevF) {
+    r.clsRevF = true; r.hp = Math.max(1, Math.round(r.maxHp * cv('reviveFloor') / 100));
+    say('Your ' + curClass()[0] + ' power saves you from defeat! You get back up with ' + r.hp + ' HP.');
+  }
+  if (r.hp <= 0 && cv('revive') && !r.clsRev) {
+    r.clsRev = true; r.hp = Math.max(1, Math.round(r.maxHp * cv('revive') / 100));
+    say('Your ' + curClass()[0] + ' power saves you from defeat! You get back up with ' + r.hp + ' HP.');
+  }
+  if (r.hp > 0 && cv('lowshield') && !r.clsLow && r.hp < r.maxHp * 0.3) { r.clsLow = true; r.clsShield = (r.clsShield || 0) + 1; say('A shield appears around you!'); }
+  if (r.hp > 0 && cv('regen') && r.turns % 3 === 0) heal(Math.max(1, Math.round(r.maxHp * cv('regen') / 200)));
+  if (r.hp > 0 && cv('teleport') && !r.clsTele && r.hp < r.maxHp * 0.25) {
+    var cs = [], cx2, cy2;
+    for (cy2 = 0; cy2 < H; cy2++) for (cx2 = 0; cx2 < W; cx2++) {
+      if (r.map[cy2][cx2] === 0 && !monAt(cx2, cy2) && itemAt(cx2, cy2) < 0 && Math.abs(cx2 - r.px) + Math.abs(cy2 - r.py) > 5) cs.push([cx2, cy2]);
+    }
+    if (cs.length) { var cp = pick(cs); r.px = cp[0]; r.py = cp[1]; r.clsTele = true; say('Your class power teleports you to safety!'); }
   }
   if (r.hp <= 0 && petHas('revive') && !r.revived) {
     var rv = 0;
@@ -2115,7 +2162,7 @@ function drink() {
   ui.bag = false; ui.elev = false;
   r.log = [];
   r.potions--;
-  heal(Math.ceil(r.maxHp / 2 * (1 + 0.1 * petSum('potion'))));
+  heal(Math.ceil(r.maxHp / 2 * (1 + 0.1 * petSum('potion') + cv('potion') / 100)));
   r.poison = 0; r.weak = 0;
   say('You drink a potion. HP ' + r.hp + '/' + r.maxHp + '.');
   endTurn();
@@ -2529,7 +2576,8 @@ function renderRun() {
   h += '<div class="gear"><div><b>Weapon:</b> ' + (r.wpn ? r.wpn.name + ' (' + rarName(r.wpn) + '). ' + gearDesc(r.wpn) : 'bare hands') + '</div>' +
        '<div><b>Armor:</b> ' + (r.arm ? r.arm.name + ' (' + rarName(r.arm) + '). ' + gearDesc(r.arm) : 'none') + '</div>' +
        '<div><b>Perks:</b> ' + (perks.length ? perks.join(', ') : 'none yet') + '</div>' +
-       '<div><b>Pets:</b> ' + (S.team.length ? petTeamNames() : 'none yet (look for p on the map)') + '</div></div>';
+       '<div><b>Pets:</b> ' + (S.team.length ? petTeamNames() : 'none yet (look for p on the map)') + '</div>' +
+       '<div><b>Class:</b> ' + curClass()[0] + '. ' + clsEffectText(S.cls || 0) + '.</div></div>';
 
   h += '<div class="footer"><span>' + zoneOf(r.floor).n + '. Deepest floor: ' + S.best +
        (S.stars ? '. Stars: ' + S.stars : '') + '</span>' + btn('Encyclopedia', 'openBook()', 'small') + btn('End run', 'giveUp()', 'small') + '</div>';
@@ -2675,7 +2723,7 @@ var PET_WEIGHT = { bite: 1.3, bolt: 1.3, chain: 1.3, pulse: 1.3, freeze: 1.3, re
                    seehidden: 0.7, reveal: 0.9, sight: 0.6, poisonres: 0.6, slowres: 0.6, haste: 0.8, mimicwarn: 0.6 };
 function petName(i) { var n = PETS[i][0]; return n.indexOf(' the ') > 0 ? n.split(' the ')[0] : n; }
 function petLv(i) { return S.pets[i] || 0; }
-function petPower(i, lv) { return PRM[PETS[i][2]] * (1 + 0.15 * ((lv || petLv(i) || 1) - 1)); }
+function petPower(i, lv) { return PRM[PETS[i][2]] * (1 + 0.15 * ((lv || petLv(i) || 1) - 1)) * (1 + cv('petboost') / 100); }
 function petScore(i, lv) { return petPower(i, lv) * (PET_WEIGHT[PETS[i][3]] || 1); }
 // Total power of every team pet with this effect.
 function petSum(e) {
@@ -2859,6 +2907,145 @@ function renderPets() {
   return h + '</div>';
 }
 
+
+// ================= CLASSES =================
+// 300 classes in 10 tiers: [name, cost, tier, description, [[effect, value], ...]]
+var CLASSDATA = {"tiers": ["Beginners (1\u201330)", "Skilled Adventurers (31\u201360)", "Experts (61\u201390)", "Masters (91\u2013120)", "Legendary (121\u2013150)", "Mythic (151\u2013180)", "Cosmic (181\u2013210)", "Reality (211\u2013240)", "Divine (241\u2013270)", "Ultimate (271\u2013300)"], "classes": [["Novice", 0, 1, "Basic attacks, no bonuses.", []], ["Apprentice", 50, 1, "+2% XP gained.", [["xp", 2]]], ["Scavenger", 100, 1, "+5% common loot.", [["gold", 5]]], ["Squire", 150, 1, "+3% defense.", [["def", 3]]], ["Brawler", 200, 1, "+5% melee damage.", [["melee", 5]]], ["Runner", 250, 1, "+5% movement speed.", [["dodge", 2]]], ["Archer", 300, 1, "+5% ranged damage.", [["ranged", 5]]], ["Apothecary", 350, 1, "Potions heal 5% more.", [["potion", 5]]], ["Miner", 400, 1, "+10% ore drops.", [["gold", 10]]], ["Trapper", 450, 1, "+5% trap avoidance.", [["hazard", 5]]], ["Guard", 500, 1, "+5% armor.", [["def", 5]]], ["Duelist", 600, 1, "+5% critical chance.", [["crit", 5]]], ["Torchbearer", 700, 1, "Reveals more of dark rooms.", [["sight", 1]]], ["Cook", 800, 1, "Food restores 10% more HP.", [["potion", 10]]], ["Tracker", 900, 1, "Detects nearby enemies.", [["seehidden", 1]]], ["Fencer", 1000, 1, "Faster light attacks.", [["dodge", 4]]], ["Medic", 1100, 1, "Healing items are 10% stronger.", [["potion", 10]]], ["Hunter", 1200, 1, "+8% damage to beasts.", [["beast", 8]]], ["Tinkerer", 1300, 1, "Repairs equipment more efficiently.", [["allstats", 5]]], ["Pilferer", 1400, 1, "+8% coins from containers.", [["gold", 8]]], ["Shieldbearer", 1500, 1, "Blocks more damage.", [["def", 8]]], ["Spearman", 1700, 1, "+8% spear damage.", [["spear", 8]]], ["Berserker Initiate", 1900, 1, "+8% damage below half HP.", [["lowhp", 8]]], ["Apprentice Mage", 2100, 1, "+8% spell damage.", [["magic", 8]]], ["Ranger", 2300, 1, "+8% ranged accuracy.", [["ranged", 8]]], ["Monk", 2500, 1, "+5% dodge chance.", [["dodge", 5]]], ["Beast Handler", 2700, 1, "Pet abilities recharge 5% faster.", [["petboost", 5]]], ["Bombardier", 2900, 1, "+8% explosive damage.", [["xp", 8]]], ["Spellblade", 3100, 1, "+5% melee and magic damage.", [["melee", 5], ["magic", 5]]], ["Veteran", 3500, 1, "+8% damage and defense.", [["dmg", 8], ["def", 8]]], ["Knight", 4000, 2, "+12% defense.", [["def", 12]]], ["Assassin", 4500, 2, "+12% critical damage.", [["critdmg", 12]]], ["Pyromancer", 5000, 2, "+15% fire damage.", [["dmg", 8]]], ["Cryomancer", 5500, 2, "+15% ice damage.", [["dmg", 8]]], ["Stormcaller", 6000, 2, "+15% lightning damage.", [["dmg", 8]]], ["Geomancer", 6500, 2, "+15% earth damage.", [["dmg", 8]]], ["Cleric", 7000, 2, "+15% healing power.", [["potion", 15]]], ["Paladin", 7500, 2, "+10% damage and defense.", [["dmg", 10], ["def", 10]]], ["Shadow Scout", 8000, 2, "+12% stealth damage.", [["dmg", 6]]], ["Treasure Seeker", 8500, 2, "+15% treasure value.", [["gold", 15]]], ["Beastmaster", 9000, 2, "Pets deal +15% damage.", [["petboost", 15]]], ["Alchemist", 9500, 2, "Potions gain a bonus effect.", [["potion", 20]]], ["Runesmith", 10000, 2, "Equipment runes are stronger.", [["allstats", 10]]], ["Warden", 11000, 2, "+15% trap resistance.", [["hazard", 15]]], ["Battle Mage", 12000, 2, "+12% weapon and spell damage.", [["dmg", 12]]], ["Sharpshooter", 13000, 2, "+15% ranged damage.", [["ranged", 15]]], ["Blood Knight", 14000, 2, "Restore a little HP on critical hits.", [["critheal", 4]]], ["Wind Dancer", 15000, 2, "+12% movement and dodge.", [["dodge", 12]]], ["Necromancer", 16000, 2, "Summons a temporary skeleton.", [["summon", 20]]], ["Warlock", 17000, 2, "+15% curse damage.", [["dmg", 8]]], ["Druid", 18000, 2, "Nature spells heal and damage.", [["regen", 2]]], ["Gladiator", 19000, 2, "+15% damage after defeating an enemy.", [["killbuff", 15]]], ["Sentinel", 20000, 2, "Reduces nearby ally damage.", [["summon", 20]]], ["Trickster", 21000, 2, "Decoys distract enemies.", [["dodge", 5]]], ["Rune Knight", 22000, 2, "Rune attacks deal bonus damage.", [["allstats", 10]]], ["Artillerist", 23000, 2, "+18% explosive damage.", [["xp", 18]]], ["Spirit Walker", 24000, 2, "+15% spirit damage.", [["dmg", 8]]], ["Vampire Hunter", 25000, 2, "+20% damage to undead.", [["undead", 20]]], ["Dungeon Delver", 27000, 2, "Reveals extra map tiles.", [["sight", 1]]], ["Elite Adventurer", 30000, 2, "+18% damage, defense, and HP.", [["dmg", 18], ["def", 18], ["hp", 18]]], ["Swordmaster", 35000, 3, "+20% sword damage.", [["sword", 20]]], ["Grand Archer", 40000, 3, "Arrows can pierce one extra enemy.", [["chain", 27]]], ["Archmage", 45000, 3, "+25% spell damage.", [["magic", 25]]], ["Templar", 50000, 3, "Stronger shields and holy attacks.", [["shieldfloor", 1]]], ["Shadowblade", 55000, 3, "+25% damage against unaware enemies.", [["unaware", 25]]], ["Frost Knight", 60000, 3, "Melee hits can slow enemies.", [["slowhit", 23]]], ["Flame Knight", 65000, 3, "Melee hits can burn enemies.", [["burnhit", 23]]], ["Thunder Monk", 70000, 3, "Attacks occasionally chain lightning.", [["summon", 30]]], ["Iron Guardian", 75000, 3, "+25% defense.", [["def", 25]]], ["Phantom Ranger", 80000, 3, "Ranged attacks ignore some armor.", [["pierce", 35]]], ["Spirit Summoner", 85000, 3, "Summons two weak spirits.", [["summon", 30]]], ["Plague Doctor", 90000, 3, "Poison effects last longer.", [["allstats", 9]]], ["Void Apprentice", 95000, 3, "+25% void damage.", [["dmg", 12]]], ["Battle Alchemist", 100000, 3, "Throws enhanced elemental potions.", [["potion", 30]]], ["Dragon Tamer", 110000, 3, "Pet dragons gain +25% damage.", [["petboost", 25]]], ["Rune Guardian", 120000, 3, "Creates a protective rune.", [["shieldfloor", 1]]], ["Berserker", 130000, 3, "+30% damage at low HP.", [["lowhp", 30]]], ["Chrono Scout", 140000, 3, "Slightly slows nearby enemies.", [["freeze", 3]]], ["Crystal Mage", 150000, 3, "Spells have a chance to hit twice.", [["double", 16]]], ["Storm Knight", 160000, 3, "Lightning attacks chain to more enemies.", [["chain", 27]]], ["Dread Assassin", 170000, 3, "Critical hits briefly weaken enemies.", [["pierce", 35]]], ["Sun Cleric", 180000, 3, "Healing pulses also damage undead.", [["regen", 3]]], ["Moon Hunter", 190000, 3, "Bonus damage in dark rooms.", [["sight", 1]]], ["Earthshaker", 200000, 3, "Ground attacks damage nearby foes.", [["pulse", 36]]], ["Arcane Duelist", 220000, 3, "Alternating weapon and spell attacks boosts damage.", [["allstats", 9]]], ["Soul Binder", 240000, 3, "Defeated enemies have a chance to grant a shield.", [["shieldfloor", 1]]], ["War Engineer", 260000, 3, "Deploys automated turrets.", [["summon", 30]]], ["Abyss Walker", 280000, 3, "Resists void hazards and curses.", [["hazard", 30]]], ["Mythic Hunter", 300000, 3, "+30% damage to elite enemies.", [["boss", 30]]], ["Master Adventurer", 350000, 3, "+30% damage, defense, and HP.", [["dmg", 30], ["def", 30], ["hp", 30]]], ["Blade Saint", 400000, 4, "Sword attacks can strike twice.", [["double", 18]]], ["Arcane Sniper", 450000, 4, "Long-range spells deal more damage.", [["allstats", 12]]], ["Inferno Mage", 500000, 4, "Fire spells create burning ground.", [["burnhit", 24]]], ["Glacial Sovereign", 550000, 4, "Ice attacks can freeze weak foes.", [["slowhit", 24]]], ["Thunder Emperor", 600000, 4, "Lightning attacks hit extra targets.", [["chain", 36]]], ["Stone Titan", 650000, 4, "+35% defense and knockback resistance.", [["def", 35]]], ["Divine Healer", 700000, 4, "Powerful healing aura.", [["regen", 4]]], ["Night Stalker", 750000, 4, "Stealth attacks deal much more damage.", [["crit", 7]]], ["Soul Reaper", 800000, 4, "Defeated foes grant temporary damage.", [["killbuff", 20]]], ["Beast Sovereign", 850000, 4, "Pets gain +35% damage and HP.", [["petboost", 35]]], ["Rune Emperor", 900000, 4, "Rune abilities gain extra effects.", [["allstats", 20]]], ["Phantom Knight", 950000, 4, "Briefly phases through attacks.", [["shieldfloor", 2]]], ["Void Mage", 1000000, 4, "Void spells weaken enemy defenses.", [["pierce", 40]]], ["Dragon Knight", 1100000, 4, "Gains a short dragon-fire attack.", [["pulse", 48]]], ["Storm Druid", 1200000, 4, "Calls lightning and heals with rain.", [["regen", 4]]], ["Blood Archon", 1300000, 4, "Critical hits restore HP.", [["critheal", 6]]], ["Mirror Assassin", 1400000, 4, "Creates a temporary combat duplicate.", [["summon", 40]]], ["Celestial Ranger", 1500000, 4, "Arrows gain light damage.", [["allstats", 12]]], ["Aether Monk", 1600000, 4, "Dodging boosts the next attack.", [["dodge", 7]]], ["Siege Master", 1700000, 4, "Explosives deal massive structure damage.", [["pulse", 48]]], ["Elder Necromancer", 1800000, 4, "Summons stronger undead allies.", [["summon", 40]]], ["Grand Paladin", 1900000, 4, "Shields allies and damages nearby foes.", [["summon", 40]]], ["Runeblade Master", 2000000, 4, "Weapon attacks trigger rune bursts.", [["pulse", 48]]], ["Elemental Lord", 2200000, 4, "Switches between elemental damage types.", [["allstats", 20]]], ["Time Duelist", 2400000, 4, "Consecutive hits briefly slow enemies.", [["slowhit", 24]]], ["Astral Warlock", 2600000, 4, "Astral spells deal bonus area damage.", [["pulse", 48]]], ["Titan Slayer", 2800000, 4, "+40% damage against bosses.", [["boss", 40]]], ["Mirage Sovereign", 3000000, 4, "Creates several decoys.", [["dodge", 7]]], ["Dungeon Champion", 3300000, 4, "+40% damage, defense, and HP.", [["dmg", 40], ["def", 40], ["hp", 40]]], ["Legendary Master", 3600000, 4, "All class bonuses increase by 10%.", [["allstats", 20]]], ["Phoenix Knight", 4000000, 5, "Revives once per dungeon with partial HP.", [["revive", 45]]], ["Void Assassin", 4500000, 5, "Teleports behind enemies for a heavy strike.", [["teleport", 1]]], ["Star Archmage", 5000000, 5, "Spells create additional star projectiles.", [["chain", 45]]], ["World Warden", 5500000, 5, "Creates a large defensive barrier.", [["shieldfloor", 2]]], ["Eternal Berserker", 6000000, 5, "Damage rises during long battles.", [["killstack", 7]]], ["Celestial Paladin", 6500000, 5, "Gains a shield when HP gets low.", [["lowshield", 1]]], ["Dragon Emperor", 7000000, 5, "Breathes powerful elemental fire.", [["pulse", 60]]], ["Abyssal Reaper", 7500000, 5, "Attacks weaken enemy healing.", [["pierce", 45]]], ["Chrono Mage", 8000000, 5, "Slows all enemies briefly.", [["freeze", 5]]], ["Cosmic Ranger", 8500000, 5, "Projectiles can pierce several targets.", [["chain", 45]]], ["Soul Sovereign", 9000000, 5, "Summons powerful spirit allies.", [["summon", 50]]], ["Crystal Overlord", 9500000, 5, "Crystal spells reflect projectiles.", [["shieldfloor", 2]]], ["Storm Archon", 10000000, 5, "Calls down a lightning storm.", [["pulse", 60]]], ["Infernal Monarch", 11000000, 5, "Fire attacks leave explosive embers.", [["burnhit", 25]]], ["Frost Monarch", 12000000, 5, "Freezes the ground around enemies.", [["freeze", 5]]], ["Nature Emperor", 13000000, 5, "Roots enemies and restores HP.", [["freeze", 5]]], ["Phantom Sovereign", 14000000, 5, "Becomes briefly untargetable.", [["shieldfloor", 2]]], ["Rune Archon", 15000000, 5, "Activates several runes at once.", [["allstats", 25]]], ["Dread Commander", 16000000, 5, "Weak enemies flee or become weaker.", [["freeze", 5]]], ["Astral Guardian", 17000000, 5, "Creates orbiting protective stars.", [["shieldfloor", 2]]], ["Titan Emperor", 18000000, 5, "Gains huge HP and heavy attacks.", [["hp", 50]]], ["Divine Spellblade", 19000000, 5, "Weapon strikes release magic waves.", [["pulse", 60]]], ["Nightmare Lord", 20000000, 5, "Weakens all enemies at combat start.", [["pierce", 45]]], ["Sun Sovereign", 22000000, 5, "Emits a powerful solar blast.", [["pulse", 60]]], ["Moon Sovereign", 24000000, 5, "Gains stealth and critical bonuses.", [["crit", 8]]], ["Void Emperor", 26000000, 5, "Creates damaging void zones.", [["pulse", 60]]], ["Infinity Knight", 28000000, 5, "Recharges one ability after boss kills.", [["allstats", 15]]], ["Worldbreaker", 30000000, 5, "Ground slams damage all nearby enemies.", [["pulse", 60]]], ["Mythic Overlord", 33000000, 5, "+50% damage and defense.", [["dmg", 50], ["def", 50]]], ["Legend Eternal", 36000000, 5, "Improves every equipped ability.", [["allstats", 25]]], ["Primordial Knight", 40000000, 6, "Gains bonuses against every elemental type.", [["allstats", 30]]], ["Genesis Mage", 45000000, 6, "Creates temporary magical allies.", [["summon", 60]]], ["Eclipse Assassin", 50000000, 6, "Combines light and shadow attacks.", [["allstats", 18]]], ["Worldroot Druid", 55000000, 6, "Heals and roots enemies across a wide area.", [["freeze", 6]]], ["Omniblade", 60000000, 6, "Sword attacks adapt to enemy weaknesses.", [["pierce", 50]]], ["Infinity Archer", 65000000, 6, "Arrows ricochet between many enemies.", [["chain", 54]]], ["Reality Guard", 70000000, 6, "Reduces damage from most attacks.", [["def", 48]]], ["Chaos Alchemist", 75000000, 6, "Potions gain powerful random effects.", [["potion", 60]]], ["Soulstorm Summoner", 80000000, 6, "Summons an army of temporary spirits.", [["summon", 60]]], ["Star Titan", 85000000, 6, "Gains enormous HP and star-powered attacks.", [["hp", 60]]], ["Time Sovereign", 90000000, 6, "Briefly slows the entire room.", [["freeze", 6]]], ["Astral Dragonlord", 95000000, 6, "Unleashes a large astral breath attack.", [["pulse", 72]]], ["Void Stalker Prime", 100000000, 6, "Teleports between targets.", [["teleport", 1]]], ["Divine Runemaster", 110000000, 6, "Runes trigger multiple effects.", [["allstats", 30]]], ["Storm Worldlord", 120000000, 6, "Creates a room-wide storm.", [["pulse", 72]]], ["Frost Eternal", 130000000, 6, "Greatly slows enemies with ice attacks.", [["slowhit", 26]]], ["Inferno Eternal", 140000000, 6, "Burning enemies can cause explosions.", [["burnhit", 26]]], ["Crystal Deity", 150000000, 6, "Reflects a portion of incoming projectiles.", [["shieldfloor", 2]]], ["Phantom Deity", 160000000, 6, "Dodges one powerful attack periodically.", [["summon", 60]]], ["Beast Deity", 170000000, 6, "Pets gain +60% stats.", [["petboost", 60]]], ["Treasure Deity", 180000000, 6, "Greatly increases treasure quality.", [["loot", 6]]], ["Healing Deity", 190000000, 6, "Periodically restores a large amount of HP.", [["summon", 60]]], ["War Deity", 200000000, 6, "Damage increases with each enemy defeated.", [["killstack", 8]]], ["Abyss Deity", 220000000, 6, "Void attacks drain enemy strength.", [["pierce", 50]]], ["Sun Deity", 240000000, 6, "Solar attacks damage groups of foes.", [["pulse", 72]]], ["Moon Deity", 260000000, 6, "Gains powerful stealth and critical effects.", [["crit", 9]]], ["Rune Deity", 280000000, 6, "Improves every rune effect.", [["allstats", 30]]], ["Dragon Deity", 300000000, 6, "Uses several elemental breaths.", [["pulse", 72]]], ["Cosmic Deity", 330000000, 6, "Cosmic attacks ignore some defenses.", [["pierce", 50]]], ["Mythic Ascendant", 360000000, 6, "+65% damage, defense, and HP.", [["dmg", 65], ["def", 65], ["hp", 65]]], ["Nebula Knight", 400000000, 7, "Creates nebula shields.", [["shieldfloor", 3]]], ["Galaxy Mage", 450000000, 7, "Spells damage enemies across large areas.", [["pulse", 84]]], ["Supernova Berserker", 500000000, 7, "Releases a blast after building combat energy.", [["killstack", 9]]], ["Quasar Ranger", 550000000, 7, "Fires piercing energy bolts.", [["chain", 63]]], ["Black Hole Guardian", 600000000, 7, "Pulls enemies together.", [["freeze", 7]]], ["Pulsar Cleric", 650000000, 7, "Emits repeated healing pulses.", [["regen", 7]]], ["Meteor Duelist", 700000000, 7, "Dashes like a falling meteor.", [["allstats", 35]]], ["Stardust Assassin", 750000000, 7, "Leaves damaging star trails.", [["allstats", 21]]], ["Galactic Summoner", 800000000, 7, "Summons cosmic allies.", [["summon", 70]]], ["Comet Paladin", 850000000, 7, "Charges through enemies with a shield.", [["shieldfloor", 3]]], ["Nebula Druid", 900000000, 7, "Creates zones that heal allies and slow foes.", [["summon", 70]]], ["Quantum Spellblade", 950000000, 7, "Attacks can repeat in another location.", [["double", 24]]], ["Event Horizon Mage", 1000000000, 7, "Creates a powerful gravity well.", [["freeze", 7]]], ["Starforge Emperor", 1100000000, 7, "Greatly improves equipment upgrades.", [["allstats", 35]]], ["Galaxy Warden", 1200000000, 7, "Protects against room-wide attacks.", [["shieldfloor", 3]]], ["Cosmic Phoenix", 1300000000, 7, "Revives once per dungeon with strong bonuses.", [["revive", 55]]], ["Dark Matter Knight", 1400000000, 7, "Gains damage and defense from dark energy.", [["allstats", 35]]], ["Solar Flare Mage", 1500000000, 7, "Sends waves of solar fire.", [["pulse", 84]]], ["Lunar Eclipse Ranger", 1600000000, 7, "Alternates between light and shadow arrows.", [["allstats", 21]]], ["Celestial Colossus", 1700000000, 7, "Massive health and area attacks.", [["hp", 70]]], ["Cosmic Architect", 1800000000, 7, "Creates temporary safe platforms over hazards.", [["sight", 2]]], ["Astral Emperor", 1900000000, 7, "Improves magic, defense, and cooldowns.", [["allstats", 35]]], ["Gravity Sovereign", 2000000000, 7, "Controls enemy movement with gravity.", [["freeze", 7]]], ["Stellar Reaper", 2200000000, 7, "Finishing attacks damage nearby foes.", [["pulse", 84]]], ["Universe Ranger", 2400000000, 7, "Projectiles pass through many targets.", [["chain", 63]]], ["Cosmic Alchemist", 2600000000, 7, "Creates powerful temporary buffs.", [["allstats", 21]]], ["Galactic Dragonlord", 2800000000, 7, "Breathes energy that changes element.", [["pulse", 84]]], ["Dark Star Monarch", 3000000000, 7, "Weakens enemies in a wide radius.", [["pierce", 55]]], ["Heaven's Vanguard", 3300000000, 7, "Gains a powerful barrier at low HP.", [["lowshield", 1]]], ["Cosmic Ascendant", 3600000000, 7, "+80% damage, defense, and HP.", [["dmg", 80], ["def", 80], ["hp", 80]]], ["Reality Knight", 4000000000, 8, "Reduces damage by bending space.", [["def", 64]]], ["Dimension Mage", 4500000000, 8, "Opens portals for attacks and movement.", [["allstats", 24]]], ["Paradox Assassin", 5000000000, 8, "Repeats a portion of the last critical hit.", [["double", 26]]], ["Multiverse Ranger", 5500000000, 8, "Fires copies of each projectile.", [["double", 26]]], ["Timeline Guardian", 6000000000, 8, "Rewinds a small amount of recent damage once per floor.", [["shieldfloor", 3]]], ["Reality Shaper", 6500000000, 8, "Changes a nearby hazard into safe terrain briefly.", [["regen", 8]]], ["Dimensional Summoner", 7000000000, 8, "Summons allies from other dimensions.", [["summon", 80]]], ["Causality Mage", 7500000000, 8, "Delays damage and releases it in a burst.", [["shieldfloor", 3]]], ["Probability Lord", 8000000000, 8, "Greatly improves luck-based effects.", [["loot", 8]]], ["Spacebreaker", 8500000000, 8, "Sends shockwaves through walls and foes.", [["pulse", 96]]], ["Timebreaker", 9000000000, 8, "Resets one ability cooldown periodically.", [["summon", 80]]], ["Reality Paladin", 9500000000, 8, "Creates a barrier that absorbs several hits.", [["shieldfloor", 3]]], ["Quantum Emperor", 10000000000, 8, "Attacks can strike from multiple positions.", [["double", 26]]], ["Mirror Universe Mage", 11000000000, 8, "Creates a powerful duplicate.", [["summon", 80]]], ["Dimension Dragon", 12000000000, 8, "Breathes energy through portals.", [["pulse", 96]]], ["Paradox Warden", 13000000000, 8, "Resists time and teleportation effects.", [["teleport", 1]]], ["Infinite Duelist", 14000000000, 8, "Consecutive hits increase damage repeatedly up to a cap.", [["killstack", 10]]], ["Fate Architect", 15000000000, 8, "Reveals possible rewards and dangers.", [["sight", 2]]], ["Multiverse Monarch", 16000000000, 8, "Gains a random powerful bonus per floor.", [["allstats", 40]]], ["Omniverse Ranger", 17000000000, 8, "Projectiles seek multiple targets.", [["chain", 72]]], ["Existence Guardian", 18000000000, 8, "Prevents one defeat per run.", [["revive", 60]]], ["Causality Breaker", 19000000000, 8, "Heavy attacks interrupt boss abilities.", [["freeze", 8]]], ["Dimension Sovereign", 20000000000, 8, "Teleports across the room at will with a cooldown.", [["teleport", 1]]], ["Time Sovereign Prime", 22000000000, 8, "Briefly freezes normal enemies.", [["freeze", 8]]], ["Reality Dragonlord", 24000000000, 8, "Changes elemental attacks to enemy weaknesses.", [["pierce", 60]]], ["Paradox Phoenix", 26000000000, 8, "Restores a portion of HP after a revival.", [["regen", 8]]], ["Infinite Architect", 28000000000, 8, "Creates temporary paths over hazards.", [["sight", 2]]], ["Multiverse Deity", 30000000000, 8, "Improves every major stat.", [["allstats", 40]]], ["Omniversal Champion", 33000000000, 8, "+100% damage and defense.", [["dmg", 100], ["def", 100]]], ["Reality Ascendant", 36000000000, 8, "Gains a random legendary effect at the start of each floor.", [["allstats", 24]]], ["Lesser God of Blades", 40000000000, 9, "Sword attacks release divine waves.", [["pulse", 108]]], ["God of Arrows", 45000000000, 9, "Arrows seek enemies and pierce armor.", [["chain", 81]]], ["God of Fire", 50000000000, 9, "Fire attacks create large burning zones.", [["burnhit", 29]]], ["God of Ice", 55000000000, 9, "Freezes groups of weaker enemies.", [["freeze", 9]]], ["God of Storms", 60000000000, 9, "Calls down repeated lightning strikes.", [["double", 28]]], ["God of Stone", 65000000000, 9, "Gains immense defense and knockback resistance.", [["def", 72]]], ["God of Healing", 70000000000, 9, "Strong healing aura and improved potions.", [["regen", 9]]], ["God of Shadows", 75000000000, 9, "Attacks from shadows and creates decoys.", [["dodge", 12]]], ["God of Souls", 80000000000, 9, "Summons a group of spirit allies.", [["summon", 90]]], ["God of Beasts", 85000000000, 9, "Pets gain +100% stats.", [["petboost", 100]]], ["God of Runes", 90000000000, 9, "Runes activate multiple times.", [["allstats", 45]]], ["God of Time", 95000000000, 9, "Slows enemies and reduces cooldowns.", [["freeze", 9]]], ["God of Space", 100000000000, 9, "Teleports and creates portals.", [["teleport", 1]]], ["God of Luck", 110000000000, 9, "Greatly improves rare loot and critical chances.", [["loot", 9]]], ["God of War", 120000000000, 9, "Damage increases during combat.", [["killstack", 11]]], ["God of Nature", 130000000000, 9, "Roots enemies and restores health.", [["freeze", 9]]], ["God of Light", 140000000000, 9, "Light attacks damage undead and heal allies.", [["summon", 90]]], ["God of Darkness", 150000000000, 9, "Shadow attacks drain enemy strength.", [["pierce", 65]]], ["God of Dragons", 160000000000, 9, "Uses several elemental dragon attacks.", [["pulse", 108]]], ["God of Crystals", 170000000000, 9, "Reflects projectiles and improves gem drops.", [["shieldfloor", 3]]], ["God of Gravity", 180000000000, 9, "Pulls enemies together and crushes them.", [["freeze", 9]]], ["God of Dreams", 190000000000, 9, "Puts weak enemies to sleep.", [["freeze", 9]]], ["God of Death's Gate", 200000000000, 9, "Deals bonus damage to weakened foes.", [["pierce", 65]]], ["God of Creation", 220000000000, 9, "Creates temporary allies and barriers.", [["summon", 90]]], ["God of Destruction", 240000000000, 9, "Releases a devastating area attack.", [["pulse", 108]]], ["God of Fate", 260000000000, 9, "Reveals hidden rewards and boss weaknesses.", [["pierce", 65]]], ["God of Eternity", 280000000000, 9, "Periodically refreshes an ability.", [["summon", 90]]], ["God of the Abyss", 300000000000, 9, "Void attacks weaken entire groups.", [["pierce", 65]]], ["God of the Cosmos", 330000000000, 9, "Cosmic attacks ignore much enemy armor.", [["pierce", 65]]], ["Supreme Deity", 360000000000, 9, "+150% damage, defense, and HP.", [["dmg", 150], ["def", 150], ["hp", 150]]], ["Eternal Worldbreaker", 400000000000, 10, "Massive attacks damage every enemy in the room.", [["pulse", 120]]], ["Infinite Phoenix", 450000000000, 10, "Revives once per floor with partial HP.", [["reviveFloor", 55]]], ["Absolute Voidlord", 500000000000, 10, "Creates void zones that drain enemy strength.", [["pulse", 120]]], ["Prime Chronomancer", 550000000000, 10, "Briefly stops ordinary enemies in time.", [["freeze", 10]]], ["Omniblade Emperor", 600000000000, 10, "Weapon attacks adapt to enemy defenses.", [["pierce", 70]]], ["World Soul Guardian", 650000000000, 10, "Creates a powerful shield and healing pulse.", [["regen", 10]]], ["The First Dragon", 700000000000, 10, "Uses devastating elemental breath attacks.", [["pulse", 120]]], ["The Last Archmage", 750000000000, 10, "Casts enhanced versions of every basic spell.", [["allstats", 50]]], ["The Infinite Hunter", 800000000000, 10, "Deals bonus damage to every enemy category.", [["dmg", 80]]], ["The Eternal Monarch", 850000000000, 10, "Gains a stacking combat bonus up to a cap.", [["killstack", 12]]], ["The Cosmic Architect", 900000000000, 10, "Creates safe routes through dangerous rooms.", [["sight", 2]]], ["The Reality Emperor", 950000000000, 10, "Changes terrain and enemy positions.", [["regen", 10]]], ["The Multiverse Destroyer", 1000000000000, 10, "Releases repeated dimensional shockwaves.", [["double", 30]]], ["The Omniversal Guardian", 1100000000000, 10, "Prevents one defeat and grants temporary immunity.", [["revive", 70]]], ["The Origin Knight", 1200000000000, 10, "Gains enormous weapon damage and defense.", [["dmg", 80]]], ["The Endtime Sovereign", 1300000000000, 10, "Slows enemies and greatly reduces cooldowns.", [["freeze", 10]]], ["The Celestial Overlord", 1400000000000, 10, "Summons celestial allies and orbiting shields.", [["summon", 100]]], ["The Abyssal Creator", 1500000000000, 10, "Creates void creatures and damaging portals.", [["summon", 100]]], ["The Eternal Storm", 1600000000000, 10, "Keeps a storm active during combat.", [["killstack", 12]]], ["The Living Universe", 1700000000000, 10, "Gains bonuses from every room type.", [["allstats", 50]]], ["The Absolute Champion", 1800000000000, 10, "+200% damage, defense, and HP.", [["dmg", 200], ["def", 200], ["hp", 200]]], ["The First Light", 1900000000000, 10, "Heals the player and weakens every undead enemy in a room.", [["pierce", 70]]], ["The Final Shadow", 2000000000000, 10, "Teleports between enemies and creates shadow clones.", [["teleport", 1]]], ["The Endless Dragon", 2200000000000, 10, "Breathes several elements in one attack.", [["pulse", 120]]], ["The Infinite Godslayer", 2400000000000, 10, "Deals huge bonus damage to bosses.", [["boss", 100]]], ["The World Engine", 2600000000000, 10, "Automatically deploys shields and turrets.", [["summon", 100]]], ["The Prime Creator", 2800000000000, 10, "Creates temporary weapons and protective structures.", [["shieldfloor", 4]]], ["The End of Worlds", 3000000000000, 10, "Unleashes a room-wide ultimate attack.", [["pulse", 120]]], ["The One Beyond All", 3300000000000, 10, "Gains a major bonus to every stat and ability.", [["allstats", 50]]], ["The Absolute", 3600000000000, 10, "Ultimate class: immense stats, powerful abilities, and a unique reality-bending skill.", [["allstats", 50]]]]};
+var CLASSES = CLASSDATA.classes, CTIERS = CLASSDATA.tiers;
+function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function curClass() { return CLASSES[S.cls || 0]; }
+// Sum of one effect on your equipped class.
+function cv(type) {
+  var e = curClass()[4], v = 0;
+  for (var i = 0; i < e.length; i++) if (e[i][0] === type) v += e[i][1];
+  return v;
+}
+function clsAll(type) { return cv(type) + cv('allstats'); }
+function clsDefRed() { var D = clsAll('def'); return D > 0 ? D / (D + 100) : 0; }
+function clsHpMul() { return 1 + clsAll('hp') / 100; }
+function clsEffectText(i) {
+  var e = CLASSES[i][4], out = [];
+  if (!e.length) return 'No bonuses';
+  for (var k = 0; k < e.length; k++) {
+    var t = e[k][0], v = e[k][1];
+    switch (t) {
+      case 'dmg': out.push('+' + v + '% damage'); break;
+      case 'def': out.push('+' + v + '% defense (you take ' + Math.round(100 * v / (v + 100)) + '% less damage from monsters)'); break;
+      case 'hp': out.push('+' + v + '% max HP'); break;
+      case 'allstats': out.push('+' + v + '% damage, defense and max HP'); break;
+      case 'melee': out.push('+' + v + '% damage when you hit monsters next to you'); break;
+      case 'ranged': out.push('+' + v + '% damage when you shoot or reach from a distance'); break;
+      case 'magic': out.push('+' + v + '% damage with staves and Fire scrolls'); break;
+      case 'sword': out.push('+' + v + '% damage with swords'); break;
+      case 'spear': out.push('+' + v + '% damage with spears'); break;
+      case 'beast': out.push('+' + v + '% damage to fast and insect monsters'); break;
+      case 'undead': out.push('+' + v + '% damage to undead'); break;
+      case 'boss': out.push('+' + v + '% damage to bosses and champions'); break;
+      case 'lowhp': out.push('+' + v + '% damage when you are below half HP'); break;
+      case 'killbuff': out.push('+' + v + '% damage for 3 turns after you defeat a monster'); break;
+      case 'killstack': out.push('+' + v + '% damage for each monster you defeat on a floor (up to 10)'); break;
+      case 'unaware': out.push('+' + v + '% damage to monsters that haven\'t noticed you'); break;
+      case 'crit': out.push('+' + v + '% critical chance'); break;
+      case 'critdmg': out.push('Critical hits do ' + v + '% more damage'); break;
+      case 'critheal': out.push('Critical hits heal you ' + (v / 2) + '% of your max HP'); break;
+      case 'dodge': out.push('+' + v + '% dodge'); break;
+      case 'xp': out.push('+' + v + '% experience'); break;
+      case 'gold': out.push('+' + v + '% gold'); break;
+      case 'loot': out.push('Better gear rarity'); break;
+      case 'potion': out.push('Potions heal ' + v + '% more'); break;
+      case 'hazard': out.push('Floor dangers hurt ' + Math.min(90, v) + '% less'); break;
+      case 'sight': out.push('You see ' + v + ' square' + (v > 1 ? 's' : '') + ' farther'); break;
+      case 'seehidden': out.push('Shows hidden monsters'); break;
+      case 'petboost': out.push('Your pets are ' + v + '% stronger'); break;
+      case 'regen': out.push('Heals ' + (v / 2) + '% of your max HP every 3 turns'); break;
+      case 'revive': out.push('Once per run, saves you from defeat with ' + v + '% HP'); break;
+      case 'reviveFloor': out.push('Once per floor, saves you from defeat with ' + v + '% HP'); break;
+      case 'lowshield': out.push('Once per floor, a shield appears when your HP drops below 30%'); break;
+      case 'shieldfloor': out.push('Blocks the first ' + (v > 1 ? v + ' hits' : 'hit') + ' on every floor'); break;
+      case 'teleport': out.push('Once per floor, teleports you away when your HP drops below 25%'); break;
+      case 'summon': out.push('A summoned helper hits the nearest monster every 4 turns (' + v + '% of your attack)'); break;
+      case 'pulse': out.push('Every 6 turns, hurts every monster within 2 squares (' + v + '% of your attack)'); break;
+      case 'chain': out.push('Every 5 turns, hits up to 3 monsters you can see (' + v + '% of your attack each)'); break;
+      case 'freeze': out.push('Every 7 turns, freezes ' + (v >= 6 ? 'every monster you can see for 2 turns' : 'the nearest monster for ' + (v >= 3 ? 2 : 1) + ' turn' + (v >= 3 ? 's' : ''))); break;
+      case 'burnhit': out.push(v + '% chance your hits set monsters burning'); break;
+      case 'slowhit': out.push(v + '% chance your hits slow monsters'); break;
+      case 'double': out.push(v + '% chance to hit again for half damage'); break;
+      case 'pierce': out.push('Your hits ignore ' + v + '% of monster armor'); break;
+    }
+  }
+  return out.join('. ');
+}
+// Class powers that act on their own every few turns.
+function classAct() {
+  var r = S.run, e = curClass()[4], k, j, ms;
+  if (!r.clsCd) r.clsCd = {};
+  for (k = 0; k < e.length; k++) {
+    var t = e[k][0], v = e[k][1], cdBase = { summon: 4, pulse: 6, chain: 5, freeze: 7 }[t];
+    if (!cdBase) continue;
+    if (r.clsCd[t] > 0) { r.clsCd[t]--; continue; }
+    ms = seenMonsters();
+    if (!ms.length) continue;
+    ms.sort(function (a, b) { return (Math.abs(a.x - r.px) + Math.abs(a.y - r.py)) - (Math.abs(b.x - r.px) + Math.abs(b.y - r.py)); });
+    var nm = curClass()[0], acted = false;
+    if (t === 'summon') { petHit(ms[0], v / 100, 'Your ' + nm + ' helper', 'hits'); acted = true; }
+    else if (t === 'chain') { for (j = 0; j < ms.length && j < 3; j++) petHit(ms[j], v / 100, nm, 'strikes'); acted = true; }
+    else if (t === 'pulse') {
+      var near = [];
+      for (j = 0; j < ms.length; j++) if (cheb(ms[j].x, ms[j].y, r.px, r.py) <= 2) near.push(ms[j]);
+      if (near.length) { say('Your ' + nm + ' power bursts out!'); for (j = 0; j < near.length; j++) petHit(near[j], v / 100, '', ''); acted = true; }
+    } else if (t === 'freeze') {
+      var list = v >= 6 ? ms : [ms[0]];
+      for (j = 0; j < list.length; j++) if (!TYPES[list[j].i].heart) list[j].frozen = Math.max(list[j].frozen, v >= 3 ? 2 : 1);
+      say('Your ' + nm + ' power freezes ' + (list.length > 1 ? list.length + ' monsters' : the(list[0].name)) + '!');
+      acted = true;
+    }
+    if (acted) r.clsCd[t] = cdBase;
+  }
+}
+// Camp: the class list
+function openClasses() { ui.classes = true; ui.bookTop = true; ui.clsTier = curClass()[2]; render(); }
+function buyClass(i) {
+  var c = CLASSES[i];
+  if (S.clsOwn[i] || S.gold < c[1]) return;
+  S.gold -= c[1]; S.clsOwn[i] = 1; S.cls = i;
+  save(); render();
+}
+function equipClass(i) { if (S.clsOwn[i]) { S.cls = i; save(); render(); } }
+function ownedCount() { var n = 0; for (var k in S.clsOwn) if (S.clsOwn.hasOwnProperty(k)) n++; return n; }
+function renderClasses() {
+  var h = '<div class="book"><h2>Classes</h2><div class="tabs">' + btn('Back to camp', 'ui.classes=false;render()', 'small') + '</div>', i;
+  var cur = curClass();
+  h += '<p class="each">You have <b>' + fmt(S.gold) + ' gold</b>. You own ' + ownedCount() + ' of 300 classes. Buy any class in any order. ' +
+       'You can equip one class at a time and switch between the ones you own for free. Classes are yours forever, even after you ascend.</p>';
+  h += '<div class="entry"><b>Equipped: ' + cur[0] + '</b> <i>(Tier ' + cur[2] + ')</i><br><span class="each">' + cur[3] + '</span><br><b>In this game:</b> ' + clsEffectText(S.cls || 0) + '.</div>';
+  h += '<h3>Tiers</h3><div class="tabs">';
+  for (i = 0; i < CTIERS.length; i++) h += btn((i + 1) + ': ' + CTIERS[i], 'ui.clsTier=' + (i + 1) + ';render()', 'small' + (ui.clsTier === i + 1 ? ' main' : ''));
+  h += '</div><h3>Tier ' + ui.clsTier + ': ' + CTIERS[ui.clsTier - 1] + '</h3>';
+  for (i = 0; i < CLASSES.length; i++) {
+    var c = CLASSES[i];
+    if (c[2] !== ui.clsTier) continue;
+    var own = !!S.clsOwn[i], eq = (S.cls || 0) === i, b;
+    if (eq) b = '<b class="found">Equipped</b>';
+    else if (own) b = btn('Equip', 'equipClass(' + i + ')', 'small main');
+    else b = btn('Buy for ' + fmt(c[1]) + ' gold', 'buyClass(' + i + ')', 'small', S.gold < c[1]);
+    h += '<div class="entry"><b>' + c[0] + '</b>' + (own && !eq ? ' <span class="found">Owned</span>' : '') +
+         ' <span class="each">(' + (c[1] ? fmt(c[1]) + ' gold' : 'free') + ')</span><br><span class="each">' + c[3] + '</span><br>' +
+         '<b>In this game:</b> ' + clsEffectText(i) + '.<br>' + b + '</div>';
+  }
+  h += '<div class="tabs bottom">' + btn('Back to top', 'window.scrollTo(0,0)', 'small') + btn('Back to camp', 'ui.classes=false;render()', 'small') + '</div>';
+  return h + '</div>';
+}
+
+// Reset everything. The first tap arms the button, the second tap erases.
+function resetTap() {
+  if (!ui.resetArm) { ui.resetArm = true; render(); return; }
+  ui.resetArm = false;
+  S = freshSave(); fixSave();
+  ui.startAt = 1; ui.showCode = false;
+  S.last = { note: 'All progress was reset. A brand new adventure begins!' };
+  save(); render();
+  window.scrollTo(0, 0);
+}
 function traitCount() {
   var n = 0;
   for (var k in AB) if (AB.hasOwnProperty(k)) n++;
@@ -2901,6 +3088,8 @@ function renderCamp() {
          '<div>' + btn('Floor 1', 'startPick(1,1)', 'small') + btn('Deepest (' + S.best + ')', 'startPick(' + S.best + ',1)', 'small') + '</div>';
   }
   h += '<div class="actions">' + btn(ui.startAt > 1 ? 'Enter on floor ' + ui.startAt : 'Enter the dungeon', 'startRun()', 'main big') + '</div>';
+  h += '<h2>Class</h2><p class="each"><b>' + curClass()[0] + '</b>: ' + clsEffectText(S.cls || 0) + '. You own ' + ownedCount() + ' of 300 classes.</p>' +
+       btn('Classes', 'openClasses()', '');
   h += '<h2>Pets</h2><p class="each">Team (' + S.team.length + ' of ' + TEAM_MAX + '): ' + (S.team.length ? petTeamNames() : 'none yet. Look for p on the map.') + '</p>' +
        btn('Manage pets', 'openPets()', '');
 
@@ -2949,6 +3138,10 @@ function renderCamp() {
   if (st > 0) h += btn('Ascend for ' + st + ' new star' + (st > 1 ? 's' : ''), 'ascend()', '');
   else h += '<p class="each"><b>Reach floor ' + (21 + 5 * (S.stars + 1) - 1) + ' to earn your next star.</b></p>';
 
+  h += '<div class="savebox reset"><h2>Reset progress</h2>' +
+       (ui.resetArm ? '<p><b>Are you sure? This erases everything: gold, upgrades, classes, pets, perks, achievements and your collection. It can\'t be undone.</b></p>' +
+                      btn('Yes, erase everything', 'resetTap()', 'main') + btn('Cancel', 'ui.resetArm=false;render()', '')
+                    : '<p class="each">Start over from nothing. You\'ll be asked to tap twice.</p>' + btn('Reset all progress', 'resetTap()', '')) + '</div>';
   h += '<div class="savebox"><h2>Save code</h2>';
   if (!ui.showCode) {
     h += '<p>Progress saves on this device automatically. A save code is a backup you can copy somewhere safe or move to another device.</p>' +
@@ -2965,9 +3158,10 @@ function renderCamp() {
 }
 
 function render() {
-  if (ui.pets && S.run) ui.pets = false;
-  document.body.className = ui.book || ui.pets ? 'inbook' : (S.run ? 'inrun' : '');
-  document.getElementById('game').innerHTML = ui.book ? renderBook() : (ui.pets ? renderPets() : (S.run ? renderRun() : renderCamp()));
+  if (S.run) { ui.pets = false; ui.classes = false; }
+  document.body.className = ui.book || ui.pets || ui.classes ? 'inbook' : (S.run ? 'inrun' : '');
+  document.getElementById('game').innerHTML = ui.book ? renderBook() : (ui.pets ? renderPets() : (ui.classes ? renderClasses() :
+                                              (S.run ? renderRun() : renderCamp())));
   if (ui.bookTop) { ui.bookTop = false; window.scrollTo(0, 0); }
 }
 window.onresize = function () { fitMap(); if (S) render(); };
