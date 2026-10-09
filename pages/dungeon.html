@@ -28,7 +28,7 @@
 
   <h3>Moving and fighting</h3>
   <p>Use the arrow buttons, or tap a square next to you. Step into a monster to attack it. Every time you act, each awake monster also gets a turn. Nobody can attack diagonally.</p>
-  <p>Tap a square farther away that you've already seen, and you walk all the way there in one tap. You stop early if a monster comes into view or anything happens.</p>
+  <p>Tap a square farther away that you've already seen, and you walk all the way there in one tap. This works even with monsters around. You stop as soon as something hits or hurts you, when you level up, or when you step on something to choose (gear, a merchant, a shrine).</p>
   <p><b>Wait</b> skips your turn, which is handy for letting a monster come to you.</p>
 
   <h3>Weapons</h3>
@@ -64,6 +64,7 @@
     <li><b>Boss Lair</b>, <b>Colosseum</b>, <b>The King's Court</b> and <b>Dragon's Hoard</b> on boss floors, and <b>The Dungeon Core</b> every 50 floors.</li>
     <li>There's also a very rare secret floor. Good luck finding it!</li>
   </ul>
+  <p>Below the map, <b>About this floor</b> explains what the current floor does, what each kind of floor square does, and every kind of monster on the floor and its tricks, even the ones you haven't seen yet.</p>
   <p>A <b>merchant</b> sells a potion, a scroll and a piece of gear for the gold you've found this run. A <b>shrine</b> lets you heal fully, or gain a random perk and lose some HP. An <b>enchanting table</b> gives your weapon a new random modifier. If you walk off one without choosing, step back on it or tap yourself while standing on it.</p>
 
   <h3>Bounties</h3>
@@ -1243,7 +1244,7 @@ function visible(x, y) {
 function floorIntro(first, showZone) {
   var r = S.run, Z = zoneOf(r.floor), LV = curLevel();
   r.log = [first];
-  if (showZone || r.floor === 1 || zoneOf(r.floor - 1).n !== Z.n) say('Zone: ' + Z.n + '. ' + Z.note);
+  if (showZone || r.floor === 1 || zoneOf(r.floor - 1).n !== Z.n) say('Zone: ' + Z.n + '.' + (LV && LV.tile ? '' : ' ' + Z.note));
   if (LV) say(LV.n + ': ' + LV.note);
   for (var i = 0; i < r.mons.length; i++) if (r.mons[i].kind === 'boss') say(r.mons[i].name + ' waits near the stairs!');
 }
@@ -1645,6 +1646,7 @@ function monHits(m, kind) {
   var r = S.run, dg = fx('dodge');
   if (dg && chance(dg)) { say('You dodge ' + the(m.name) + '!'); return; }
   var a = monAtk(m), slam = false;
+  r.wasHit = true;
   if (!kind && has(m, 'slam')) { m.ac++; if (m.ac % 3 === 0) { a *= 2; slam = true; } }
   if (kind === 'charge') a = Math.round(a * 1.5);
   var d = Math.max(1, Math.round((kind === 'archer' ? Math.max(1, a - 1) : a) + rnd(-1, 1) - defOf()));
@@ -2084,7 +2086,7 @@ function findPath(tx, ty) {
   }
   return null;
 }
-// Walk many steps in one tap. Monsters still take their turns; stops when anything happens.
+// Walk many steps in one tap. Monsters still take their turns; you stop if anything hits you.
 function walkTo(path) {
   var r = S.run;
   r.log = [];
@@ -2095,11 +2097,13 @@ function walkTo(path) {
       if (!m.revealed && (has(m, 'burrow') || has(m, 'disguise'))) { m.revealed = true; say('Surprise! It\'s ' + aName(m.name) + '!'); }
       break;
     }
-    var before = r.log.length;
+    var hp0 = r.hp;
+    r.wasHit = false;
     moveTo(nx, ny, nx - r.px, ny - r.py);
     if (passTurn()) return;
     if (r.px !== nx || r.py !== ny) break;
-    if (r.panel || r.queue.length > 0 || r.log.length > before || anyMonsterInView()) break;
+    // keep walking past monsters; stop only if something hits or hurts you, or there's a choice to make
+    if (r.wasHit || r.hp < hp0 || r.panel || r.queue.length > 0) break;
   }
   checkPanels(); save(); render();
 }
@@ -2115,7 +2119,7 @@ function tapCell(x, y) {
     return;
   }
   if (m && canReach(m)) { rangedAttack(m); return; }
-  if (Math.abs(dx) + Math.abs(dy) > 1 && !anyMonsterInView()) {
+  if (Math.abs(dx) + Math.abs(dy) > 1) {
     var path = findPath(x, y);
     if (path && path.length) { walkTo(path); return; }
   }
@@ -2149,6 +2153,108 @@ function itemGlyph(it) {
   if (it.k === 'altar') return '{';
   return '';
 }
+
+// ================= FLOOR GUIDE: what this floor and its monsters do =================
+function typeNames(codes, f) {
+  var out = [];
+  for (var i = 0; i < codes.length; i++) {
+    var T = TYPES[typeIndex(codes[i])];
+    if (T.tier <= f + 3 && out.indexOf(T.n) < 0) out.push(T.n + ' (' + T.c + ')');
+  }
+  return out;
+}
+function levelEffects(LV, f) {
+  var e = [], n;
+  if (LV.heart) e.push('The Dungeon Heart (DH) never moves, but it calls monsters and cracks the floor under you');
+  else if (LV.boss) e.push('A boss guards the stairs and drops Rare or better gear');
+  if (LV.champ) e.push(LV.champ + ' champions that carry treasure');
+  if (LV.dens) e.push(LV.dens < 1 ? 'Fewer monsters than usual' : 'More monsters than usual');
+  if (LV.awake) e.push('Every monster is awake and hunting you');
+  if (LV.fav) { n = typeNames(LV.fav, f); if (n.length) e.push('Lots of ' + n.join(', ')); }
+  if (LV.plusMut) e.push('Every monster has an extra trait');
+  if (LV.mut) e.push('Many monsters ' + AB[LV.mut]);
+  if (LV.chest) e.push(LV.chest + ' extra treasure chest' + (LV.chest > 1 ? 's' : '') + ' (*)');
+  if (LV.mimic) e.push('About ' + Math.round(LV.mimic * 100) + '% of chests are Mimics');
+  if (LV.gold) e.push(LV.gold >= 2 ? LV.gold + ' times the gold' : 'Extra gold');
+  if (LV.rar) e.push('Better loot (' + RAR[LV.rar] + ' or higher)');
+  if (LV.gear) e.push(LV.gear + ' piece' + (LV.gear > 1 ? 's' : '') + ' of gear lying on the floor');
+  if (LV.cursed) e.push('A Cursed weapon lying on the floor');
+  if (LV.secret) e.push('A one-of-a-kind secret weapon');
+  if (LV.pots) e.push(LV.pots + ' extra potions (!)');
+  if (LV.scr) e.push(LV.scr + ' extra scroll' + (LV.scr > 1 ? 's' : '') + ' (?)');
+  if (LV.relic) e.push(LV.relic + ' relic' + (LV.relic > 1 ? 's' : '') + ' (") that give a free perk');
+  if (LV.altar) e.push('An enchanting table ({) that gives your weapon a new modifier');
+  if (LV.shop) e.push('A merchant (&) who sells a potion, a scroll and gear');
+  if (LV.shrine) e.push('A shrine (+) where you can heal or gain a perk');
+  if (LV.reveal) e.push('The whole map is shown');
+  if (LV.dark) e.push('It is dark: you can only see 2 squares');
+  if (LV.rocks) e.push('Rocks fall from the ceiling: step off any x before it lands');
+  if (LV.portals) e.push('Two linked portals (O)');
+  if (LV.mirror) e.push('The right half of the map mirrors the left half');
+  return e;
+}
+function tileNotes() {
+  var r = S.run, present = {}, out = [], x, y;
+  for (y = 0; y < H; y++) for (x = 0; x < W; x++) present[r.map[y][x]] = 1;
+  if (present[2]) out.push('Lava (~) burns you for 15% of your max HP');
+  if (present[3]) out.push('Spikes (^) hurt you for 10% of your max HP');
+  if (present[7]) out.push('Poison gas (:) poisons you for 3 turns');
+  if (present[8]) out.push('Shock floor (#) hurts you for 12% of your max HP');
+  if (present[5]) out.push(cap(r.slowName) + ' (=) slows you, so monsters get extra steps');
+  if (present[6]) out.push('Ice (-) makes you slide until something stops you');
+  if (present[4]) out.push('Mushrooms (%) heal you for 25% of your max HP');
+  if (present[9]) out.push('Portals (O) jump you to the other portal');
+  return out;
+}
+function floorGuide() {
+  var r = S.run, LV = curLevel(), Z = zoneOf(r.floor), h = '<div class="guide"><h3>About this floor</h3>', i, j;
+  h += '<p><b>' + (LV ? LV.n : 'Ordinary floor') + ':</b> ';
+  var e = LV ? levelEffects(LV, r.floor) : [];
+  h += (LV ? LV.note + ' ' : 'Nothing special about this floor. ') + (e.length ? e.join('. ') + '.' : '') + '</p>';
+  var zn = LV && LV.tile ? ['This floor\'s own squares replace the zone\'s usual ones'] : [Z.note];
+  if (Z.hz === 'dark') zn.push('You can only see 2 squares');
+  var zf = typeNames(Z.fav, r.floor);
+  if (zf.length) zn.push('More ' + zf.join(', ') + ' here');
+  if (Z.mut && r.floor >= 3) zn.push('Some monsters are ' + mutAdj(Z.mut));
+  h += '<p><b>Zone: ' + Z.n + '.</b> ' + zn.join('. ').replace(/\.\./g, '.') + '.</p>';
+  var tn = tileNotes();
+  if (tn.length) h += '<p><b>Floor squares:</b> ' + tn.join('. ') + '.</p>';
+
+  // every kind of monster on this floor, grouped
+  var groups = [], byKey = {};
+  for (i = 0; i < r.mons.length; i++) {
+    var m = r.mons[i];
+    if (m.minion) continue;
+    var key = m.kind === 'boss' ? 'b' + i : (m.kind === 'mimic' ? 'mi' : (m.small ? 's' : (m.kind === 'champ' ? 'c' : 't')) + m.i);
+    var g = byKey[key];
+    if (!g) { g = byKey[key] = { m: m, n: 0, extra: [] }; groups.push(g); }
+    g.n++;
+    for (j = 0; j < m.abs.length; j++) {
+      var a = m.abs[j];
+      if (TYPES[m.i].ab.indexOf(a) < 0 && g.extra.indexOf(a) < 0) g.extra.push(a);
+    }
+  }
+  h += '<h3>Monsters on this floor (' + groups.length + ' kind' + (groups.length === 1 ? '' : 's') + ')</h3>';
+  if (!groups.length) h += '<p>None left. The floor is clear!</p>';
+  for (i = 0; i < groups.length; i++) {
+    var G = groups[i], M = G.m, T = TYPES[M.i], base = [];
+    for (j = 0; j < T.ab.length; j++) base.push(T.ab[j] === 'summon' ? 'calls ' + (T.spawn === 'random' ? 'monsters' : plural(T.spawn)) + ' to help' : AB[T.ab[j]]);
+    var title;
+    if (M.kind === 'boss') title = M.name + ' (boss)';
+    else if (M.kind === 'champ') title = 'Champion ' + T.n;
+    else if (M.kind === 'mimic') title = 'Mimic';
+    else if (M.small) title = 'Small ' + T.n;
+    else title = T.n;
+    var desc = M.small ? 'Small and weak' : (base.length ? cap(base.join(', ')) : 'No special tricks');
+    var ex = [];
+    for (j = 0; j < G.extra.length; j++) ex.push((mutAdj(G.extra[j]) || cap(G.extra[j])) + ' (' + AB[G.extra[j]] + ')');
+    h += '<div class="gm"><b class="tag">' + M.ch + '</b> <b>' + title + '</b>' + (G.n > 1 ? ' x' + G.n : '') + ': ' + desc + '.' +
+         (ex.length ? ' ' + (M.kind === 'boss' || G.n === 1 ? 'Also: ' : 'Some also: ') + ex.join(', ') + '.' : '') +
+         (M.drop && M.kind !== 'boss' ? ' Carries treasure.' : '') + '</div>';
+  }
+  return h + '</div>';
+}
+
 var TILE_GLYPH = { 2: '~', 3: '^', 4: '%', 5: '=', 6: '-', 7: ':', 8: '#', 9: 'O' };
 var TILE_CLASS = { 2: ' lava', 3: ' spk', 4: ' mush', 5: ' wet', 6: ' ice', 7: ' gas', 8: ' shock', 9: ' portal' };
 
@@ -2296,6 +2402,8 @@ function renderRun() {
     }
     h += '</div>';
   }
+
+  h += floorGuide();
 
   var perks = [];
   for (i = 0; i < PERKS.length; i++) {
