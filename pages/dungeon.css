@@ -16,7 +16,9 @@ h2 { font-size: 22px; margin: 16px 0 6px; }
 .bar { border: 3px solid #000; padding: 4px 8px; margin-bottom: 6px; font-size: 17px; }
 .bar span, .bar .floor { display: inline-block; margin-right: 12px; white-space: nowrap; }
 .bar .floor { font-size: 19px; }
+.bar .row1 { margin-bottom: 2px; }
 .bar .theme { border: 2px solid #000; padding: 0 5px; font-weight: bold; }
+.bar .zone { font-style: italic; }
 .bar .pois { background: #000; color: #fff; padding: 0 5px; font-weight: bold; }
 
 /* map on the left, controls on the right, all on one screen */
@@ -48,6 +50,12 @@ h2 { font-size: 22px; margin: 16px 0 6px; }
 .map td.champ { border: 3px double #000; }
 .map td.frozen { border-style: dashed; }
 .map td.w.m { background: #999; color: #000; border: 2px dashed #000; }   /* ghost inside a wall */
+.map td.m2, .map td.m3 { letter-spacing: -1px; }       /* two- and three-letter monster codes */
+.map td.lava { background: #9a9a9a; color: #fff; }     /* lava ~ */
+.map td.wet { background: #ececec; }                   /* water, web, mud, sand = */
+.map td.ice { background: #f4f4f4; }                   /* ice - */
+.map td.portal { border: 2px solid #000; }
+.map td.blast { border: 3px dotted #000; }             /* a bomb or rock is about to land here */
 
 /* side panels: elevator, scrolls, level up, loot, merchant, shrine */
 .map td.el { border: 3px double #000; }
@@ -55,6 +63,8 @@ h2 { font-size: 22px; margin: 16px 0 6px; }
 .panel p { margin: 2px 0 6px; }
 .panel .ptitle { display: block; font-size: 20px; margin-bottom: 2px; }
 .panel .now { border-top: 1px solid #000; padding-top: 4px; }
+.panel .desc { font-size: 13px; }
+.panel .zone { text-align: center; font-style: italic; }
 .panel .pick { font-size: 40px; font-weight: bold; line-height: 1.1; text-align: center; border: 3px solid #000; margin: 4px 0 6px; }
 .panel .steps { border-collapse: collapse; width: 100%; }
 .panel .steps td { padding: 0 4px 4px 0; width: 50%; }
@@ -99,11 +109,14 @@ h2 { font-size: 22px; margin: 16px 0 6px; }
 .foes { font-size: 16px; margin-bottom: 10px; }
 .foes .tag {
   display: inline-block;
-  width: 24px;
+  min-width: 30px;
   border: 2px solid #000;
   text-align: center;
   font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
 }
+.bounty { border: 2px solid #000; padding: 4px 8px; margin: 0 0 8px; font-size: 15px; }
+.bounty.over { border-style: dashed; }
 .gear { border-top: 1px solid #000; padding: 6px 0; font-size: 15px; }
 .footer { border-top: 2px solid #000; padding-top: 6px; font-size: 15px; }
 .footer span { margin-right: 12px; }
