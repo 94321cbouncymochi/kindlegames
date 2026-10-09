@@ -16,29 +16,65 @@
   <h3>The map</h3>
   <ul>
     <li><code>@</code> is you (the black square).</li>
-    <li>Letters are monsters: <code>r</code> rat, <code>b</code> bat, <code>g</code> goblin, <code>s</code> skeleton, <code>w</code> wolf, <code>o</code> orc, <code>k</code> knight, <code>t</code> troll, <code>m</code> mummy, <code>d</code> demon. A capital letter is a giant boss, found every 5 floors.</li>
-    <li><code>&gt;</code> is the stairs down, <code>E</code> is the elevator, <code>$</code> is gold, and <code>!</code> is a potion.</li>
-    <li>Dark gray squares are walls. Light gray squares are places you've seen but can't see right now, so monsters there are hidden.</li>
+    <li><code>&gt;</code> stairs down, <code>E</code> elevator.</li>
+    <li><code>$</code> gold, <code>!</code> potion, <code>?</code> scroll, <code>*</code> treasure chest.</li>
+    <li><code>)</code> a weapon and <code>[</code> armor lying on the floor.</li>
+    <li><code>&amp;</code> a merchant, <code>+</code> a shrine.</li>
+    <li>Letters are monsters. A capital letter on a black square is a giant boss (every 5 floors). A letter with a double border is a champion, which carries treasure.</li>
+    <li>Dark gray squares are walls. Light gray squares are places you've seen but can't see right now.</li>
   </ul>
 
   <h3>Moving and fighting</h3>
-  <p>Use the arrow buttons, or tap a square on the map to take one step toward it. Step into a monster to attack it. Every time you act, each awake monster also gets a turn: it moves one step toward you, or hits you if it's right next to you. Monsters can't attack diagonally, and neither can you.</p>
-  <p>Tap a square farther away that you've already seen, and you walk all the way there in one tap. You stop early if a monster comes into view or you pick something up, so you never walk into trouble blind.</p>
+  <p>Use the arrow buttons, or tap a square next to you. Step into a monster to attack it. Every time you act, each awake monster also gets a turn. Nobody can attack diagonally.</p>
+  <p>Tap a square farther away that you've already seen, and you walk all the way there in one tap. You stop early if a monster comes into view or anything happens.</p>
   <p><b>Wait</b> skips your turn, which is handy for letting a monster come to you.</p>
 
-  <h3>The elevator</h3>
-  <p>Every floor has an elevator <code>E</code> right where you arrive. Stand on it and tap <b>Elevator</b> (or tap yourself) to pick any floor from 1 down to your deepest, then tap Go. Riding it doesn't use a turn. Use it to skip straight back down to your record, or to go up to an easier floor when you're hurt.</p>
-  <p>At camp you can also start a run on any floor you've reached. Starting deeper gives you free levels so you aren't a beginner on a hard floor.</p>
-
-  <h3>Getting stronger during a run</h3>
+  <h3>Monsters</h3>
+  <p>Each kind of monster has its own trick. The list under the map tells you what the ones you can see do.</p>
   <ul>
-    <li>Defeating monsters earns experience. Each level up gives +4 max HP, +1 attack, and heals you a bit.</li>
-    <li>A <b>potion</b> heals half your max HP. Drinking one uses your turn.</li>
-    <li>Going down the stairs heals you a little.</li>
+    <li><b>Bat</b> (<code>b</code>) flutters around wildly.</li>
+    <li><b>Goblin</b> (<code>g</code>) steals gold when it hits. Defeat it to get the gold back.</li>
+    <li><b>Slime</b> (<code>j</code>) splits into two small slimes.</li>
+    <li><b>Skeleton</b> (<code>s</code>) shoots arrows from up to 4 squares away in a straight line. Step out of line to stay safe.</li>
+    <li><b>Wolf</b> (<code>w</code>) moves 2 squares per turn, so you can't outrun it.</li>
+    <li><b>Ghost</b> (<code>h</code>) floats through walls.</li>
+    <li><b>Troll</b> (<code>t</code>) heals every turn, so finish it quickly.</li>
+    <li><b>Mummy</b> (<code>m</code>) poisons you for 3 turns. A potion cures poison.</li>
+    <li><b>Demon</b> (<code>d</code>) breathes fire from 2 squares away.</li>
+    <li>Some treasure chests are <b>Mimics</b> (<code>c</code>) in disguise!</li>
   </ul>
 
+  <h3>Levels and perks</h3>
+  <p>Defeating monsters earns experience. Each level gives +4 max HP, +1 attack, and heals you a bit. Every 2 levels you choose one of three random perks, like Vampire (heal when you defeat a monster), Critical (double damage hits), Thorns (monsters that hit you get hurt) or Nimble (dodge hits). The same perk can be picked more than once.</p>
+  <p><b>Perks are saved by level.</b> The perk you choose at level 2 is saved for level 2. In every later run, you get it automatically as soon as you reach level 2 again, but not before. Reach a level you've never reached and you choose a new one, which is saved too. At camp, <b>Saved perks</b> lists them all. Tap Change on one to choose again the next time you reach that level.</p>
+
+  <h3>Weapons and armor</h3>
+  <p>Chests, champions and bosses drop weapons and armor. Step on one to see it next to what you're using, then choose Equip or Leave it. Better gear shows up deeper. Some pieces have a bonus, like a sword "of Leeching" that heals you on every hit, or armor "of Thorns".</p>
+
+  <h3>Potions and scrolls</h3>
+  <ul>
+    <li><b>Potion</b>: heals half your max HP and cures poison.</li>
+    <li><b>Fire scroll</b>: burns every monster you can see.</li>
+    <li><b>Freeze scroll</b>: monsters you can see stop moving for 3 turns.</li>
+    <li><b>Teleport scroll</b>: jumps you to a random spot far away. Great for escaping.</li>
+    <li><b>Map scroll</b>: shows the whole floor, including the stairs.</li>
+  </ul>
+  <p>Drinking or reading uses your turn.</p>
+
+  <h3>Special floors</h3>
+  <p>Many floors have a twist, shown next to the floor number: <b>Dark</b> (you only see 2 squares), <b>Treasure</b> (extra gold and a chest), <b>Nest</b> (lots of monsters and gold), <b>Haunted</b> (ghosts), <b>Library</b> (scrolls), <b>Market</b> (a merchant), <b>Shrine</b>, <b>Champion</b> and <b>Boss</b>.</p>
+  <ul>
+    <li>A <b>merchant</b> sells a potion, a scroll and a piece of gear for the gold you've found this run. Gold you spend there doesn't go home with you.</li>
+    <li>A <b>shrine</b> lets you either heal fully, or gain a random perk and lose some HP. It works once.</li>
+  </ul>
+  <p>If you walk off a merchant, shrine or piece of gear without choosing, step back on it or tap yourself while standing on it.</p>
+
+  <h3>The elevator</h3>
+  <p>Every floor has an elevator <code>E</code> right where you arrive. Stand on it and tap <b>Elevator</b> (or tap yourself) to pick any floor from 1 down to your deepest, then tap Go. It doesn't use a turn.</p>
+  <p>At camp you can also start a run on any floor you've reached. Starting deeper gives you free levels, perks and gear so you aren't a beginner on a hard floor.</p>
+
   <h3>Camp and upgrades</h3>
-  <p>Between runs, spend gold on upgrades that last forever: more max HP, more attack, more armor (each point blocks 1 damage from every hit), and extra potions at the start of each run. Each upgrade costs a bit more than the last.</p>
+  <p>Between runs, spend gold on upgrades that last forever: max HP, attack, armor, starting potions, starting scrolls, and Blessing (extra perks at the start of every run, saved just like level perks). Each upgrade costs a bit more than the last.</p>
 
   <h3>Saving</h3>
   <p>The game saves after every move, even in the middle of a run. If your Kindle clears its saved data, you'd lose progress, so open <b>Save code</b> at camp now and then and copy the code somewhere safe. Paste it back in to restore your gold and upgrades.</p>
@@ -46,38 +82,78 @@
   <h3>Tips</h3>
   <ul>
     <li>Fight in corridors so only one monster can reach you at a time.</li>
-    <li>Check the monster list under the map. If something hits harder than you, drink a potion early or head for the stairs.</li>
-    <li>Exploring finds more gold and potions, but the stairs are always the safe way out.</li>
+    <li>Against skeletons and demons, get close fast or stay out of their line.</li>
+    <li>Save Fire and Teleport scrolls for emergencies, like a boss or a crowd.</li>
     <li>Upgrades are what get you deeper over time. Even a short run brings home something.</li>
   </ul>
 </div>
 
 <script>
 // Endless Dungeon. Plain ES5, no timers, no async: one redraw per tap.
-var W = 15, H = 15, VIEW = 4;
+var W = 15, H = 15;
 var KEY = 'endlessDungeon.v1';
+var VERSION = 2;
 
 var TYPES = [
   { n: 'Rat',      c: 'r', hp: 4,  atk: 2, def: 0 },
-  { n: 'Bat',      c: 'b', hp: 5,  atk: 3, def: 0 },
-  { n: 'Goblin',   c: 'g', hp: 8,  atk: 3, def: 1 },
-  { n: 'Skeleton', c: 's', hp: 10, atk: 4, def: 1 },
-  { n: 'Wolf',     c: 'w', hp: 9,  atk: 5, def: 1 },
+  { n: 'Bat',      c: 'b', hp: 5,  atk: 3, def: 0, ab: 'erratic', d: 'Flutters around wildly.' },
+  { n: 'Goblin',   c: 'g', hp: 8,  atk: 3, def: 1, ab: 'thief',   d: 'Steals gold. Defeat it to get the gold back.' },
+  { n: 'Slime',    c: 'j', hp: 10, atk: 3, def: 0, ab: 'split',   d: 'Splits in two when defeated.' },
+  { n: 'Skeleton', c: 's', hp: 10, atk: 4, def: 1, ab: 'archer',  d: 'Shoots arrows up to 4 squares in a straight line.' },
+  { n: 'Wolf',     c: 'w', hp: 9,  atk: 5, def: 1, ab: 'fast',    d: 'Moves 2 squares per turn.' },
+  { n: 'Ghost',    c: 'h', hp: 9,  atk: 5, def: 0, ab: 'ghost',   d: 'Floats through walls.' },
   { n: 'Orc',      c: 'o', hp: 14, atk: 5, def: 2 },
-  { n: 'Knight',   c: 'k', hp: 16, atk: 6, def: 3 },
-  { n: 'Troll',    c: 't', hp: 24, atk: 7, def: 2 },
-  { n: 'Mummy',    c: 'm', hp: 20, atk: 7, def: 3 },
-  { n: 'Demon',    c: 'd', hp: 22, atk: 9, def: 3 }
+  { n: 'Knight',   c: 'k', hp: 16, atk: 6, def: 3, d: 'Thick armor.' },
+  { n: 'Troll',    c: 't', hp: 24, atk: 7, def: 2, ab: 'regen',   d: 'Heals a little every turn.' },
+  { n: 'Mummy',    c: 'm', hp: 20, atk: 7, def: 3, ab: 'poison',  d: 'Its hits poison you for 3 turns.' },
+  { n: 'Demon',    c: 'd', hp: 22, atk: 9, def: 3, ab: 'fire',    d: 'Breathes fire 2 squares in a straight line.' }
 ];
 var UPS = [
-  { id: 'hp',  name: 'Max HP',           each: '+5 max HP',            base: 15 },
-  { id: 'atk', name: 'Attack',           each: '+1 attack',            base: 25 },
-  { id: 'def', name: 'Armor',            each: '+1 armor',             base: 35 },
-  { id: 'pot', name: 'Starting potions', each: '+1 potion each run',   base: 30 }
+  { id: 'hp',   name: 'Max HP',           each: '+5 max HP',                               base: 15 },
+  { id: 'atk',  name: 'Attack',           each: '+1 attack',                               base: 25 },
+  { id: 'def',  name: 'Armor',            each: '+1 armor',                                base: 35 },
+  { id: 'pot',  name: 'Starting potions', each: '+1 potion each run',                      base: 30, max: 5 },
+  { id: 'scr',  name: 'Starting scrolls', each: '+1 random scroll each run',               base: 40, max: 5 },
+  { id: 'perk', name: 'Blessing',         each: 'Choose 1 extra perk at the start of each run', base: 80, max: 3 }
 ];
+var PERKS = [
+  { id: 'tough',   n: 'Tough',      d: '+8 max HP' },
+  { id: 'strong',  n: 'Strong',     d: '+2 attack' },
+  { id: 'guard',   n: 'Guarded',    d: '+1 armor' },
+  { id: 'vamp',    n: 'Vampire',    d: 'Heal 3 HP for every monster you defeat' },
+  { id: 'crit',    n: 'Critical',   d: '+15% chance to hit for double damage (up to 50%)' },
+  { id: 'thorns',  n: 'Thorns',     d: 'Monsters that hit you take 30% of it back (up to 60%)' },
+  { id: 'dodge',   n: 'Nimble',     d: '+10% chance to dodge a hit (up to 40%)' },
+  { id: 'greed',   n: 'Greedy',     d: '+40% gold' },
+  { id: 'regen',   n: 'Regenerate', d: 'Heal 1 HP every 3 turns' },
+  { id: 'supply',  n: 'Supplies',   d: '+2 potions right now' },
+  { id: 'scholar', n: 'Scholar',    d: '+3 random scrolls right now' }
+];
+var SCROLLS = [
+  { id: 'fire',   n: 'Fire',     d: 'Burns every monster you can see' },
+  { id: 'freeze', n: 'Freeze',   d: 'Monsters you can see stop for 3 turns' },
+  { id: 'tele',   n: 'Teleport', d: 'Jump to a random far-away spot' },
+  { id: 'map',    n: 'Map',      d: 'Shows the whole floor and the stairs' }
+];
+var THEMES = {
+  boss:    { n: 'Boss',     note: 'Something big lives on this floor...' },
+  dark:    { n: 'Dark',     note: 'It is very dark. You can only see 2 squares around you.' },
+  vault:   { n: 'Treasure', note: 'Gold glitters everywhere on this floor!' },
+  nest:    { n: 'Nest',     note: 'A monster nest! Lots of monsters, lots of gold.' },
+  market:  { n: 'Market',   note: 'A merchant (&) has set up shop on this floor.' },
+  shrine:  { n: 'Shrine',   note: 'You feel a calm presence. Look for the shrine (+).' },
+  library: { n: 'Library',  note: 'Old scrolls (?) lie around this floor.' },
+  champ:   { n: 'Champion', note: 'A champion guards this floor. It carries treasure.' },
+  haunted: { n: 'Haunted',  note: 'Cold air... ghosts float through the walls here.' }
+};
+var WPN = ['Dagger', 'Short Sword', 'Mace', 'Axe', 'Long Sword', 'War Hammer', 'Great Sword', 'Rune Blade', 'Dragon Fang'];
+var ARM = ['Leather Armor', 'Studded Leather', 'Chain Mail', 'Scale Mail', 'Splint Mail', 'Plate Armor', 'Mithril Mail', 'Dragon Scale'];
+var WSFX = [{ fx: 'leech', n: 'of Leeching' }, { fx: 'crit', n: 'of Thunder' }, { fx: 'greed', n: 'of Greed' }];
+var ASFX = [{ fx: 'thorns', n: 'of Thorns' }, { fx: 'life', n: 'of Life' }, { fx: 'dodge', n: 'of Shadows' }];
 
 var S = null;          // everything that gets saved
 var stacked = false;   // narrow screens put the controls under the map
+var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1 };
 
 // Size the map so the map and every control fit on one screen.
 function fitMap() {
@@ -85,7 +161,7 @@ function fitMap() {
   var vh = window.innerHeight || document.documentElement.clientHeight || 800;
   var side = 176;                                   // width of the control column
   var byW = Math.floor((vw - 20 - side) / W);
-  var byH = Math.floor((vh - 20 - 44 - 66) / H);    // minus stats bar and message lines
+  var byH = Math.floor((vh - 20 - 56 - 66) / H);    // minus stats bar and message lines
   stacked = byW < 20;
   if (stacked) byW = Math.floor((vw - 20) / W);
   var c = Math.max(16, Math.min(40, byW, byH));
@@ -98,11 +174,13 @@ function fitMap() {
   el.innerHTML = '.map td{width:' + c + 'px;height:' + c + 'px;min-width:' + c + 'px;line-height:' + c +
                  'px;font-size:' + Math.round(c * 0.72) + 'px}';
 }
-var ui = { showCode: false, codeMsg: '', elev: false, pick: 1, startAt: 1 };
 
 // ---------- saving ----------
 function freshSave() {
-  return { gold: 0, up: { hp: 0, atk: 0, def: 0, pot: 0 }, best: 0, runs: 0, run: null, last: null };
+  return { v: VERSION, gold: 0, up: {}, perkAt: {}, best: 0, runs: 0, run: null, last: null };
+}
+function fixUps() {
+  for (var i = 0; i < UPS.length; i++) if (!S.up[UPS[i].id]) S.up[UPS[i].id] = 0;
 }
 function load() {
   try {
@@ -110,14 +188,27 @@ function load() {
     if (raw) S = JSON.parse(raw);
   } catch (e) { S = null; }
   if (!S || !S.up) S = freshSave();
-  if (S.run && S.run.ex === undefined) { S.run.ex = -1; S.run.ey = -1; }
+  fixUps();
+  if (!S.perkAt) S.perkAt = {};
+  if (S.run && !S.run.queue) { S.run.queue = []; for (var q = 0; q < (S.run.owed || 0); q++) S.run.queue.push(''); }
+  if (S.v !== VERSION) {
+    // A run saved by the old version can't continue: bank its gold and go back to camp.
+    if (S.run) {
+      S.gold += S.run.goldRun || 0;
+      S.last = { floor: S.run.floor, gold: S.run.goldRun || 0, killer: '', note: 'The dungeon has changed! Your gold from your last run is safe.' };
+      S.run = null;
+    }
+    S.v = VERSION;
+    save();
+  }
   ui.startAt = S.best || 1;
+  if (S.run) checkPanels();
 }
 function save() {
   try { window.localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
 }
 function saveCode() {
-  return btoa(JSON.stringify({ g: S.gold, u: S.up, b: S.best, r: S.runs }));
+  return btoa(JSON.stringify({ g: S.gold, u: S.up, b: S.best, r: S.runs, p: S.perkAt }));
 }
 function loadCode() {
   var box = document.getElementById('codeIn');
@@ -126,9 +217,12 @@ function loadCode() {
     var d = JSON.parse(atob(txt));
     if (typeof d.g !== 'number' || !d.u) throw 'bad';
     S.gold = d.g; S.best = d.b || 0; S.runs = d.r || 0;
-    S.up = { hp: d.u.hp || 0, atk: d.u.atk || 0, def: d.u.def || 0, pot: d.u.pot || 0 };
+    S.up = {};
+    for (var i = 0; i < UPS.length; i++) S.up[UPS[i].id] = d.u[UPS[i].id] || 0;
+    S.perkAt = d.p || {};
     S.run = null; S.last = null;
     ui.codeMsg = 'Save code loaded.';
+    ui.startAt = S.best || 1;
     save();
   } catch (e) {
     ui.codeMsg = 'That code didn\'t work. Check that you copied all of it.';
@@ -139,6 +233,9 @@ function loadCode() {
 // ---------- helpers ----------
 function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
 function sign(n) { return n > 0 ? 1 : (n < 0 ? -1 : 0); }
+function pick(a) { return a[rnd(0, a.length - 1)]; }
+function aName(n) { return (/^[AEIOU]/.test(n) ? 'an ' : 'a ') + n; }
+function say(t) { S.run.log.push(t); }
 function monAt(x, y) {
   var ms = S.run.mons;
   for (var i = 0; i < ms.length; i++) if (ms[i].x === x && ms[i].y === y) return ms[i];
@@ -153,23 +250,176 @@ function upCost(id) {
   for (var i = 0; i < UPS.length; i++) if (UPS[i].id === id) return Math.round(UPS[i].base * Math.pow(1.3, S.up[id]));
   return 0;
 }
+function slotName(key) {
+  if (!key) return 'this level';
+  return key.charAt(0) === 'B' ? 'Blessing ' + key.slice(1) : 'level ' + key.slice(1);
+}
+function slotOrder(a, b) {
+  var ta = a.charAt(0) === 'B' ? 0 : 1, tb = b.charAt(0) === 'B' ? 0 : 1;
+  return ta !== tb ? ta - tb : parseInt(a.slice(1), 10) - parseInt(b.slice(1), 10);
+}
+function forgetPerk(key) { delete S.perkAt[key]; save(); render(); }
+function forgetAll() {
+  if (window.confirm('Forget all saved perks? You\'ll choose them again as you level up.')) { S.perkAt = {}; save(); render(); }
+}
+function perkInfo(id) {
+  for (var i = 0; i < PERKS.length; i++) if (PERKS[i].id === id) return PERKS[i];
+  return PERKS[0];
+}
+function scrollInfo(id) {
+  for (var i = 0; i < SCROLLS.length; i++) if (SCROLLS[i].id === id) return SCROLLS[i];
+  return SCROLLS[0];
+}
+function view() { return S.run.theme === 'dark' ? 2 : 4; }
 
-// ---------- dungeon generation ----------
-function makeMon(f, boss) {
+// ---------- player stats ----------
+function atkOf() { var r = S.run; return r.atk + (r.wpn ? r.wpn.atk : 0); }
+function defOf() { var r = S.run; return r.def + (r.arm ? r.arm.def : 0); }
+function fx(key) {
+  var r = S.run, p = r.pf[key] || 0, v = 0;
+  if (key === 'vamp') v = 3 * p;
+  else if (key === 'crit') v = 15 * p;
+  else if (key === 'thorns') v = 30 * p;
+  else if (key === 'dodge') v = 10 * p;
+  else if (key === 'greed') v = 40 * p;
+  else if (key === 'regen') v = p;
+  if (r.wpn && r.wpn.fx === key) v += r.wpn.v;
+  if (r.arm && r.arm.fx === key) v += r.arm.v;
+  if (CAPS[key]) v = Math.min(CAPS[key], v);
+  return v;
+}
+var CAPS = { crit: 50, thorns: 60, dodge: 40 };
+function capped(id) {
+  var key = id === 'dodge' ? 'dodge' : id;
+  return CAPS[key] && fx(key) >= CAPS[key];
+}
+function heal(n) { var r = S.run; r.hp = Math.min(r.maxHp, r.hp + n); }
+function goldAmt(v) { return Math.round(v * (1 + fx('greed') / 100)); }
+
+function applyPerk(id) {
+  var r = S.run, i;
+  r.pf[id] = (r.pf[id] || 0) + 1;
+  if (id === 'tough') { r.maxHp += 8; r.hp += 8; }
+  else if (id === 'strong') r.atk += 2;
+  else if (id === 'guard') r.def += 1;
+  else if (id === 'supply') r.potions += 2;
+  else if (id === 'scholar') { for (i = 0; i < 3; i++) r.scrolls[pick(SCROLLS).id]++; }
+}
+function randomPerk() {
+  var p = pick(PERKS);
+  while (capped(p.id)) p = pick(PERKS);
+  return p.id;
+}
+function perkChoices() {
+  var out = [];
+  while (out.length < 3) {
+    var id = randomPerk();
+    if (out.indexOf(id) < 0) out.push(id);
+  }
+  return out;
+}
+
+// ---------- gear ----------
+function sfxValue(k, f) {
+  if (k === 'leech') return 1 + Math.floor(f / 5);
+  if (k === 'life') return 8 + 2 * Math.floor(f / 2);
+  if (k === 'crit') return 15;
+  if (k === 'greed') return 30;
+  if (k === 'thorns') return 25;
+  return 10;   // dodge
+}
+function makeGear(f, slot) {
+  slot = slot || (Math.random() < 0.55 ? 'wpn' : 'arm');
+  var q = rnd(0, 9), bonus = q < 2 ? -1 : (q < 7 ? 0 : (q < 9 ? 1 : 2));
+  var pre = slot === 'wpn' ? ['Rusty', '', 'Sharp', 'Masterwork'] : ['Battered', '', 'Sturdy', 'Masterwork'];
+  var g = { slot: slot, fx: '', v: 0, atk: 0, def: 0 };
+  var tier = Math.min(WPN.length - 1, Math.floor(f / 4) + rnd(0, 1));
+  if (slot === 'wpn') {
+    g.base = WPN[tier];
+    g.atk = Math.max(1, 1 + Math.floor(f / 2) + rnd(0, 1) + bonus);
+  } else {
+    g.base = ARM[Math.min(ARM.length - 1, tier)];
+    g.def = Math.max(1, Math.floor(f / 4) + rnd(0, 1) + (bonus > 0 ? 1 : bonus));
+  }
+  var name = (pre[bonus + 1] ? pre[bonus + 1] + ' ' : '') + g.base;
+  if (Math.random() < 0.35) {
+    var s = pick(slot === 'wpn' ? WSFX : ASFX);
+    g.fx = s.fx; g.v = sfxValue(s.fx, f); name += ' ' + s.n;
+  }
+  g.name = name;
+  return g;
+}
+function fxText(k, v) {
+  if (k === 'leech') return 'heals ' + v + ' HP per hit';
+  if (k === 'crit') return '+' + v + '% double damage';
+  if (k === 'greed') return '+' + v + '% gold';
+  if (k === 'thorns') return 'hits back ' + v + '% of damage';
+  if (k === 'life') return '+' + v + ' max HP';
+  if (k === 'dodge') return '+' + v + '% dodge';
+  return '';
+}
+function gearDesc(g) {
+  return (g.slot === 'wpn' ? 'Attack +' + g.atk : 'Armor +' + g.def) + (g.fx ? ', ' + fxText(g.fx, g.v) : '');
+}
+function equip(g) {
+  var r = S.run;
+  if (g.slot === 'wpn') { r.wpn = g; return; }
+  if (r.arm && r.arm.fx === 'life') r.maxHp -= r.arm.v;
+  r.arm = g;
+  if (g.fx === 'life') { r.maxHp += g.v; r.hp += g.v; }
+  r.hp = Math.max(1, Math.min(r.hp, r.maxHp));
+}
+
+// ---------- monsters ----------
+function scaleK(f) { return 1 + 0.12 * (f - 1) + 0.004 * (f - 1) * (f - 1); }
+function makeMon(f, kind, ti) {
   var top = Math.min(TYPES.length - 1, Math.floor((f - 1) / 2) + 1);
-  var low = Math.max(0, top - 3);
-  var i = boss ? top : rnd(low, top);
-  var T = TYPES[i], k = 1 + 0.12 * (f - 1) + 0.004 * (f - 1) * (f - 1);   // keeps getting harder, faster
-  var m = { i: i, ch: T.c, name: T.n, hp: Math.round(T.hp * k), atk: Math.round(T.atk * k),
-            def: T.def + Math.floor((f - 1) / 6), awake: false, boss: false };
-  if (boss) {
-    m.boss = true; m.ch = T.c.toUpperCase(); m.name = 'Giant ' + T.n;
+  var i = ti !== undefined ? ti : (kind === 'boss' || kind === 'mimic' ? top : rnd(Math.max(0, top - 3), top));
+  var T = TYPES[i], k = scaleK(f);
+  var m = { i: i, ch: T.c, name: T.n, ab: T.ab || '', kind: kind || '', hp: Math.round(T.hp * k),
+            atk: Math.round(T.atk * k), def: T.def + Math.floor((f - 1) / 6), awake: false,
+            frozen: 0, stolen: 0, small: false, drop: false };
+  var gm = 1, xm = 1;
+  if (kind === 'boss') {
+    m.ch = T.c.toUpperCase(); m.name = 'Giant ' + T.n;
     m.hp = Math.round(m.hp * 2.5); m.atk = Math.round(m.atk * 1.3); m.def += 1;
+    m.drop = true; gm = 5; xm = 3;
+  } else if (kind === 'champ') {
+    m.name = 'Champion ' + T.n;
+    m.hp = Math.round(m.hp * 1.7); m.atk = Math.round(m.atk * 1.2);
+    m.drop = true; gm = 3; xm = 2;
+  } else if (kind === 'mimic') {
+    m.ch = 'c'; m.name = 'Mimic'; m.ab = '';
+    m.hp = Math.round(m.hp * 1.3); m.awake = true;
+    m.drop = true; gm = 3; xm = 2;
   }
   m.max = m.hp;
-  m.gold = Math.ceil((i + 1) * (1 + 0.1 * (f - 1))) * (boss ? 5 : 1);
-  m.xp = Math.ceil(T.hp * k / 2) * (boss ? 3 : 1);
+  m.gold = Math.ceil((i + 1) * (1 + 0.1 * (f - 1))) * gm;
+  m.xp = Math.ceil(T.hp * k / 2) * xm;
   return m;
+}
+function monDesc(m) {
+  if (m.kind === 'mimic') return 'A treasure chest with teeth! Carries treasure.';
+  var d = m.small ? 'Small and weak.' : (TYPES[m.i].d || '');
+  if (m.drop) d += (d ? ' ' : '') + 'Carries treasure.';
+  return d;
+}
+
+// ---------- dungeon generation ----------
+function pickTheme(f) {
+  if (f % 5 === 0) return 'boss';
+  if (f < 2 || Math.random() < 0.4) return '';
+  var opts = ['vault', 'nest', 'market', 'shrine', 'library', 'dark', 'champ'];
+  if (f >= 4) opts.push('haunted', 'haunted');
+  return pick(opts);
+}
+function shopStock(f) {
+  var s = [
+    { k: 'potion', price: 10 + 2 * f },
+    { k: 'scroll', s: pick(SCROLLS).id, price: 12 + 2 * f },
+    { k: 'gear', g: makeGear(f + 1), price: 25 + 5 * f }
+  ];
+  return s;
 }
 
 function genFloor() {
@@ -192,10 +442,8 @@ function genFloor() {
   }
   if (rooms.length < 4) { genFloor(); return; }
   for (i = 1; i < rooms.length; i++) {
-    var a = rooms[i - 1], b = rooms[i];
-    var cx = a.cx, cy = a.cy;
-    var hFirst = Math.random() < 0.5;
-    if (hFirst) {
+    var a = rooms[i - 1], b = rooms[i], cx = a.cx, cy = a.cy;
+    if (Math.random() < 0.5) {
       while (cx !== b.cx) { map[cy][cx] = 0; cx += sign(b.cx - cx); }
       while (cy !== b.cy) { map[cy][cx] = 0; cy += sign(b.cy - cy); }
     } else {
@@ -204,6 +452,8 @@ function genFloor() {
     }
   }
   r.map = map; r.seen = seen; r.mons = []; r.items = [];
+  var f = r.floor, th = pickTheme(f);
+  r.theme = th;
   var start = rooms[0];
   r.px = start.cx; r.py = start.cy;
   r.ex = start.cx; r.ey = start.cy;    // elevator: where you arrive on every floor
@@ -217,65 +467,148 @@ function genFloor() {
   r.sx = rnd(far.x, far.x + far.w - 1); r.sy = rnd(far.y, far.y + far.h - 1);
 
   function freeSpot(room) {
-    for (var t = 0; t < 40; t++) {
+    for (var t = 0; t < 60; t++) {
       var rm = room || rooms[rnd(1, rooms.length - 1)];
-      var fx = rnd(rm.x, rm.x + rm.w - 1), fy = rnd(rm.y, rm.y + rm.h - 1);
-      if ((fx === r.sx && fy === r.sy) || monAt(fx, fy) || itemAt(fx, fy) >= 0) continue;
-      return { x: fx, y: fy };
+      var fx2 = rnd(rm.x, rm.x + rm.w - 1), fy = rnd(rm.y, rm.y + rm.h - 1);
+      if ((fx2 === r.sx && fy === r.sy) || monAt(fx2, fy) || itemAt(fx2, fy) >= 0) continue;
+      return { x: fx2, y: fy };
     }
     return null;
   }
-  var f = r.floor, n = Math.min(12, 3 + Math.floor(f / 2)), p, m;
+  function addMon(m, room) {
+    var p = freeSpot(room);
+    if (p) { m.x = p.x; m.y = p.y; r.mons.push(m); }
+  }
+  function addItem(it) {
+    var p = freeSpot();
+    if (p) { it.x = p.x; it.y = p.y; r.items.push(it); }
+  }
+
+  // monsters
+  var n = Math.min(12, 3 + Math.floor(f / 2));
+  if (th === 'nest') n = Math.min(16, Math.round(n * 1.6));
   for (i = 0; i < n; i++) {
-    p = freeSpot(); if (!p) continue;
-    m = makeMon(f, false); m.x = p.x; m.y = p.y; r.mons.push(m);
+    var kind = (f >= 4 && Math.random() < 0.06) ? 'champ' : '';
+    if (th === 'haunted' && i % 2 === 0) addMon(makeMon(f, kind, 6));
+    else addMon(makeMon(f, kind));
   }
-  if (f % 5 === 0) {
-    p = freeSpot(far);
-    if (p) { m = makeMon(f, true); m.x = p.x; m.y = p.y; r.mons.push(m); }
-  }
-  var piles = rnd(2, 4);
-  for (i = 0; i < piles; i++) {
-    p = freeSpot(); if (p) r.items.push({ x: p.x, y: p.y, k: 'gold', v: rnd(2, 5) + f });
-  }
-  var pots = (Math.random() < 0.5 ? 1 : 0) + (f % 3 === 0 ? 1 : 0);
-  for (i = 0; i < pots; i++) {
-    p = freeSpot(); if (p) r.items.push({ x: p.x, y: p.y, k: 'potion' });
-  }
+  if (th === 'boss') addMon(makeMon(f, 'boss'), far);
+  if (th === 'champ') addMon(makeMon(f, 'champ'), far);
+
+  // treasure
+  var gm = th === 'nest' ? 1.5 : 1;
+  var piles = rnd(2, 4) + (th === 'vault' ? 4 : 0);
+  for (i = 0; i < piles; i++) addItem({ k: 'gold', v: Math.round((rnd(2, 5) + f) * gm) });
+  var pots = (Math.random() < 0.5 ? 1 : 0) + (f % 3 === 0 ? 1 : 0) + (th === 'shrine' ? 1 : 0);
+  for (i = 0; i < pots; i++) addItem({ k: 'potion' });
+  var scr = th === 'library' ? 3 : (Math.random() < 0.4 ? 1 : 0);
+  for (i = 0; i < scr; i++) addItem({ k: 'scroll', s: pick(SCROLLS).id });
+  var chests = (Math.random() < 0.35 ? 1 : 0) + (th === 'vault' ? 1 : 0);
+  for (i = 0; i < chests; i++) addItem({ k: 'chest' });
+  if (th === 'market' || (f >= 3 && Math.random() < 0.1)) addItem({ k: 'shop', stock: shopStock(f) });
+  if (th === 'shrine' || (f >= 2 && Math.random() < 0.1)) addItem({ k: 'shrine' });
   reveal();
 }
 
 function reveal() {
-  var r = S.run;
-  for (var y = Math.max(0, r.py - VIEW); y <= Math.min(H - 1, r.py + VIEW); y++)
-    for (var x = Math.max(0, r.px - VIEW); x <= Math.min(W - 1, r.px + VIEW); x++) r.seen[y][x] = 1;
+  var r = S.run, v = view();
+  for (var y = Math.max(0, r.py - v); y <= Math.min(H - 1, r.py + v); y++)
+    for (var x = Math.max(0, r.px - v); x <= Math.min(W - 1, r.px + v); x++) r.seen[y][x] = 1;
 }
 function visible(x, y) {
-  return Math.abs(x - S.run.px) <= VIEW && Math.abs(y - S.run.py) <= VIEW;
+  var v = view();
+  return Math.abs(x - S.run.px) <= v && Math.abs(y - S.run.py) <= v;
+}
+function themeNote() {
+  var r = S.run;
+  if (r.theme) say(THEMES[r.theme].note);
 }
 
 // ---------- runs ----------
-function headStart(f) { return Math.max(0, Math.round(0.05 * f * f + 0.2 * f) - 1); }   // free levels when starting deep, about what you would have earned
+function headStart(f) { return Math.max(0, Math.round(0.05 * f * f + 0.2 * f) - 1); }   // free levels when starting deep
 function startRun() {
-  var u = S.up, f = Math.max(1, Math.min(ui.startAt, S.best || 1)), extra = headStart(f);
+  var u = S.up, f = Math.max(1, Math.min(ui.startAt, S.best || 1)), extra = headStart(f), i;
   S.run = { floor: f - 1, maxHp: 20 + 5 * u.hp + 4 * extra, hp: 0, atk: 3 + u.atk + extra, def: u.def,
-            lv: 1 + extra, xp: 0, potions: 1 + u.pot, goldRun: 0, kills: 0, log: [] };
-  S.run.hp = S.run.maxHp;
+            lv: 1 + extra, xp: 0, potions: 1 + u.pot, scrolls: { fire: 0, freeze: 0, tele: 0, map: 0 },
+            goldRun: 0, kills: 0, log: [], pf: {}, queue: [], poison: 0, turns: 0, panel: null,
+            theme: '', wpn: null, arm: null };
+  var r = S.run;
+  for (i = 0; i < u.scr; i++) r.scrolls[pick(SCROLLS).id]++;
+  var saved = 0, free = 0;
+  for (i = 1; i <= u.perk; i++) {
+    if (S.perkAt['B' + i]) { applyPerk(S.perkAt['B' + i]); saved++; }
+    else r.queue.push('B' + i);
+  }
+  if (f > 1) {
+    equip(makeGear(f - 1, 'wpn'));
+    equip(makeGear(f - 1, 'arm'));
+    // levels you skip with the elevator: use your saved perk for that level, or a random one
+    for (i = 2; i <= r.lv; i += 2) {
+      if (S.perkAt['L' + i]) { applyPerk(S.perkAt['L' + i]); saved++; }
+      else { applyPerk(randomPerk()); free++; }
+    }
+  }
+  r.hp = r.maxHp;
   S.runs++;
   S.last = null;
-  ui.elev = false;
+  ui.elev = false; ui.bag = false;
   nextFloor();
-  if (f === 1) S.run.log = ['You enter the dungeon. Find the stairs (>) to go deeper.'];
-  else S.run.log = ['The elevator drops you on floor ' + f + '. You start at level ' + S.run.lv + '.'];
+  if (f === 1) r.log = ['You enter the dungeon. Find the stairs (>) to go deeper.'];
+  else r.log = ['The elevator drops you on floor ' + f + '. You start at level ' + r.lv + ' with gear.'];
+  if (saved || free) r.log.push('Perks: ' + saved + ' saved' + (free ? ', ' + free + ' random for levels you haven\'t picked yet' : '') + '.');
+  themeNote();
+  checkPanels(); save(); render();
+}
+function nextFloor() {
+  var r = S.run;
+  ui.elev = false; ui.bag = false;
+  r.floor++;
+  if (r.floor > S.best) S.best = r.floor;
+  if (r.floor > 1) heal(Math.ceil(r.maxHp / 10));
+  genFloor();
+  r.log = ['You reach floor ' + r.floor + '.'];
+  themeNote();
+}
+function blocked() {
+  var r = S.run;
+  return !r || r.panel || ui.elev || ui.bag;
+}
+function descend() {
+  var r = S.run;
+  if (!r || r.panel || r.px !== r.sx || r.py !== r.sy) return;
+  nextFloor(); checkPanels(); save(); render();
+}
+function endRun(killer) {
+  var r = S.run;
+  S.gold += r.goldRun;
+  S.last = { floor: r.floor, gold: r.goldRun, killer: killer, kills: r.kills, lv: r.lv };
+  S.run = null;
+  ui.elev = false; ui.bag = false;
   save(); render();
 }
+function giveUp() {
+  if (S.run && window.confirm('End this run? You keep the gold you found.')) endRun('');
+}
+function upMax(id) {
+  for (var i = 0; i < UPS.length; i++) if (UPS[i].id === id) return UPS[i].max || 0;
+  return 0;
+}
+function maxed(id) { return upMax(id) > 0 && S.up[id] >= upMax(id); }
+function buy(id) {
+  var c = upCost(id);
+  if (S.gold < c || maxed(id)) return;
+  S.gold -= c; S.up[id]++;
+  save(); render();
+}
+
+// ---------- elevator ----------
 function onElevator() {
   var r = S.run;
   return r && r.px === r.ex && r.py === r.ey;
 }
 function openElevator() {
-  if (!onElevator()) return;
-  ui.elev = true; ui.pick = S.run.floor;
+  if (!onElevator() || S.run.panel) return;
+  ui.bag = false; ui.elev = true; ui.pick = S.run.floor;
   render();
 }
 function pickFloor(n, abs) {
@@ -296,148 +629,352 @@ function rideElevator() {
   r.floor = ui.pick;
   genFloor();
   r.log = ['The elevator takes you to floor ' + r.floor + '.'];
-  if (r.floor % 5 === 0) r.log.push('Something big lives on this floor\u2026');
-  save(); render();
-}
-function nextFloor() {
-  var r = S.run;
-  ui.elev = false;
-  r.floor++;
-  if (r.floor > S.best) S.best = r.floor;
-  if (r.floor > 1) r.hp = Math.min(r.maxHp, r.hp + Math.ceil(r.maxHp / 10));
-  genFloor();
-  r.log = ['You reach floor ' + r.floor + '.'];
-  if (r.floor % 5 === 0) r.log.push('Something big lives on this floor\u2026');
-}
-function descend() {
-  var r = S.run;
-  if (!r || r.px !== r.sx || r.py !== r.sy) return;
-  nextFloor(); save(); render();
-}
-function endRun(killer) {
-  var r = S.run;
-  S.gold += r.goldRun;
-  S.last = { floor: r.floor, gold: r.goldRun, killer: killer, kills: r.kills, lv: r.lv };
-  S.run = null;
-  save(); render();
-}
-function giveUp() {
-  if (S.run && window.confirm('End this run? You keep the gold you found.')) endRun('');
-}
-function buy(id) {
-  var c = upCost(id);
-  if (S.gold < c) return;
-  S.gold -= c; S.up[id]++;
+  themeNote();
   save(); render();
 }
 
-// ---------- turns ----------
+// ---------- panels: level up, loot, merchant, shrine ----------
+function checkPanels() {
+  var r = S.run;
+  if (r && !r.panel && r.queue.length > 0) r.panel = { t: 'perk', opts: perkChoices() };
+}
+function closePanel() {
+  var r = S.run;
+  if (!r) return;
+  r.panel = null;
+  checkPanels(); save(); render();
+}
+function choosePerk(id) {
+  var r = S.run;
+  if (!r || !r.panel || r.panel.t !== 'perk') return;
+  applyPerk(id);
+  var key = r.queue.shift();
+  if (key) S.perkAt[key] = id;
+  r.log = ['You chose ' + perkInfo(id).n + '. It\'s saved: you\'ll get it again every time you reach ' + slotName(key) + '.'];
+  closePanel();
+}
+function hereItem() {
+  var i = itemAt(S.run.px, S.run.py);
+  return i >= 0 ? S.run.items[i] : null;
+}
+function equipHere() {
+  var r = S.run, it = hereItem();
+  if (!it || it.k !== 'gear') { closePanel(); return; }
+  equip(it.g);
+  r.items.splice(r.items.indexOf(it), 1);
+  r.log = ['You equip the ' + it.g.name + '.'];
+  closePanel();
+}
+function shopBuy(j) {
+  var r = S.run, it = hereItem();
+  if (!it || it.k !== 'shop') return;
+  var s = it.stock[j];
+  if (!s || s.sold || r.goldRun < s.price) return;
+  r.goldRun -= s.price; s.sold = true;
+  if (s.k === 'potion') { r.potions++; r.log = ['You buy a potion.']; }
+  else if (s.k === 'scroll') { r.scrolls[s.s]++; r.log = ['You buy a ' + scrollInfo(s.s).n + ' scroll.']; }
+  else { equip(s.g); r.log = ['You buy and equip the ' + s.g.name + '.']; }
+  save(); render();
+}
+function shrineUse(how) {
+  var r = S.run, it = hereItem();
+  if (!it || it.k !== 'shrine') { closePanel(); return; }
+  r.items.splice(r.items.indexOf(it), 1);
+  if (how === 'rest') {
+    r.hp = r.maxHp; r.poison = 0;
+    r.log = ['You rest at the shrine. Fully healed!'];
+  } else {
+    var p = randomPerk();
+    applyPerk(p);
+    r.hp = Math.max(1, r.hp - Math.ceil(r.maxHp / 4));
+    r.log = ['The shrine glows. You gain ' + perkInfo(p).n + ': ' + perkInfo(p).d + '.'];
+  }
+  closePanel();
+}
+function reopenHere() {
+  var it = hereItem();
+  if (!it) return false;
+  if (it.k === 'gear') S.run.panel = { t: 'loot' };
+  else if (it.k === 'shop') S.run.panel = { t: 'shop' };
+  else if (it.k === 'shrine') S.run.panel = { t: 'shrine' };
+  else return false;
+  render();
+  return true;
+}
+
+// ---------- fighting ----------
 function hit(atk, def) { return Math.max(1, atk + rnd(-1, 1) - def); }
 
-function attack(m) {
-  var r = S.run, d = hit(r.atk, m.def);
-  m.hp -= d; m.awake = true;
-  if (m.hp > 0) { r.log.push('You hit the ' + m.name + ' for ' + d + '.'); return; }
-  r.log.push('You defeat the ' + m.name + '! +' + m.gold + ' gold');
-  r.mons.splice(r.mons.indexOf(m), 1);
-  r.goldRun += m.gold; r.kills++; r.xp += m.xp;
+function levelCheck() {
+  var r = S.run;
   while (r.xp >= r.lv * 10) {
     r.xp -= r.lv * 10; r.lv++;
     r.maxHp += 4; r.atk += 1;
-    r.hp = Math.min(r.maxHp, r.hp + Math.ceil(r.maxHp / 3));
-    r.log.push('Level up! You are level ' + r.lv + ': +4 max HP, +1 attack.');
+    heal(Math.ceil(r.maxHp / 3));
+    if (r.lv % 2 === 0) {
+      var sp = S.perkAt['L' + r.lv];
+      if (sp) { applyPerk(sp); say('Level up! Level ' + r.lv + '. Your saved perk: ' + perkInfo(sp).n + '.'); }
+      else { r.queue.push('L' + r.lv); say('Level up! You are level ' + r.lv + '. Choose a perk.'); }
+    }
+    else say('Level up! You are level ' + r.lv + '. (A perk comes every 2 levels.)');
   }
 }
-
-function pickup() {
-  var r = S.run, i = itemAt(r.px, r.py);
-  if (i >= 0) {
-    var it = r.items[i];
-    if (it.k === 'gold') { r.goldRun += it.v; r.log.push('You pick up ' + it.v + ' gold.'); }
-    else { r.potions++; r.log.push('You find a potion.'); }
-    r.items.splice(i, 1);
-  }
-  if (r.px === r.sx && r.py === r.sy) r.log.push('You found the stairs. Tap Go down when you\'re ready.');
-}
-
-function canStep(x, y) {
+function canStep(x, y, ghost) {
   var r = S.run;
   if (x < 0 || y < 0 || x >= W || y >= H) return false;
-  if (r.map[y][x] === 1) return false;
+  if (!ghost && r.map[y][x] === 1) return false;
   if (x === r.px && y === r.py) return false;
   return !monAt(x, y);
 }
-
+function dropAt(x, y, item) {
+  var r = S.run, D = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]];
+  for (var d = 0; d < D.length; d++) {
+    var nx = x + D[d][0], ny = y + D[d][1];
+    if (nx < 0 || ny < 0 || nx >= W || ny >= H || r.map[ny][nx] === 1) continue;
+    if (itemAt(nx, ny) >= 0 || (nx === r.sx && ny === r.sy) || (nx === r.ex && ny === r.ey)) continue;
+    item.x = nx; item.y = ny; r.items.push(item);
+    return true;
+  }
+  return false;
+}
+function killMon(m) {
+  var r = S.run, idx = r.mons.indexOf(m);
+  if (idx < 0) return;
+  r.mons.splice(idx, 1);
+  var g = goldAmt(m.gold) + m.stolen;
+  r.goldRun += g; r.kills++; r.xp += m.xp;
+  say('You defeat the ' + m.name + '! +' + g + ' gold');
+  if (fx('vamp')) heal(fx('vamp'));
+  if (m.drop) {
+    var gear = makeGear(r.floor + 1);
+    if (dropAt(m.x, m.y, { k: 'gear', g: gear })) say('It dropped a ' + gear.name + '!');
+  }
+  if (m.ab === 'split' && !m.small) {
+    var D = [[1, 0], [-1, 0], [0, 1], [0, -1]], made = 0;
+    for (var d = 0; d < 4 && made < 2; d++) {
+      var nx = m.x + D[d][0], ny = m.y + D[d][1];
+      if (!canStep(nx, ny)) continue;
+      r.mons.push({ i: m.i, ch: TYPES[m.i].c, name: 'Small Slime', ab: '', kind: '', small: true, drop: false,
+                    hp: Math.ceil(m.max / 3), max: Math.ceil(m.max / 3), atk: Math.max(1, Math.round(m.atk * 0.7)),
+                    def: m.def, awake: true, frozen: 0, stolen: 0, gold: Math.ceil(m.gold / 2),
+                    xp: Math.ceil(m.xp / 2), x: nx, y: ny });
+      made++;
+    }
+    if (made) say('The slime splits in two!');
+  }
+  levelCheck();
+}
+function attack(m) {
+  var r = S.run, d = hit(atkOf(), m.def), c = fx('crit'), crit = c > 0 && rnd(1, 100) <= c;
+  if (crit) d *= 2;
+  m.hp -= d; m.awake = true;
+  if (fx('leech')) heal(fx('leech'));
+  if (m.hp > 0) { say((crit ? 'Critical hit! ' : '') + 'You hit the ' + m.name + ' for ' + d + '.'); return; }
+  if (crit) say('Critical hit!');
+  killMon(m);
+}
+function monHits(m, kind) {
+  var r = S.run, dg = fx('dodge');
+  if (dg && rnd(1, 100) <= dg) { say('You dodge the ' + m.name + '!'); return ''; }
+  var d = hit(kind === 'archer' ? Math.max(1, m.atk - 1) : m.atk, defOf());
+  r.hp -= d;
+  if (kind === 'archer') say('The ' + m.name + ' shoots you for ' + d + '.');
+  else if (kind === 'fire') say('The ' + m.name + ' breathes fire at you for ' + d + '.');
+  else say('The ' + m.name + ' hits you for ' + d + '.');
+  if (r.hp <= 0) return aName(m.name);
+  if (m.ab === 'poison') { if (!r.poison) say('You are poisoned!'); r.poison = 3; }
+  if (m.ab === 'thief' && r.goldRun > 0) {
+    var s = Math.min(r.goldRun, 3 + r.floor);
+    r.goldRun -= s; m.stolen += s;
+    say('The ' + m.name + ' steals ' + s + ' gold!');
+  }
+  var th = fx('thorns');
+  if (th && !kind) {
+    m.hp -= Math.max(1, Math.round(d * th / 100));
+    if (m.hp <= 0) { say('Your thorns finish off the ' + m.name + '!'); killMon(m); }
+  }
+  return '';
+}
+function lineClear(x0, y0, x1, y1) {
+  var dx = sign(x1 - x0), dy = sign(y1 - y0), x = x0 + dx, y = y0 + dy;
+  while (x !== x1 || y !== y1) {
+    if (S.run.map[y][x] === 1 || monAt(x, y)) return false;
+    x += dx; y += dy;
+  }
+  return true;
+}
+function moveMon(m) {
+  var r = S.run, dx = r.px - m.x, dy = r.py - m.y, steps;
+  if (m.ab === 'erratic' && Math.random() < 0.4) {
+    steps = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    steps.sort(function () { return Math.random() - 0.5; });
+  } else if (Math.abs(dx) >= Math.abs(dy)) {
+    steps = [[sign(dx), 0], [0, sign(dy) || 1], [0, sign(dy) || -1]];
+  } else {
+    steps = [[0, sign(dy)], [sign(dx) || 1, 0], [sign(dx) || -1, 0]];
+  }
+  for (var s = 0; s < steps.length; s++) {
+    var nx = m.x + steps[s][0], ny = m.y + steps[s][1];
+    if ((steps[s][0] || steps[s][1]) && canStep(nx, ny, m.ab === 'ghost')) { m.x = nx; m.y = ny; return; }
+  }
+}
 function monstersAct() {
-  var r = S.run;
-  for (var i = 0; i < r.mons.length; i++) {
-    var m = r.mons[i], dx = r.px - m.x, dy = r.py - m.y;
+  var r = S.run, list = r.mons.slice();
+  for (var i = 0; i < list.length; i++) {
+    var m = list[i];
+    if (r.mons.indexOf(m) < 0) continue;
+    if (m.frozen > 0) { m.frozen--; continue; }
+    if (m.ab === 'regen' && m.hp < m.max) m.hp = Math.min(m.max, m.hp + Math.max(1, Math.round(m.max / 15)));
+    var dx = r.px - m.x, dy = r.py - m.y, dist = Math.abs(dx) + Math.abs(dy), k;
     if (!m.awake && Math.max(Math.abs(dx), Math.abs(dy)) <= 5) m.awake = true;
     if (!m.awake) continue;
-    if (Math.abs(dx) + Math.abs(dy) === 1) {
-      var d = hit(m.atk, r.def);
-      r.hp -= d;
-      r.log.push('The ' + m.name + ' hits you for ' + d + '.');
-      if (r.hp <= 0) return m.name;
-      continue;
+    if (dist === 1) { k = monHits(m, ''); if (k) return k; continue; }
+    var range = m.ab === 'archer' ? 4 : (m.ab === 'fire' ? 2 : 0);
+    if (range && dist <= range && (dx === 0 || dy === 0) && lineClear(m.x, m.y, r.px, r.py)) {
+      k = monHits(m, m.ab); if (k) return k; continue;
     }
-    var steps = [];
-    if (m.i === 1 && Math.random() < 0.4) {          // bats flutter around
-      steps = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-      steps.sort(function () { return Math.random() - 0.5; });
-    } else if (Math.abs(dx) >= Math.abs(dy)) {
-      steps = [[sign(dx), 0], [0, sign(dy) || 1], [0, sign(dy) || -1]];
-    } else {
-      steps = [[0, sign(dy)], [sign(dx) || 1, 0], [sign(dx) || -1, 0]];
-    }
-    for (var s = 0; s < steps.length; s++) {
-      var nx = m.x + steps[s][0], ny = m.y + steps[s][1];
-      if ((steps[s][0] || steps[s][1]) && canStep(nx, ny)) { m.x = nx; m.y = ny; break; }
-    }
+    moveMon(m);
+    if (m.ab === 'fast' && Math.abs(r.px - m.x) + Math.abs(r.py - m.y) > 1) moveMon(m);
   }
   return '';
 }
 
-function endTurn() {
+// ---------- turns ----------
+function pickup() {
+  var r = S.run, i = itemAt(r.px, r.py);
+  if (i >= 0) {
+    var it = r.items[i];
+    if (it.k === 'gold') { var v = goldAmt(it.v); r.goldRun += v; say('You pick up ' + v + ' gold.'); r.items.splice(i, 1); }
+    else if (it.k === 'potion') { r.potions++; say('You find a potion.'); r.items.splice(i, 1); }
+    else if (it.k === 'scroll') { r.scrolls[it.s]++; say('You find a ' + scrollInfo(it.s).n + ' scroll.'); r.items.splice(i, 1); }
+    else if (it.k === 'chest') openChest(i);
+    else if (it.k === 'gear') { say('There is a ' + it.g.name + ' here.'); r.panel = { t: 'loot' }; }
+    else if (it.k === 'shop') { say('A merchant waves at you.'); r.panel = { t: 'shop' }; }
+    else if (it.k === 'shrine') { say('You find a shrine.'); r.panel = { t: 'shrine' }; }
+  }
+  if (r.px === r.sx && r.py === r.sy) say('You found the stairs. Tap Go down when you\'re ready.');
+}
+function openChest(i) {
+  var r = S.run, it = r.items[i];
+  if (r.floor >= 3 && Math.random() < 0.15) {
+    var D = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    for (var d = 0; d < 4; d++) {
+      var nx = r.px + D[d][0], ny = r.py + D[d][1];
+      if (!canStep(nx, ny)) continue;
+      r.items.splice(i, 1);
+      var m = makeMon(r.floor, 'mimic');
+      m.x = nx; m.y = ny; r.mons.push(m);
+      say('The chest grows teeth! It\'s a Mimic!');
+      return;
+    }
+  }
+  var g = goldAmt(rnd(3, 8) + r.floor);
+  r.goldRun += g;
+  it.k = 'gear'; it.g = makeGear(r.floor + 1);
+  say('You open the chest: ' + g + ' gold and a ' + it.g.name + '.');
+  r.panel = { t: 'loot' };
+}
+
+// One turn passes: monsters act, poison and regeneration tick. Returns true if the run ended.
+function passTurn() {
+  var r = S.run;
+  r.turns++;
   var killer = monstersAct();
-  if (killer) { endRun(killer); return; }
-  reveal(); save(); render();
+  if (!killer && r.poison > 0) {
+    var pd = 1 + Math.floor(r.floor / 6);
+    r.hp -= pd; r.poison--;
+    say('Poison hurts you for ' + pd + '.');
+    if (r.hp <= 0) killer = 'poison';
+  }
+  if (killer) { endRun(killer); return true; }
+  if (fx('regen') && r.turns % 3 === 0) heal(fx('regen'));
+  reveal();
+  return false;
+}
+function endTurn() {
+  if (passTurn()) return;
+  checkPanels(); save(); render();
 }
 
 function act(dx, dy) {
   var r = S.run;
-  if (!r) return;
+  if (blocked()) return;
   r.log = [];
   if (dx || dy) {
     var nx = r.px + dx, ny = r.py + dy;
-    if (nx < 0 || ny < 0 || nx >= W || ny >= H || r.map[ny][nx] === 1) {
-      r.log.push('A wall blocks the way.'); render(); return;
-    }
+    if (nx < 0 || ny < 0 || nx >= W || ny >= H) return;
     var m = monAt(nx, ny);
     if (m) attack(m);
+    else if (r.map[ny][nx] === 1) { say('A wall blocks the way.'); render(); return; }
     else { r.px = nx; r.py = ny; pickup(); }
   } else {
-    r.log.push('You wait.');
+    say('You wait.');
   }
   endTurn();
 }
 
 function drink() {
   var r = S.run;
-  if (!r || r.potions < 1) return;
+  if (!r || r.panel || r.potions < 1) return;
+  ui.bag = false; ui.elev = false;
   r.log = [];
   r.potions--;
-  var heal = Math.ceil(r.maxHp / 2);
-  r.hp = Math.min(r.maxHp, r.hp + heal);
-  r.log.push('You drink a potion. HP ' + r.hp + '/' + r.maxHp + '.');
+  heal(Math.ceil(r.maxHp / 2));
+  r.poison = 0;
+  say('You drink a potion. HP ' + r.hp + '/' + r.maxHp + '.');
   endTurn();
 }
 
-function anyMonsterInView() {
-  var ms = S.run.mons;
-  for (var i = 0; i < ms.length; i++) if (visible(ms[i].x, ms[i].y)) return true;
-  return false;
+function openBag() {
+  if (!S.run || S.run.panel) return;
+  ui.elev = false; ui.bag = true; render();
 }
+function scrollCount() {
+  var s = S.run.scrolls;
+  return s.fire + s.freeze + s.tele + s.map;
+}
+function seenMonsters() {
+  var out = [], ms = S.run.mons;
+  for (var i = 0; i < ms.length; i++) if (visible(ms[i].x, ms[i].y)) out.push(ms[i]);
+  return out;
+}
+function readScroll(id) {
+  var r = S.run, i, ms;
+  if (!r || r.panel || !r.scrolls[id]) return;
+  ui.bag = false;
+  r.log = [];
+  r.scrolls[id]--;
+  if (id === 'fire') {
+    ms = seenMonsters();
+    var dmg = Math.max(5, atkOf() * 2);
+    say(ms.length ? 'Flames burst out! ' + ms.length + (ms.length === 1 ? ' monster takes ' : ' monsters take ') + dmg + ' damage.' : 'Flames burst out, but nothing is in sight.');
+    for (i = 0; i < ms.length; i++) {
+      ms[i].hp -= dmg; ms[i].awake = true;
+      if (ms[i].hp <= 0) killMon(ms[i]);
+    }
+  } else if (id === 'freeze') {
+    ms = seenMonsters();
+    for (i = 0; i < ms.length; i++) ms[i].frozen = 3;
+    say(ms.length ? 'Ice covers ' + ms.length + (ms.length === 1 ? ' monster.' : ' monsters.') : 'Ice spreads out, but nothing is in sight.');
+  } else if (id === 'tele') {
+    var spots = [], x, y;
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      if (r.map[y][x] === 0 && !monAt(x, y) && itemAt(x, y) < 0 && Math.abs(x - r.px) + Math.abs(y - r.py) > 5) spots.push([x, y]);
+    }
+    if (spots.length) {
+      var s = pick(spots);
+      r.px = s[0]; r.py = s[1];
+      reveal();
+      say('Whoosh! You teleport.');
+    } else say('The scroll fizzles.');
+  } else if (id === 'map') {
+    for (i = 0; i < H; i++) for (var j = 0; j < W; j++) r.seen[i][j] = 1;
+    say('The whole floor appears on your map.');
+  }
+  endTurn();
+}
+
+function anyMonsterInView() { return seenMonsters().length > 0; }
 // Shortest path over squares you've seen, avoiding walls and monsters.
 function findPath(tx, ty) {
   var r = S.run, prev = {}, q = [[r.px, r.py]], D = [[1, 0], [-1, 0], [0, 1], [0, -1]];
@@ -458,7 +995,7 @@ function findPath(tx, ty) {
   }
   return null;
 }
-// Walk many steps in one tap. Monsters still take their turns; stops when one comes into view.
+// Walk many steps in one tap. Monsters still take their turns; stops when anything happens.
 function walkTo(path) {
   var r = S.run;
   r.log = [];
@@ -467,22 +1004,20 @@ function walkTo(path) {
     if (monAt(nx, ny)) break;
     var before = r.log.length;
     r.px = nx; r.py = ny; pickup();
-    var killer = monstersAct();
-    if (killer) { endRun(killer); return; }
-    reveal();
-    if (r.log.length > before || anyMonsterInView()) break;
+    if (passTurn()) return;
+    if (r.panel || r.queue.length > 0 || r.log.length > before || anyMonsterInView()) break;
   }
-  save(); render();
+  checkPanels(); save(); render();
 }
 
 function tapCell(x, y) {
   var r = S.run;
-  if (!r) return;
+  if (blocked()) return;
   var dx = x - r.px, dy = y - r.py;
   if (!dx && !dy) {
     if (r.px === r.sx && r.py === r.sy) descend();
     else if (onElevator()) openElevator();
-    else act(0, 0);
+    else if (!reopenHere()) act(0, 0);
     return;
   }
   if (Math.abs(dx) + Math.abs(dy) > 1 && !anyMonsterInView()) {
@@ -503,10 +1038,24 @@ function btn(label, call, cls, off) {
   return '<button class="btn' + (cls ? ' ' + cls : '') + '"' + (off ? ' disabled' : '') +
          ' onclick="' + call + '">' + label + '</button>';
 }
+function choice(title, desc, call, off, cls) {
+  return btn('<b>' + title + '</b>' + (desc ? '<br><span class="desc">' + desc + '</span>' : ''), call,
+             'wide choice' + (cls ? ' ' + cls : ''), off);
+}
+function itemGlyph(it) {
+  if (it.k === 'gold') return '$';
+  if (it.k === 'potion') return '!';
+  if (it.k === 'scroll') return '?';
+  if (it.k === 'chest') return '*';
+  if (it.k === 'gear') return it.g.slot === 'wpn' ? ')' : '[';
+  if (it.k === 'shop') return '&amp;';
+  if (it.k === 'shrine') return '+';
+  return '';
+}
 
 function elevatorPanel() {
   var r = S.run;
-  return '<div class="elev"><b>Elevator</b><br>Go to floor<div class="pick">' + ui.pick + '</div>' +
+  return '<div class="panel"><b class="ptitle">Elevator</b><p>Go to floor</p><div class="pick">' + ui.pick + '</div>' +
     '<table class="steps"><tr><td>' + btn('&minus;10', 'pickFloor(-10)', 'step', ui.pick <= 1) + '</td><td>' +
     btn('+10', 'pickFloor(10)', 'step', ui.pick >= S.best) + '</td></tr><tr><td>' +
     btn('&minus;1', 'pickFloor(-1)', 'step', ui.pick <= 1) + '</td><td>' +
@@ -515,29 +1064,77 @@ function elevatorPanel() {
     btn(ui.pick === r.floor ? 'Stay here' : 'Go to ' + ui.pick, 'rideElevator()', 'main wide') +
     btn('Cancel', 'ui.elev=false;render()', 'wide small') + '</div>';
 }
+function bagPanel() {
+  var r = S.run, h = '<div class="panel"><b class="ptitle">Scrolls</b><p>Reading one uses your turn.</p>';
+  for (var i = 0; i < SCROLLS.length; i++) {
+    var s = SCROLLS[i], n = r.scrolls[s.id];
+    h += choice(s.n + ' (' + n + ')', s.d, 'readScroll(\'' + s.id + '\')', n < 1);
+  }
+  return h + btn('Close', 'ui.bag=false;render()', 'wide small') + '</div>';
+}
+function panelHTML() {
+  var r = S.run, P = r.panel, h = '<div class="panel">', i, it = hereItem();
+  if (P.t === 'perk') {
+    var slot = r.queue[0] || '';
+    h += '<b class="ptitle">' + (slot.charAt(0) === 'B' ? 'Blessing' : 'Level up!') + '</b><p>Choose a perk for ' + slotName(slot) +
+         '. It will be saved for every run.' + (r.queue.length > 1 ? ' (' + (r.queue.length - 1) + ' more after this)' : '') + '</p>';
+    for (i = 0; i < P.opts.length; i++) {
+      var p = perkInfo(P.opts[i]), have = r.pf[p.id] ? ' (have ' + r.pf[p.id] + ')' : '';
+      h += choice(p.n + have, p.d, 'choosePerk(\'' + p.id + '\')');
+    }
+  } else if (P.t === 'loot' && it && it.k === 'gear') {
+    var g = it.g, cur = g.slot === 'wpn' ? r.wpn : r.arm;
+    h += '<b class="ptitle">You found</b><p><b>' + g.name + '</b><br>' + gearDesc(g) + '</p>' +
+         '<p class="now">Now using:<br>' + (cur ? cur.name + '<br>' + gearDesc(cur) : 'nothing') + '</p>' +
+         btn('Equip', 'equipHere()', 'main wide') + btn('Leave it', 'closePanel()', 'wide');
+  } else if (P.t === 'shop' && it && it.k === 'shop') {
+    h += '<b class="ptitle">Merchant</b><p>You have ' + r.goldRun + ' gold. Gold you spend here doesn\'t go home.</p>';
+    for (i = 0; i < it.stock.length; i++) {
+      var s = it.stock[i], label, desc;
+      if (s.k === 'potion') { label = 'Potion'; desc = 'Heals half your HP'; }
+      else if (s.k === 'scroll') { label = scrollInfo(s.s).n + ' scroll'; desc = scrollInfo(s.s).d; }
+      else { label = s.g.name; desc = gearDesc(s.g); }
+      h += choice(label, (s.sold ? 'Sold' : desc + '<br><b>' + s.price + ' gold</b>'), 'shopBuy(' + i + ')', s.sold || r.goldRun < s.price);
+    }
+    h += btn('Leave', 'closePanel()', 'wide');
+  } else if (P.t === 'shrine' && it && it.k === 'shrine') {
+    h += '<b class="ptitle">Shrine</b><p>Choose one blessing. The shrine fades after.</p>' +
+         choice('Rest', 'Heal fully and cure poison', 'shrineUse(\'rest\')') +
+         choice('Pray', 'Gain a random perk, but lose 1/4 of your max HP', 'shrineUse(\'pray\')') +
+         btn('Leave', 'closePanel()', 'wide');
+  } else {
+    r.panel = null;
+    return '';
+  }
+  return h + '</div>';
+}
 
 function renderRun() {
   var r = S.run, h = '', x, y, i;
   h += '<div class="bar"><b class="floor">Floor ' + r.floor + '</b>' +
+       (r.theme ? '<span class="theme">' + THEMES[r.theme].n + '</span>' : '') +
        '<span>HP <b>' + r.hp + '/' + r.maxHp + '</b></span>' +
        '<span>Lv ' + r.lv + '</span>' +
-       '<span>Atk ' + r.atk + '</span>' +
-       '<span>Arm ' + r.def + '</span>' +
-       '<span>Gold ' + r.goldRun + '</span></div>';
+       '<span>Atk ' + atkOf() + '</span>' +
+       '<span>Arm ' + defOf() + '</span>' +
+       '<span>Gold ' + r.goldRun + '</span>' +
+       (r.poison ? '<span class="pois">Poisoned</span>' : '') + '</div>';
 
   h += '<table class="layout' + (stacked ? ' stacked' : '') + '"><tr><td class="mapcol"><table class="map">';
   for (y = 0; y < H; y++) {
     h += '<tr>';
     for (x = 0; x < W; x++) {
-      var cls = '', ch = '';
+      var cls = '', ch = '', vis = visible(x, y), m = vis ? monAt(x, y) : null;
       if (!r.seen[y][x]) cls = 'u';
-      else if (r.map[y][x] === 1) cls = 'w';
-      else {
-        var vis = visible(x, y), m = vis ? monAt(x, y) : null, it = itemAt(x, y);
+      else if (r.map[y][x] === 1) {
+        cls = 'w';
+        if (m) { cls += ' m'; ch = m.ch; }
+      } else {
+        var it = itemAt(x, y);
         cls = vis ? 'f' : 'f dim';
         if (x === r.px && y === r.py) { cls += ' p'; ch = '@'; }
-        else if (m) { cls += m.boss ? ' m boss' : ' m'; ch = m.ch; }
-        else if (it >= 0) { ch = r.items[it].k === 'gold' ? '$' : '!'; cls += ' it'; }
+        else if (m) { cls += ' m' + (m.kind === 'boss' ? ' boss' : '') + (m.drop && m.kind !== 'boss' ? ' champ' : '') + (m.frozen ? ' frozen' : ''); ch = m.ch; }
+        else if (it >= 0) { ch = itemGlyph(r.items[it]); cls += ' it'; }
         else if (x === r.sx && y === r.sy) { ch = '&gt;'; cls += ' st'; }
         else if (x === r.ex && y === r.ey) { ch = 'E'; cls += ' el'; }
       }
@@ -547,8 +1144,13 @@ function renderRun() {
   }
   h += '</table>';
 
-  var onStairs = r.px === r.sx && r.py === r.sy, onElev = onElevator();
-  var side = ui.elev && onElev ? elevatorPanel() : '<table class="pad">' +
+  var side = '';
+  if (r.panel) side = panelHTML();
+  if (!side && ui.elev && onElevator()) side = elevatorPanel();
+  if (!side && ui.bag) side = bagPanel();
+  if (!side) {
+    var onStairs = r.px === r.sx && r.py === r.sy, onElev = onElevator(), sc = scrollCount();
+    side = '<table class="pad">' +
        '<tr><td></td><td>' + btn('&uarr;', 'act(0,-1)', 'arrow') + '</td><td></td></tr>' +
        '<tr><td>' + btn('&larr;', 'act(-1,0)', 'arrow') + '</td><td>' + btn('Wait', 'act(0,0)', 'arrow wait') +
        '</td><td>' + btn('&rarr;', 'act(1,0)', 'arrow') + '</td></tr>' +
@@ -556,22 +1158,33 @@ function renderRun() {
        '<div class="sidebtns">' +
        btn('Go down', 'descend()', onStairs ? 'main' : '', !onStairs) +
        btn('Elevator', 'openElevator()', onElev ? 'main' : '', !onElev) +
-       btn('Potion (' + r.potions + ')', 'drink()', '', r.potions < 1) + '</div>';
+       btn('Potion (' + r.potions + ')', 'drink()', '', r.potions < 1) +
+       btn('Scrolls (' + sc + ')', 'openBag()', '', sc < 1) + '</div>';
+  }
   if (stacked) h += '</td></tr><tr><td class="sidecol">' + side + '</td></tr></table>';
   else h += '</td><td class="sidecol">' + side + '</td></tr></table>';
 
   h += '<div class="log">' + (r.log.length ? r.log.slice(-3).join('<br>') : '&nbsp;') + '</div>';
 
-  var near = [];
-  for (i = 0; i < r.mons.length; i++) if (visible(r.mons[i].x, r.mons[i].y)) near.push(r.mons[i]);
+  var near = seenMonsters();
   if (near.length) {
     h += '<div class="foes">';
     for (i = 0; i < near.length; i++) {
-      h += '<div><b class="tag">' + near[i].ch + '</b> ' + near[i].name + ': ' + near[i].hp + '/' + near[i].max +
-           ' HP, attack ' + near[i].atk + ', armor ' + near[i].def + '</div>';
+      var n = near[i], d = monDesc(n);
+      h += '<div><b class="tag">' + n.ch + '</b> <b>' + n.name + '</b>: ' + n.hp + '/' + n.max +
+           ' HP, attack ' + n.atk + ', armor ' + n.def + '.' + (n.frozen ? ' Frozen.' : '') + (d ? ' ' + d : '') + '</div>';
     }
     h += '</div>';
   }
+
+  var perks = [];
+  for (i = 0; i < PERKS.length; i++) {
+    var c = r.pf[PERKS[i].id];
+    if (c && PERKS[i].id !== 'supply' && PERKS[i].id !== 'scholar') perks.push(PERKS[i].n + (c > 1 ? ' x' + c : ''));
+  }
+  h += '<div class="gear"><div><b>Weapon:</b> ' + (r.wpn ? r.wpn.name + ' (' + gearDesc(r.wpn) + ')' : 'bare hands') + '</div>' +
+       '<div><b>Armor:</b> ' + (r.arm ? r.arm.name + ' (' + gearDesc(r.arm) + ')' : 'none') + '</div>' +
+       '<div><b>Perks:</b> ' + (perks.length ? perks.join(', ') : 'none yet') + '</div></div>';
 
   h += '<div class="footer"><span>Deepest floor ever: ' + S.best + '</span>' +
        btn('End run', 'giveUp()', 'small') + '</div>';
@@ -582,8 +1195,9 @@ function renderCamp() {
   var h = '', i;
   if (S.last) {
     var L = S.last;
-    h += '<div class="status">' +
-         (L.killer ? 'A ' + L.killer + ' defeated you on floor ' + L.floor + '.' : 'You left the dungeon on floor ' + L.floor + '.') +
+    if (L.note) h += '<div class="status">' + L.note + '</div>';
+    else h += '<div class="status">' +
+         (L.killer ? 'Defeated by ' + L.killer + ' on floor ' + L.floor + '.' : 'You left the dungeon on floor ' + L.floor + '.') +
          ' You brought back ' + L.gold + ' gold.' +
          (L.floor >= S.best && L.floor > 1 ? ' That\'s your deepest yet!' : '') + '</div>';
   } else if (S.runs === 0) {
@@ -596,20 +1210,37 @@ function renderCamp() {
   h += '<h2>Upgrades</h2><table class="shop">';
   for (i = 0; i < UPS.length; i++) {
     var u = UPS[i], c = upCost(u.id);
-    h += '<tr><td><b>' + u.name + '</b> (level ' + S.up[u.id] + ')<br><span class="each">' + u.each + '</span></td>' +
-         '<td>' + btn('Buy for ' + c + ' gold', 'buy(\'' + u.id + '\')', '', S.gold < c) + '</td></tr>';
+    h += '<tr><td><b>' + u.name + '</b> (level ' + S.up[u.id] + (u.max ? ' of ' + u.max : '') + ')<br><span class="each">' + u.each + '</span></td>' +
+         '<td>' + (maxed(u.id) ? '<b>Maxed</b>' : btn('Buy for ' + c + ' gold', 'buy(\'' + u.id + '\')', '', S.gold < c)) + '</td></tr>';
   }
   h += '</table>';
+
   if (S.best > 1) {
     ui.startAt = Math.max(1, Math.min(ui.startAt, S.best));
     var a = ui.startAt;
-    h += '<h2>Elevator</h2><p class="each">Start on any floor you\'ve reached. Starting deeper gives you free levels.</p>' +
+    h += '<h2>Elevator</h2><p class="each">Start on any floor you\'ve reached. Starting deeper gives you free levels, perks and gear.</p>' +
          '<div class="startpick">' + btn('&minus;10', 'startPick(-10)', 'step', a <= 1) + btn('&minus;1', 'startPick(-1)', 'step', a <= 1) +
          '<span class="pick">Floor ' + a + '</span>' +
          btn('+1', 'startPick(1)', 'step', a >= S.best) + btn('+10', 'startPick(10)', 'step', a >= S.best) + '</div>' +
          '<div>' + btn('Floor 1', 'startPick(1,1)', 'small') + btn('Deepest (' + S.best + ')', 'startPick(' + S.best + ',1)', 'small') + '</div>';
   }
   h += '<div class="actions">' + btn(ui.startAt > 1 ? 'Enter on floor ' + ui.startAt : 'Enter the dungeon', 'startRun()', 'main big') + '</div>';
+
+  var keys = [];
+  for (var key in S.perkAt) if (S.perkAt.hasOwnProperty(key)) keys.push(key);
+  keys.sort(slotOrder);
+  h += '<h2>Saved perks</h2>';
+  if (!keys.length) {
+    h += '<p class="each">When you choose a perk, it\'s saved for that level. Next run you get it automatically when you reach that level again.</p>';
+  } else {
+    h += '<p class="each">You get each one automatically when you reach that level. Tap Change to pick again next time.</p><table class="shop perks">';
+    for (i = 0; i < keys.length; i++) {
+      var pi = perkInfo(S.perkAt[keys[i]]);
+      h += '<tr><td><b>' + slotName(keys[i]).replace(/^l/, 'L') + ':</b> ' + pi.n + '<br><span class="each">' + pi.d + '</span></td>' +
+           '<td>' + btn('Change', 'forgetPerk(\'' + keys[i] + '\')', 'small') + '</td></tr>';
+    }
+    h += '</table>' + btn('Forget all', 'forgetAll()', 'small');
+  }
 
   h += '<div class="savebox"><h2>Save code</h2>';
   if (!ui.showCode) {
