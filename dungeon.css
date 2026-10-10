@@ -1,0 +1,179 @@
+/* Endless Dungeon — built for e-ink: black on white, big tap targets, no animation */
+body {
+  margin: 0;
+  padding: 8px 10px;
+  background: #fff;
+  color: #000;
+  font-family: Georgia, "Noto Serif CJK SC", "Songti SC", serif;
+  font-size: 18px;
+  line-height: 1.4;
+}
+h1 { font-size: 30px; margin: 0 0 10px; }
+.inrun h1 { display: none; }
+h2 { font-size: 22px; margin: 16px 0 6px; }
+
+/* stats bar: one short line */
+.bar { border: 3px solid #000; padding: 4px 8px; margin-bottom: 6px; font-size: 17px; }
+.bar span, .bar .floor { display: inline-block; margin-right: 12px; white-space: nowrap; }
+.bar .floor { font-size: 19px; }
+.bar .row1 { margin-bottom: 2px; }
+.bar .theme { border: 2px solid #000; padding: 0 5px; font-weight: bold; }
+.bar .zone { font-style: italic; }
+.bar .pois { background: #000; color: #fff; padding: 0 5px; font-weight: bold; }
+
+/* map on the left, controls on the right, all on one screen */
+.layout { border-collapse: collapse; }
+.layout td { padding: 0; vertical-align: top; }
+.layout .sidecol { padding-left: 10px; }
+.layout.stacked .sidecol { padding: 8px 0 0; }
+.layout.stacked .pad { display: inline-table; vertical-align: top; }
+.layout.stacked .sidebtns { display: inline-block; vertical-align: top; margin-left: 10px; }
+
+/* map */
+.map { border-collapse: collapse; border: 3px solid #000; }
+.map td {
+  width: 32px;              /* replaced by fitMap() to suit the screen */
+  height: 32px;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+}
+.map td.u { background: #fff; }                       /* not explored yet */
+.map td.w { background: #666; }                       /* wall */
+.map td.f { background: #fff; border: 1px solid #ccc; } /* floor you can see */
+.map td.dim { background: #e4e4e4; color: #555; }     /* floor you remember */
+.map td.p { background: #000; color: #fff; }          /* you */
+.map td.m { border: 2px solid #000; }                 /* monster */
+.map td.boss { background: #000; color: #fff; border: 3px double #fff; }
+.map td.champ { border: 3px double #000; }
+.map td.frozen { border-style: dashed; }
+.map td.w.m { background: #999; color: #000; border: 2px dashed #000; }   /* ghost inside a wall */
+.map td.m2, .map td.m3 { letter-spacing: -1px; }       /* two- and three-letter monster codes */
+.map td.lava { background: #9a9a9a; color: #fff; }     /* lava ~ */
+.map td.wet { background: #ececec; }                   /* water, web, mud, sand = */
+.map td.ice { background: #f4f4f4; }                   /* ice - */
+.map td.portal { border: 2px solid #000; }
+.map td.blast { border: 3px dotted #000; }
+.map td.mim { border: 2px dashed #000; }                /* a pet warns: this chest is a Mimic */             /* a bomb or rock is about to land here */
+
+/* side panels: elevator, scrolls, level up, loot, merchant, shrine */
+.map td.el { border: 3px double #000; }
+.panel { width: 166px; font-size: 15px; line-height: 1.3; }
+.panel p { margin: 2px 0 6px; }
+.panel .ptitle { display: block; font-size: 20px; margin-bottom: 2px; }
+.panel .now { border-top: 1px solid #000; padding-top: 4px; }
+.panel .desc { font-size: 13px; }
+.panel .verdict { font-size: 20px; font-weight: bold; text-align: center; padding: 2px 0; margin: 4px 0 2px; border: 3px solid #000; }
+.panel .verdict.better { background: #000; color: #fff; }
+.panel .verdict.worse { border-style: dashed; }
+.panel .verdict.same { border-style: double; }
+.panel .zone { text-align: center; font-style: italic; }
+.panel .pick { font-size: 40px; font-weight: bold; line-height: 1.1; text-align: center; border: 3px solid #000; margin: 4px 0 6px; }
+.panel .steps { border-collapse: collapse; width: 100%; }
+.panel .steps td { padding: 0 4px 4px 0; width: 50%; }
+.btn.step { width: 100%; min-height: 44px; margin: 0; padding: 2px; font-size: 19px; }
+.btn.wide { display: block; width: 100%; margin: 0 0 6px; }
+.btn.choice { text-align: left; padding: 5px 8px; min-height: 0; font-size: 16px; line-height: 1.25; }
+.btn.choice .desc { font-size: 13px; font-weight: normal; }
+.startpick { margin: 4px 0; }
+.startpick .btn.step { width: auto; min-width: 58px; margin: 0 6px 0 0; }
+.startpick .pick { display: inline-block; min-width: 100px; text-align: center; font-size: 24px; font-weight: bold; margin-right: 6px; vertical-align: middle; }
+
+/* controls */
+.pad { border-collapse: collapse; }
+.layout .pad td { padding: 2px; width: 54px; height: 54px; text-align: center; vertical-align: middle; }
+.sidebtns { padding-top: 6px; }
+.sidebtns .btn { display: block; width: 166px; min-height: 44px; margin: 0 0 6px; font-size: 19px; }
+
+.btn {
+  min-height: 48px;
+  padding: 6px 16px;
+  margin: 4px 8px 4px 0;
+  border: 3px solid #000;
+  border-radius: 8px;
+  background: #fff;
+  color: #000;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: bold;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.btn.main { background: #000; color: #fff; }
+.btn.big { font-size: 24px; min-height: 60px; padding: 8px 24px; }
+.btn.small { font-size: 16px; min-height: 40px; padding: 4px 12px; }
+.btn[disabled] { border-style: dashed; color: #777; }
+.btn.arrow { width: 52px; height: 52px; min-height: 0; margin: 0; padding: 0; font-size: 28px; }
+.btn.arrow.wait { font-size: 15px; }
+
+/* messages */
+.status { border: 3px solid #000; padding: 10px 12px; font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+.log { border-left: 4px solid #000; padding: 2px 8px; margin: 6px 0 8px; font-size: 16px; line-height: 1.3; }
+.foes { font-size: 16px; margin-bottom: 10px; }
+.foes .tag {
+  display: inline-block;
+  min-width: 30px;
+  border: 2px solid #000;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+}
+.bounty { border: 2px solid #000; padding: 4px 8px; margin: 0 0 8px; font-size: 15px; }
+.bounty.over { border-style: dashed; }
+.guide { border: 2px solid #000; padding: 4px 10px 8px; margin: 0 0 10px; font-size: 15px; line-height: 1.35; }
+.guide h3 { font-size: 17px; margin: 6px 0 4px; }
+.guide p { margin: 2px 0 6px; }
+.guide .gm { margin: 0 0 5px; }
+.guide .tag { display: inline-block; min-width: 30px; border: 2px solid #000; text-align: center;
+              font-family: "Courier New", Courier, monospace; font-size: 13px; }
+.gear { border-top: 1px solid #000; padding: 6px 0; font-size: 15px; }
+.footer { border-top: 2px solid #000; padding-top: 6px; font-size: 15px; }
+.footer span { margin-right: 12px; }
+
+/* camp */
+.bank span { display: inline-block; margin-right: 18px; font-size: 20px; }
+.shop { border-collapse: collapse; margin-bottom: 10px; }
+.shop td { border-top: 1px solid #000; padding: 6px 12px 6px 0; vertical-align: middle; }
+.shop .each { font-size: 15px; }
+.actions { margin: 10px 0; }
+.savebox { border-top: 2px solid #000; margin-top: 16px; font-size: 16px; }
+.savebox textarea, .savebox input {
+  width: 100%;
+  max-width: 34em;
+  box-sizing: border-box;
+  border: 2px solid #000;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 15px;
+  padding: 6px;
+  margin-bottom: 6px;
+}
+
+/* encyclopedia */
+.inbook h1, .inbook .rules { display: none; }
+.book h2 { font-size: 26px; margin: 0 0 6px; }
+.book h3 { font-size: 19px; margin: 12px 0 4px; }
+.book .tabs { margin: 0 0 8px; }
+.book .tabs .btn { margin: 0 6px 6px 0; }
+.book .tabs.bottom { border-top: 2px solid #000; padding-top: 8px; margin-top: 12px; }
+.book .entry { border-top: 1px solid #000; padding: 6px 0; font-size: 15px; line-height: 1.35; }
+.book .found { border: 1px solid #000; padding: 0 4px; font-size: 12px; font-weight: bold; }
+.book .tag { display: inline-block; min-width: 30px; border: 2px solid #000; text-align: center;
+             font-family: "Courier New", Courier, monospace; font-size: 13px; }
+.book code { font-family: "Courier New", Courier, monospace; font-weight: bold; font-size: 17px; }
+
+/* how to play */
+.rules {
+  border-top: 4px double #000;
+  margin-top: 20px;
+  padding-top: 6px;
+  max-width: 40em;
+  font-size: 17px;
+  line-height: 1.55;
+}
+.rules h2 { font-size: 24px; margin: 6px 0; }
+.rules h3 { font-size: 19px; margin: 16px 0 4px; }
+.rules p { margin: 4px 0 8px; }
+.rules ul { margin: 4px 0 8px; padding-left: 22px; }
+.rules code { font-family: "Courier New", Courier, monospace; font-weight: bold; font-size: 19px; }
