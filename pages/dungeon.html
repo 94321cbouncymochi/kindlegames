@@ -101,6 +101,7 @@
     <li><b>Encyclopedia</b> (at camp, or at the bottom of the screen during a run) lists every enemy, weapon, modifier, monster trait, floor type, zone, perk, scroll and map symbol. The ones you've found are marked.</li>
     <li><b>Collection</b> shows how many of the 100 monsters, 300 weapons, 20 modifiers and 50 kinds of floors you've found.</li>
     <li><b>Weapon shop</b>: 5,000 weapons you can buy with gold. Weapons you buy are yours forever, even after you ascend. Equip one and it's your starting weapon on every run, until you buy or pick a different one. Tap <b>Best I can afford</b> to jump to the strongest one you can buy. Weapons you find in the dungeon still work, but only for that run.</li>
+    <li><b>Armor shop</b>: 1,000 armors that work just like the weapon shop. Armor you buy is yours forever. Equip one and it's your starting armor on every run, until you buy or pick a different one.</li>
     <li><b>Achievements</b>: there are 1,008 of them, and they never run out. Tap <b>Achievements</b> at camp to see them in sections: Monster Hunting, Monster Traits, Weapons, Gear, Floors and Zones, Floor Dangers, Pets, Classes, Perks and Levels, Items and Places, Combat, Bounties, Bosses and Adventure. Every achievement has endless levels. After level V, each new level needs twice as much, and every level pays more gold. New levels are paid when you get back to camp.</li>
     <li><b>Ascend</b>: when you get stuck, you can start over from floor 1 with your gold, upgrades and deepest floor reset. In return you earn stars (1 for every 5 floors past floor 20 on your deepest-ever floor). Each star gives +10% attack, HP and gold forever, so every time you ascend you can go deeper than before. Saved perks, achievements and your collection stay.</li>
   </ul>
@@ -385,7 +386,7 @@ var CAPS = { crit: 50, thorns: 60, dodge: 40 };
 
 var S = null;          // everything that gets saved
 var stacked = false;   // narrow screens put the controls under the map
-var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1, book: '', bookTop: false, pets: false, classes: false, clsTier: 1, achs: false, achSec: 0, achPage: 0, achNote: '', wpns: false, cwTier: 1, cwPage: 0 };
+var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1, book: '', bookTop: false, pets: false, classes: false, clsTier: 1, achs: false, achSec: 0, achPage: 0, achNote: '', wpns: false, cwTier: 1, cwPage: 0, arms: false, caTier: 1, caPage: 0 };
 
 // Size the map so the map and every control fit on one screen.
 function fitMap() {
@@ -411,7 +412,7 @@ function fitMap() {
 // ================= SAVING =================
 function freshSave() {
   return { v: VERSION, gold: 0, up: {}, perkAt: {}, best: 0, runs: 0, run: null, last: null,
-           stats: {}, ach: {}, seen: {}, stars: 0, asc: 0, peak: 0, pets: {}, team: [], cls: 0, clsOwn: { 0: 1 }, cw: {}, cwEq: -1 };
+           stats: {}, ach: {}, seen: {}, stars: 0, asc: 0, peak: 0, pets: {}, team: [], cls: 0, clsOwn: { 0: 1 }, cw: {}, cwEq: -1, ca: {}, caEq: -1 };
 }
 function fixSave() {
   for (var i = 0; i < UPS.length; i++) if (!S.up[UPS[i].id]) S.up[UPS[i].id] = 0;
@@ -428,6 +429,8 @@ function fixSave() {
   if (!S.cls || !S.clsOwn[S.cls]) S.cls = 0;
   if (!S.cw) S.cw = {};
   if (S.cwEq === undefined || (S.cwEq >= 0 && !S.cw[S.cwEq])) S.cwEq = -1;
+  if (!S.ca) S.ca = {};
+  if (S.caEq === undefined || (S.caEq >= 0 && !S.ca[S.caEq])) S.caEq = -1;
   if (!S.stats.deep || S.stats.deep < S.best) S.stats.deep = S.best;
 }
 function load() {
@@ -456,7 +459,7 @@ function save() {
 }
 function saveCode() {
   return btoa(JSON.stringify({ g: S.gold, u: S.up, b: S.best, r: S.runs, p: S.perkAt, st: S.stats,
-                               a: S.ach, sn: S.seen, s: S.stars, as: S.asc, pk: S.peak, pt: S.pets, tm: S.team, cl: S.cls, co: S.clsOwn, cw: S.cw, ce: S.cwEq }));
+                               a: S.ach, sn: S.seen, s: S.stars, as: S.asc, pk: S.peak, pt: S.pets, tm: S.team, cl: S.cls, co: S.clsOwn, cw: S.cw, ce: S.cwEq, ca: S.ca, ae: S.caEq }));
 }
 function loadCode() {
   var box = document.getElementById('codeIn');
@@ -470,6 +473,7 @@ function loadCode() {
     S.perkAt = d.p || {}; S.stats = d.st || {}; S.ach = d.a || {}; S.seen = d.sn || {};
     S.stars = d.s || 0; S.asc = d.as || 0; S.peak = d.pk || 0; S.pets = d.pt || {}; S.team = d.tm || []; S.cls = d.cl || 0; S.clsOwn = d.co || { 0: 1 };
     S.cw = d.cw || {}; S.cwEq = d.ce === undefined ? -1 : d.ce;
+    S.ca = d.ca || {}; S.caEq = d.ae === undefined ? -1 : d.ae;
     fixSave();
     S.run = null; S.last = null;
     ui.codeMsg = 'Save code loaded.';
@@ -1397,7 +1401,7 @@ function startRun() {
   }
   if (f > 1) {
     equip(S.cwEq >= 0 ? campWpn(S.cwEq) : makeGear(f - 1, 'wpn'));
-    equip(makeGear(f - 1, 'arm'));
+    equip(S.caEq >= 0 ? campArm(S.caEq) : makeGear(f - 1, 'arm'));
     // levels you skip with the elevator: use your saved perk for that level, or a random one
     for (i = 2; i <= r.lv; i += 2) {
       if (S.perkAt['L' + i]) { applyPerk(S.perkAt['L' + i]); saved++; }
@@ -1405,6 +1409,7 @@ function startRun() {
     }
   } else if (S.cwEq >= 0) equip(campWpn(S.cwEq));
   else equip({ slot: 'wpn', cat: 0, base: 'Ironfang', mod: 'dull', atk: 1, def: 0, fxs: [], rar: 0, mv: 2, name: 'Dull Ironfang' });
+  if (f <= 1 && S.caEq >= 0) equip(campArm(S.caEq));
   r.hp = r.maxHp;
   statMax('lvl', r.lv);
   S.runs++;
@@ -3396,6 +3401,73 @@ function renderWeapons() {
   return h + '</div>';
 }
 
+// ================= CAMP ARMOR SHOP =================
+// 1000 armors you buy at camp and keep forever. The one you equip is your starting armor on every run.
+var AWORDS = {"adj": ["Oak", "Granite", "Turtle", "Bastion", "Sentinel", "Guardian", "Warden", "Knight", "Paladin", "Stone", "Mountain", "Fortress", "Castle", "Shield", "Valor", "Honor", "Dawn", "Dusk", "Twilight", "Midnight", "Thunder", "Frost", "Ember", "Storm", "Tide", "Coral", "Pearl", "Amber", "Jade", "Topaz", "Opal", "Ivory", "Silver", "Golden", "Steel", "Iron", "Runic", "Adamant", "Starlight", "Moonlit", "Sunforged", "Dragonhide", "Griffin", "Phoenix", "Bear", "Lion", "Rhino", "Tortoise", "Titan", "Celestial"], "noun": ["Vest", "Coat", "Cuirass", "Breastplate", "Hauberk", "Brigandine", "Robe", "Cloak", "Jerkin", "Tunic", "Shell", "Carapace", "Gambeson", "Harness", "Aegis", "Mantle", "Plate", "Mail", "Guard", "Armor"]};
+var CA_N = 1000, CA_TIER = 100, CA_PAGE = 25;
+var CA_PRE = { thorns: 'Thorns', life: 'Life', dodge: 'Shadows', regen: 'Mending', guard: 'the Turtle' };
+function caName(i) { return AWORDS.adj[i % 50] + ' ' + AWORDS.noun[Math.floor(i / 50)]; }
+function caPrice(i) { return niceNum(100 * Math.pow(1.0227, i)); }
+function caFloor(i) { return 1 + Math.floor(i / 5); }   // as strong as armor from this floor
+function campArm(i) {
+  var F = caFloor(i);
+  var g = { slot: 'arm', atk: 0, def: Math.max(1, Math.round((2 + Math.floor(F / 4)) * 1.1)), fxs: [], base: caName(i),
+            rar: Math.min(RAR.length - 1, Math.floor(i / 112)), camp: i };
+  for (var j = 0; j < RAR_FX[g.rar]; j++) { var k = AFX[(i + 2 * j) % AFX.length]; g.fxs.push({ fx: k, v: sfxValue(k, F) }); }
+  g.name = g.base + (g.fxs.length ? ' of ' + CA_PRE[g.fxs[0].fx] : '');
+  return g;
+}
+function caOwned() { return countKeys(S.ca); }
+function openArmor() {
+  ui.arms = true; ui.bookTop = true;
+  if (S.caEq >= 0) { ui.caTier = Math.floor(S.caEq / CA_TIER) + 1; ui.caPage = Math.floor((S.caEq % CA_TIER) / CA_PAGE); }
+  render();
+}
+function caGo(tier, page) { ui.caTier = tier; ui.caPage = page; ui.bookTop = true; render(); }
+function caBest() {
+  for (var i = CA_N - 1; i >= 0; i--) if (!S.ca[i] && caPrice(i) <= S.gold) { caGo(Math.floor(i / CA_TIER) + 1, Math.floor((i % CA_TIER) / CA_PAGE)); return; }
+  caGo(1, 0);
+}
+function buyCA(i) {
+  var c = caPrice(i);
+  if (S.ca[i] || S.gold < c) return;
+  S.gold -= c; S.ca[i] = 1; S.caEq = i;
+  stat('a_Big Spender', c);
+  campClaim(); save(); render();
+}
+function equipCA(i) { if (i < 0 || S.ca[i]) { S.caEq = i; save(); render(); } }
+function caLine(g) { return '<b>' + g.name + '</b> <i>(' + RAR[g.rar] + ' armor)</i>'; }
+function renderArmor() {
+  var h = '<div class="book"><h2>Armor shop</h2><div class="tabs">' + btn('Back to camp', 'ui.arms=false;render()', 'small') + '</div>', i;
+  h += '<p class="each">You have <b>' + fmt(S.gold) + ' gold</b>. You own ' + caOwned() + ' of ' + fmt(CA_N) + ' armors. Armor you buy is yours forever, even after you ascend. ' +
+       'The one you equip is your starting armor on every run, and it stays equipped until you buy or pick a different one. ' +
+       'You can still find better armor in the dungeon, but it only lasts for that run.</p>';
+  if (S.caEq >= 0) {
+    var eg = campArm(S.caEq);
+    h += '<div class="entry"><b>Equipped:</b> ' + caLine(eg) + '<br><span class="each">' + gearDesc(eg) + '.</span><br>' +
+         btn('Start with no shop armor instead', 'equipCA(-1)', 'small') + '</div>';
+  } else h += '<div class="entry"><b>Equipped:</b> no shop armor (no armor on floor 1, or a random armor when you start deeper).</div>';
+  h += '<div class="tabs">' + btn('Best I can afford', 'caBest()', 'small main') + '</div><h3>Tiers</h3><div class="tabs">';
+  for (i = 1; i <= CA_N / CA_TIER; i++) h += btn(i + ': ' + fmt(caPrice((i - 1) * CA_TIER)) + '+', 'caGo(' + i + ',0)', 'small' + (ui.caTier === i ? ' main' : ''));
+  var pages = CA_TIER / CA_PAGE;
+  ui.caPage = Math.max(0, Math.min(ui.caPage, pages - 1));
+  var nav = '<div class="tabs">' + btn('&laquo; Back', 'caGo(' + ui.caTier + ',' + (ui.caPage - 1) + ')', 'small', ui.caPage <= 0) +
+            '<span class="each"> Page ' + (ui.caPage + 1) + ' of ' + pages + ' </span>' +
+            btn('Next &raquo;', 'caGo(' + ui.caTier + ',' + (ui.caPage + 1) + ')', 'small', ui.caPage >= pages - 1) + '</div>';
+  h += '</div><h3>Tier ' + ui.caTier + '</h3>' + nav;
+  var start = (ui.caTier - 1) * CA_TIER + ui.caPage * CA_PAGE;
+  for (i = start; i < start + CA_PAGE && i < CA_N; i++) {
+    var g = campArm(i), own = !!S.ca[i], eq = S.caEq === i, b, c = caPrice(i);
+    if (eq) b = '<b class="found">Equipped</b>';
+    else if (own) b = btn('Equip', 'equipCA(' + i + ')', 'small main');
+    else b = btn('Buy for ' + fmt(c) + ' gold', 'buyCA(' + i + ')', 'small', S.gold < c);
+    h += '<div class="entry">#' + (i + 1) + ' ' + caLine(g) + (own && !eq ? ' <span class="found">Owned</span>' : '') +
+         '<br><span class="each">' + gearDesc(g) + '.</span><br>' + b + '</div>';
+  }
+  h += nav + '<div class="tabs bottom">' + btn('Back to top', 'window.scrollTo(0,0)', 'small') + btn('Back to camp', 'ui.arms=false;render()', 'small') + '</div>';
+  return h + '</div>';
+}
+
 // Reset everything. The first tap arms the button, the second tap erases.
 function resetTap() {
   if (!ui.resetArm) { ui.resetArm = true; render(); return; }
@@ -3454,6 +3526,8 @@ function renderCamp() {
        btn('Classes', 'openClasses()', '');
   h += '<h2>Weapon</h2><p class="each">' + (S.cwEq >= 0 ? 'Starting weapon: <b>' + campWpn(S.cwEq).name + '</b> (attack ' + campWpn(S.cwEq).atk + ')' : 'Starting weapon: the free starter') +
        '. You own ' + cwOwned() + ' of ' + fmt(CW_N) + ' shop weapons.</p>' + btn('Weapon shop', 'openWeapons()', '');
+  h += '<h2>Armor</h2><p class="each">' + (S.caEq >= 0 ? 'Starting armor: <b>' + campArm(S.caEq).name + '</b> (armor ' + campArm(S.caEq).def + ')' : 'Starting armor: none from the shop') +
+       '. You own ' + caOwned() + ' of ' + fmt(CA_N) + ' shop armors.</p>' + btn('Armor shop', 'openArmor()', '');
   h += '<h2>Pets</h2><p class="each">Team (' + S.team.length + ' of ' + TEAM_MAX + '): ' + (S.team.length ? petTeamNames() : 'none yet. Look for p on the map.') + '</p>' +
        btn('Manage pets', 'openPets()', '');
 
@@ -3517,10 +3591,10 @@ function renderCamp() {
 }
 
 function render() {
-  if (S.run) { ui.pets = false; ui.classes = false; ui.achs = false; ui.wpns = false; }
-  document.body.className = ui.book || ui.pets || ui.classes || ui.achs || ui.wpns ? 'inbook' : (S.run ? 'inrun' : '');
+  if (S.run) { ui.pets = false; ui.classes = false; ui.achs = false; ui.wpns = false; ui.arms = false; }
+  document.body.className = ui.book || ui.pets || ui.classes || ui.achs || ui.wpns || ui.arms ? 'inbook' : (S.run ? 'inrun' : '');
   document.getElementById('game').innerHTML = ui.book ? renderBook() : (ui.pets ? renderPets() : (ui.classes ? renderClasses() :
-                                              (ui.achs ? renderAch() : (ui.wpns ? renderWeapons() : (S.run ? renderRun() : renderCamp())))));
+                                              (ui.achs ? renderAch() : (ui.wpns ? renderWeapons() : (ui.arms ? renderArmor() : (S.run ? renderRun() : renderCamp()))))));
   if (ui.bookTop) { ui.bookTop = false; window.scrollTo(0, 0); }
 }
 window.onresize = function () { fitMap(); if (S) render(); };
