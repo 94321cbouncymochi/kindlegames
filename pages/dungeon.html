@@ -100,7 +100,8 @@
     <li><b>Upgrades</b> last forever: max HP, attack, armor, starting potions, starting scrolls, and Blessing (extra perks at the start of every run).</li>
     <li><b>Encyclopedia</b> (at camp, or at the bottom of the screen during a run) lists every enemy, weapon, modifier, monster trait, floor type, zone, perk, scroll and map symbol. The ones you've found are marked.</li>
     <li><b>Collection</b> shows how many of the 100 monsters, 300 weapons, 20 modifiers and 50 kinds of floors you've found.</li>
-    <li><b>Achievements</b> never run out. Monster Slayer, Explorer, Treasure Hunter and the rest each have endless levels, and every new level pays gold.</li>
+    <li><b>Weapon shop</b>: 5,000 weapons you can buy with gold. Weapons you buy are yours forever, even after you ascend. Equip one and it's your starting weapon on every run, until you buy or pick a different one. Tap <b>Best I can afford</b> to jump to the strongest one you can buy. Weapons you find in the dungeon still work, but only for that run.</li>
+    <li><b>Achievements</b>: there are 1,008 of them, and they never run out. Tap <b>Achievements</b> at camp to see them in sections: Monster Hunting, Monster Traits, Weapons, Gear, Floors and Zones, Floor Dangers, Pets, Classes, Perks and Levels, Items and Places, Combat, Bounties, Bosses and Adventure. Every achievement has endless levels. After level V, each new level needs twice as much, and every level pays more gold. New levels are paid when you get back to camp.</li>
     <li><b>Ascend</b>: when you get stuck, you can start over from floor 1 with your gold, upgrades and deepest floor reset. In return you earn stars (1 for every 5 floors past floor 20 on your deepest-ever floor). Each star gives +10% attack, HP and gold forever, so every time you ascend you can go deeper than before. Saved perks, achievements and your collection stay.</li>
   </ul>
 
@@ -371,6 +372,12 @@ var ACH = [
   { id: 'bosses',   n: 'Boss Hunter',     what: 'bosses defeated',    base: 1 },
   { id: 'deep',     n: 'Deep Diver',      what: 'deepest floor',      lin: 10 }
 ];
+// 1000 more achievements: [section, name, what, [levels I to V], counter, kind]
+// kind c = counts up, m = best ever, s = worked out from your collection
+var ACH2 = [["Monster Hunting", "Rat Hunter", "Defeat Rat (RT)", [10, 25, 50, 100, 250], "k_RT", "c"], ["Monster Hunting", "Goblin Slayer", "Defeat Goblin (GB)", [10, 25, 50, 100, 250], "k_GB", "c"], ["Monster Hunting", "Skeleton Bane", "Defeat Skeleton (SK)", [10, 25, 50, 100, 250], "k_SK", "c"], ["Monster Hunting", "Slime Chaser", "Defeat Slime (SL)", [10, 25, 50, 100, 250], "k_SL", "c"], ["Monster Hunting", "Cave Bat Crusher", "Defeat Cave Bat (BT)", [10, 25, 50, 100, 250], "k_BT", "c"], ["Monster Hunting", "Wolf Smasher", "Defeat Wolf (WF)", [10, 25, 50, 100, 250], "k_WF", "c"], ["Monster Hunting", "Bandit Vanquisher", "Defeat Bandit (BD)", [10, 25, 50, 100, 250], "k_BD", "c"], ["Monster Hunting", "Spider Nemesis", "Defeat Spider (SP)", [10, 25, 50, 100, 250], "k_SP", "c"], ["Monster Hunting", "Zombie Hunter", "Defeat Zombie (ZM)", [10, 25, 50, 100, 250], "k_ZM", "c"], ["Monster Hunting", "Cave Beetle Slayer", "Defeat Cave Beetle (CB)", [10, 25, 50, 100, 250], "k_CB", "c"], ["Monster Hunting", "Troll Bane", "Defeat Troll (TR)", [10, 25, 50, 100, 250], "k_TR", "c"], ["Monster Hunting", "Ogre Chaser", "Defeat Ogre (OG)", [10, 25, 50, 100, 250], "k_OG", "c"], ["Monster Hunting", "Armored Knight Crusher", "Defeat Armored Knight (AK)", [10, 25, 50, 100, 250], "k_AK", "c"], ["Monster Hunting", "Stone Golem Smasher", "Defeat Stone Golem (SG)", [10, 25, 50, 100, 250], "k_SG", "c"], ["Monster Hunting", "Minotaur Vanquisher", "Defeat Minotaur (MN)", [10, 25, 50, 100, 250], "k_MN", "c"], ["Monster Hunting", "Cave Bear Nemesis", "Defeat Cave Bear (BR)", [10, 25, 50, 100, 250], "k_BR", "c"], ["Monster Hunting", "Iron Brute Hunter", "Defeat Iron Brute (IB)", [10, 25, 50, 100, 250], "k_IB", "c"], ["Monster Hunting", "Cyclops Slayer", "Defeat Cyclops (CY)", [10, 25, 50, 100, 250], "k_CY", "c"], ["Monster Hunting", "War Troll Bane", "Defeat War Troll (WT)", [10, 25, 50, 100, 250], "k_WT", "c"], ["Monster Hunting", "Living Statue Chaser", "Defeat Living Statue (LS)", [10, 25, 50, 100, 250], "k_LS", "c"], ["Monster Hunting", "Ghost Crusher", "Defeat Ghost (GH)", [10, 25, 50, 100, 250], "k_GH", "c"], ["Monster Hunting", "Wraith Smasher", "Defeat Wraith (WR)", [10, 25, 50, 100, 250], "k_WR", "c"], ["Monster Hunting", "Imp Vanquisher", "Defeat Imp (IM)", [10, 25, 50, 100, 250], "k_IM", "c"], ["Monster Hunting", "Shadowling Nemesis", "Defeat Shadowling (SH)", [10, 25, 50, 100, 250], "k_SH", "c"], ["Monster Hunting", "Dire Rat Hunter", "Defeat Dire Rat (DR)", [10, 25, 50, 100, 250], "k_DR", "c"], ["Monster Hunting", "Assassin Slayer", "Defeat Assassin (AS)", [10, 25, 50, 100, 250], "k_AS", "c"], ["Monster Hunting", "Harpy Bane", "Defeat Harpy (HY)", [10, 25, 50, 100, 250], "k_HY", "c"], ["Monster Hunting", "Blink Hound Chaser", "Defeat Blink Hound (BH)", [10, 25, 50, 100, 250], "k_BH", "c"], ["Monster Hunting", "Scuttler Crusher", "Defeat Scuttler (SC)", [10, 25, 50, 100, 250], "k_SC", "c"], ["Monster Hunting", "Wind Sprite Smasher", "Defeat Wind Sprite (WS)", [10, 25, 50, 100, 250], "k_WS", "c"], ["Monster Hunting", "Archer Vanquisher", "Defeat Archer (AR)", [10, 25, 50, 100, 250], "k_AR", "c"], ["Monster Hunting", "Goblin Slinger Nemesis", "Defeat Goblin Slinger (GS)", [10, 25, 50, 100, 250], "k_GS", "c"], ["Monster Hunting", "Fire Mage Hunter", "Defeat Fire Mage (FM)", [10, 25, 50, 100, 250], "k_FM", "c"], ["Monster Hunting", "Ice Mage Slayer", "Defeat Ice Mage (IC)", [10, 25, 50, 100, 250], "k_IC", "c"], ["Monster Hunting", "Storm Mage Bane", "Defeat Storm Mage (SM)", [10, 25, 50, 100, 250], "k_SM", "c"], ["Monster Hunting", "Necromancer Chaser", "Defeat Necromancer (NE)", [10, 25, 50, 100, 250], "k_NE", "c"], ["Monster Hunting", "Plague Spitter Crusher", "Defeat Plague Spitter (PS)", [10, 25, 50, 100, 250], "k_PS", "c"], ["Monster Hunting", "Bombardier Smasher", "Defeat Bombardier (BO)", [10, 25, 50, 100, 250], "k_BO", "c"], ["Monster Hunting", "Crystal Turret Vanquisher", "Defeat Crystal Turret (CT)", [10, 25, 50, 100, 250], "k_CT", "c"], ["Monster Hunting", "Crossbow Guard Nemesis", "Defeat Crossbow Guard (CG)", [10, 25, 50, 100, 250], "k_CG", "c"], ["Monster Hunting", "Mimic Hunter", "Defeat Mimic (MI)", [1, 5, 10, 25, 50], "k_MI", "c"], ["Monster Hunting", "Shapeshifter Slayer", "Defeat Shapeshifter (SS)", [10, 25, 50, 100, 250], "k_SS", "c"], ["Monster Hunting", "Thief Bane", "Defeat Thief (TH)", [10, 25, 50, 100, 250], "k_TH", "c"], ["Monster Hunting", "Illusionist Chaser", "Defeat Illusionist (IL)", [10, 25, 50, 100, 250], "k_IL", "c"], ["Monster Hunting", "Trapmaker Crusher", "Defeat Trapmaker (TM)", [10, 25, 50, 100, 250], "k_TM", "c"], ["Monster Hunting", "Mirror Shade Smasher", "Defeat Mirror Shade (MS)", [10, 25, 50, 100, 250], "k_MS", "c"], ["Monster Hunting", "Possessor Vanquisher", "Defeat Possessor (PO)", [10, 25, 50, 100, 250], "k_PO", "c"], ["Monster Hunting", "Burrower Nemesis", "Defeat Burrower (BU)", [10, 25, 50, 100, 250], "k_BU", "c"], ["Monster Hunting", "Screecher Hunter", "Defeat Screecher (SR)", [10, 25, 50, 100, 250], "k_SR", "c"], ["Monster Hunting", "Phase Stalker Slayer", "Defeat Phase Stalker (PH)", [10, 25, 50, 100, 250], "k_PH", "c"], ["Monster Hunting", "Flame Hound Bane", "Defeat Flame Hound (FH)", [10, 25, 50, 100, 250], "k_FH", "c"], ["Monster Hunting", "Frost Troll Chaser", "Defeat Frost Troll (FT)", [10, 25, 50, 100, 250], "k_FT", "c"], ["Monster Hunting", "Storm Elemental Crusher", "Defeat Storm Elemental (SE)", [10, 25, 50, 100, 250], "k_SE", "c"], ["Monster Hunting", "Mud Elemental Smasher", "Defeat Mud Elemental (ME)", [10, 25, 50, 100, 250], "k_ME", "c"], ["Monster Hunting", "Lava Blob Vanquisher", "Defeat Lava Blob (LB)", [10, 25, 50, 100, 250], "k_LB", "c"], ["Monster Hunting", "Crystal Beetle Nemesis", "Defeat Crystal Beetle (CR)", [10, 25, 50, 100, 250], "k_CR", "c"], ["Monster Hunting", "Poison Frog Hunter", "Defeat Poison Frog (PF)", [10, 25, 50, 100, 250], "k_PF", "c"], ["Monster Hunting", "Sand Wurm Slayer", "Defeat Sand Wurm (SW)", [10, 25, 50, 100, 250], "k_SW", "c"], ["Monster Hunting", "Thorn Beast Bane", "Defeat Thorn Beast (TB)", [10, 25, 50, 100, 250], "k_TB", "c"], ["Monster Hunting", "Mist Crawler Chaser", "Defeat Mist Crawler (MC)", [10, 25, 50, 100, 250], "k_MC", "c"], ["Monster Hunting", "Lich Crusher", "Defeat Lich (LI)", [10, 25, 50, 100, 250], "k_LI", "c"], ["Monster Hunting", "Bone Archer Smasher", "Defeat Bone Archer (BA)", [10, 25, 50, 100, 250], "k_BA", "c"], ["Monster Hunting", "Grave Knight Vanquisher", "Defeat Grave Knight (GK)", [10, 25, 50, 100, 250], "k_GK", "c"], ["Monster Hunting", "Banshee Nemesis", "Defeat Banshee (BN)", [10, 25, 50, 100, 250], "k_BN", "c"], ["Monster Hunting", "Cursed Armor Hunter", "Defeat Cursed Armor (CA)", [10, 25, 50, 100, 250], "k_CA", "c"], ["Monster Hunting", "Rotting Brute Slayer", "Defeat Rotting Brute (RB)", [10, 25, 50, 100, 250], "k_RB", "c"], ["Monster Hunting", "Soul Leech Bane", "Defeat Soul Leech (SO)", [10, 25, 50, 100, 250], "k_SO", "c"], ["Monster Hunting", "Grave Swarm Chaser", "Defeat Grave Swarm (GV)", [10, 25, 50, 100, 250], "k_GV", "c"], ["Monster Hunting", "Headless Hunter Crusher", "Defeat Headless Hunter (HH)", [10, 25, 50, 100, 250], "k_HH", "c"], ["Monster Hunting", "Cursed Priest Smasher", "Defeat Cursed Priest (CP)", [10, 25, 50, 100, 250], "k_CP", "c"], ["Monster Hunting", "Ant Soldier Vanquisher", "Defeat Ant Soldier (AT)", [10, 25, 50, 100, 250], "k_AT", "c"], ["Monster Hunting", "Hornet Nemesis", "Defeat Hornet (HO)", [10, 25, 50, 100, 250], "k_HO", "c"], ["Monster Hunting", "Scorpion Hunter", "Defeat Scorpion (SC2)", [10, 25, 50, 100, 250], "k_SC2", "c"], ["Monster Hunting", "Cave Centipede Slayer", "Defeat Cave Centipede (CC)", [10, 25, 50, 100, 250], "k_CC", "c"], ["Monster Hunting", "Beetle Tank Bane", "Defeat Beetle Tank (BT2)", [10, 25, 50, 100, 250], "k_BT2", "c"], ["Monster Hunting", "Moth Witch Chaser", "Defeat Moth Witch (MW)", [10, 25, 50, 100, 250], "k_MW", "c"], ["Monster Hunting", "Locust Swarm Crusher", "Defeat Locust Swarm (LS2)", [10, 25, 50, 100, 250], "k_LS2", "c"], ["Monster Hunting", "Web Weaver Smasher", "Defeat Web Weaver (WW)", [10, 25, 50, 100, 250], "k_WW", "c"], ["Monster Hunting", "Brood Mother Vanquisher", "Defeat Brood Mother (BM)", [10, 25, 50, 100, 250], "k_BM", "c"], ["Monster Hunting", "Tunnel Grub Nemesis", "Defeat Tunnel Grub (TG)", [10, 25, 50, 100, 250], "k_TG", "c"], ["Monster Hunting", "Goblin Captain Hunter", "Defeat Goblin Captain (GC) as a boss", [1, 3, 5, 10, 25], "k_GC", "c"], ["Monster Hunting", "Ogre Chef Slayer", "Defeat Ogre Chef (OC) as a boss", [1, 3, 5, 10, 25], "k_OC", "c"], ["Monster Hunting", "Troll Shaman Bane", "Defeat Troll Shaman (TS) as a boss", [1, 3, 5, 10, 25], "k_TS", "c"], ["Monster Hunting", "Spider Queen Chaser", "Defeat Spider Queen (SQ) as a boss", [1, 3, 5, 10, 25], "k_SQ", "c"], ["Monster Hunting", "Minotaur Champion Crusher", "Defeat Minotaur Champion (MC2) as a boss", [1, 3, 5, 10, 25], "k_MC2", "c"], ["Monster Hunting", "Ancient Golem Smasher", "Defeat Ancient Golem (AG) as a boss", [1, 3, 5, 10, 25], "k_AG", "c"], ["Monster Hunting", "Vampire Lord Vanquisher", "Defeat Vampire Lord (VL) as a boss", [1, 3, 5, 10, 25], "k_VL", "c"], ["Monster Hunting", "Demon General Nemesis", "Defeat Demon General (DG) as a boss", [1, 3, 5, 10, 25], "k_DG", "c"], ["Monster Hunting", "Hydra Hunter", "Defeat Hydra (HY2) as a boss", [1, 3, 5, 10, 25], "k_HY2", "c"], ["Monster Hunting", "Devourer Slayer", "Defeat The Devourer (DV) as a boss", [1, 3, 5, 10, 25], "k_DV", "c"], ["Monster Hunting", "Alarm Eye Bane", "Defeat Alarm Eye (AE)", [10, 25, 50, 100, 250], "k_AE", "c"], ["Monster Hunting", "Healing Sprite Chaser", "Defeat Healing Sprite (HS)", [10, 25, 50, 100, 250], "k_HS", "c"], ["Monster Hunting", "Shield Drone Crusher", "Defeat Shield Drone (SD)", [10, 25, 50, 100, 250], "k_SD", "c"], ["Monster Hunting", "Mana Leech Smasher", "Defeat Mana Leech (ML)", [10, 25, 50, 100, 250], "k_ML", "c"], ["Monster Hunting", "Door Mimic Vanquisher", "Defeat Door Mimic (DM)", [10, 25, 50, 100, 250], "k_DM", "c"], ["Monster Hunting", "Chest Guardian Nemesis", "Defeat Chest Guardian (CG2)", [10, 25, 50, 100, 250], "k_CG2", "c"], ["Monster Hunting", "Lantern Wisp Hunter", "Defeat Lantern Wisp (LW)", [10, 25, 50, 100, 250], "k_LW", "c"], ["Monster Hunting", "Rune Sentinel Slayer", "Defeat Rune Sentinel (RS)", [10, 25, 50, 100, 250], "k_RS", "c"], ["Monster Hunting", "Dungeon Parasite Bane", "Defeat Dungeon Parasite (DP)", [10, 25, 50, 100, 250], "k_DP", "c"], ["Monster Hunting", "Dungeon Heart Chaser", "Defeat Dungeon Heart (DH) as a boss", [1, 2, 3, 5, 10], "k_DH", "c"], ["Monster Hunting", "Basic Monster Expert", "Defeat basic monsters", [25, 100, 250, 500, 1000], "kf_B", "c"], ["Monster Hunting", "Heavy Monster Expert", "Defeat heavy monsters", [25, 100, 250, 500, 1000], "kf_H", "c"], ["Monster Hunting", "Fast Monster Expert", "Defeat fast monsters", [25, 100, 250, 500, 1000], "kf_F", "c"], ["Monster Hunting", "Ranged Monster Expert", "Defeat ranged monsters", [25, 100, 250, 500, 1000], "kf_R", "c"], ["Monster Hunting", "Tricky Monster Expert", "Defeat tricky monsters", [25, 100, 250, 500, 1000], "kf_T", "c"], ["Monster Hunting", "Elemental Monster Expert", "Defeat elemental monsters", [25, 100, 250, 500, 1000], "kf_E", "c"], ["Monster Hunting", "Undead Monster Expert", "Defeat undead monsters", [25, 100, 250, 500, 1000], "kf_U", "c"], ["Monster Hunting", "Insect Monster Expert", "Defeat insect monsters", [25, 100, 250, 500, 1000], "kf_I", "c"], ["Monster Hunting", "Elite Monster Expert", "Defeat elite monsters", [25, 100, 250, 500, 1000], "kf_X", "c"], ["Monster Hunting", "Helper Monster Expert", "Defeat helper monsters", [25, 100, 250, 500, 1000], "kf_Y", "c"], ["Monster Hunting", "Many Traits", "Defeat monsters with 2 or more extra traits", [10, 50, 100, 250, 500], "kt2", "c"], ["Monster Hunting", "Trait Collector", "Defeat monsters with 3 or more extra traits", [5, 25, 50, 100, 250], "kt3", "c"], ["Monster Hunting", "Walking Nightmare", "Defeat monsters with 4 extra traits", [1, 5, 10, 25, 50], "kt4", "c"], ["Monster Hunting", "Basic Monster Survivor", "Take hits from basic monsters and keep going", [25, 100, 250, 500, 1000], "hf_B", "c"], ["Monster Hunting", "Heavy Monster Survivor", "Take hits from heavy monsters and keep going", [25, 100, 250, 500, 1000], "hf_H", "c"], ["Monster Hunting", "Fast Monster Survivor", "Take hits from fast monsters and keep going", [25, 100, 250, 500, 1000], "hf_F", "c"], ["Monster Hunting", "Ranged Monster Survivor", "Take hits from ranged monsters and keep going", [25, 100, 250, 500, 1000], "hf_R", "c"], ["Monster Hunting", "Tricky Monster Survivor", "Take hits from tricky monsters and keep going", [25, 100, 250, 500, 1000], "hf_T", "c"], ["Monster Hunting", "Elemental Monster Survivor", "Take hits from elemental monsters and keep going", [25, 100, 250, 500, 1000], "hf_E", "c"], ["Monster Hunting", "Undead Monster Survivor", "Take hits from undead monsters and keep going", [25, 100, 250, 500, 1000], "hf_U", "c"], ["Monster Hunting", "Insect Monster Survivor", "Take hits from insect monsters and keep going", [25, 100, 250, 500, 1000], "hf_I", "c"], ["Monster Hunting", "Elite Monster Survivor", "Take hits from elite monsters and keep going", [25, 100, 250, 500, 1000], "hf_X", "c"], ["Monster Hunting", "Helper Monster Survivor", "Take hits from helper monsters and keep going", [25, 100, 250, 500, 1000], "hf_Y", "c"], ["Monster Traits", "Fluttering Fighter", "Defeat fluttering monsters", [10, 50, 100, 250, 500], "ka_erratic", "c"], ["Monster Traits", "Thieving Fighter", "Defeat thieving monsters", [10, 50, 100, 250, 500], "ka_thief", "c"], ["Monster Traits", "Splitting Fighter", "Defeat splitting monsters", [10, 50, 100, 250, 500], "ka_split", "c"], ["Monster Traits", "Shooting Fighter", "Defeat shooting monsters", [10, 50, 100, 250, 500], "ka_archer", "c"], ["Monster Traits", "Swift Fighter", "Defeat swift monsters", [10, 50, 100, 250, 500], "ka_fast", "c"], ["Monster Traits", "Ghostly Fighter", "Defeat ghostly monsters", [10, 50, 100, 250, 500], "ka_ghost", "c"], ["Monster Traits", "Regenerating Fighter", "Defeat regenerating monsters", [10, 50, 100, 250, 500], "ka_regen", "c"], ["Monster Traits", "Venomous Fighter", "Defeat venomous monsters", [10, 50, 100, 250, 500], "ka_poison", "c"], ["Monster Traits", "Fiery Fighter", "Defeat fiery monsters", [10, 50, 100, 250, 500], "ka_fire", "c"], ["Monster Traits", "Armored Fighter", "Defeat armored monsters", [10, 50, 100, 250, 500], "ka_armored", "c"], ["Monster Traits", "Huge Fighter", "Defeat huge monsters", [10, 50, 100, 250, 500], "ka_huge", "c"], ["Monster Traits", "Vampiric Fighter", "Defeat vampiric monsters", [10, 50, 100, 250, 500], "ka_vamp", "c"], ["Monster Traits", "Explosive Fighter", "Defeat explosive monsters", [10, 50, 100, 250, 500], "ka_explode", "c"], ["Monster Traits", "Shielded Fighter", "Defeat shielded monsters", [10, 50, 100, 250, 500], "ka_shield", "c"], ["Monster Traits", "Raging Fighter", "Defeat raging monsters", [10, 50, 100, 250, 500], "ka_rage", "c"], ["Monster Traits", "Blinking Fighter", "Defeat blinking monsters", [10, 50, 100, 250, 500], "ka_blink", "c"], ["Monster Traits", "Summoning Fighter", "Defeat summoning monsters", [10, 50, 100, 250, 500], "ka_summon", "c"], ["Monster Traits", "Slippery Fighter", "Defeat slippery monsters", [10, 50, 100, 250, 500], "ka_dodge", "c"], ["Monster Traits", "Flying Fighter", "Defeat flying monsters", [10, 50, 100, 250, 500], "ka_fly", "c"], ["Monster Traits", "Pack Fighter", "Defeat pack monsters", [10, 50, 100, 250, 500], "ka_pack", "c"], ["Monster Traits", "Freezing Fighter", "Defeat freezing monsters", [10, 50, 100, 250, 500], "ka_slowhit", "c"], ["Monster Traits", "Slow Fighter", "Defeat slow monsters", [10, 50, 100, 250, 500], "ka_slowmove", "c"], ["Monster Traits", "Slamming Fighter", "Defeat slamming monsters", [10, 50, 100, 250, 500], "ka_slam", "c"], ["Monster Traits", "Charging Fighter", "Defeat charging monsters", [10, 50, 100, 250, 500], "ka_charge", "c"], ["Monster Traits", "Statue Fighter", "Defeat statue monsters", [10, 50, 100, 250, 500], "ka_statue", "c"], ["Monster Traits", "Burrowing Fighter", "Defeat burrowing monsters", [10, 50, 100, 250, 500], "ka_burrow", "c"], ["Monster Traits", "Disguised Fighter", "Defeat disguised monsters", [10, 50, 100, 250, 500], "ka_disguise", "c"], ["Monster Traits", "Healing Fighter", "Defeat healing monsters", [10, 50, 100, 250, 500], "ka_healer", "c"], ["Monster Traits", "Shield-Giving Fighter", "Defeat shield-giving monsters", [10, 50, 100, 250, 500], "ka_shielder", "c"], ["Monster Traits", "Pushing Fighter", "Defeat pushing monsters", [10, 50, 100, 250, 500], "ka_push", "c"], ["Monster Traits", "Pulling Fighter", "Defeat pulling monsters", [10, 50, 100, 250, 500], "ka_pull", "c"], ["Monster Traits", "Bomb-Throwing Fighter", "Defeat bomb-throwing monsters", [10, 50, 100, 250, 500], "ka_bomber", "c"], ["Monster Traits", "Turret Fighter", "Defeat turret monsters", [10, 50, 100, 250, 500], "ka_turret", "c"], ["Monster Traits", "Sneaky Fighter", "Defeat sneaky monsters", [10, 50, 100, 250, 500], "ka_kite", "c"], ["Monster Traits", "Draining Fighter", "Defeat draining monsters", [10, 50, 100, 250, 500], "ka_weaken", "c"], ["Monster Traits", "Alarm Fighter", "Defeat alarm monsters", [10, 50, 100, 250, 500], "ka_alarm", "c"], ["Monster Traits", "Trap-Setting Fighter", "Defeat trap-setting monsters", [10, 50, 100, 250, 500], "ka_trapper", "c"], ["Monster Traits", "Illusion Fighter", "Defeat illusion monsters", [10, 50, 100, 250, 500], "ka_decoy", "c"], ["Monster Traits", "Spiky Fighter", "Defeat spiky monsters", [10, 50, 100, 250, 500], "ka_spiky", "c"], ["Monster Traits", "Swarming Fighter", "Defeat swarming monsters", [10, 50, 100, 250, 500], "ka_swarm", "c"], ["Monster Traits", "Magic-Resistant Fighter", "Defeat magic-resistant monsters", [10, 50, 100, 250, 500], "ka_resist", "c"], ["Monster Traits", "Commanding Fighter", "Defeat commanding monsters", [10, 50, 100, 250, 500], "ka_leader", "c"], ["Monster Traits", "Glowing Fighter", "Defeat glowing monsters", [10, 50, 100, 250, 500], "ka_wisp", "c"], ["Monster Traits", "Double-Striking Fighter", "Defeat double-striking monsters", [10, 50, 100, 250, 500], "ka_multi", "c"], ["Monster Traits", "Re-Shielding Fighter", "Defeat re-shielding monsters", [10, 50, 100, 250, 500], "ka_reshield", "c"], ["Monster Traits", "Lava-Walking Fighter", "Defeat lava-walking monsters", [10, 50, 100, 250, 500], "ka_firewalk", "c"], ["Monster Traits", "Tough Against Fluttering", "Take hits from fluttering monsters and keep going", [25, 100, 250, 500, 1000], "ha_erratic", "c"], ["Monster Traits", "Tough Against Thieving", "Take hits from thieving monsters and keep going", [25, 100, 250, 500, 1000], "ha_thief", "c"], ["Monster Traits", "Tough Against Splitting", "Take hits from splitting monsters and keep going", [25, 100, 250, 500, 1000], "ha_split", "c"], ["Monster Traits", "Tough Against Shooting", "Take hits from shooting monsters and keep going", [25, 100, 250, 500, 1000], "ha_archer", "c"], ["Monster Traits", "Tough Against Swift", "Take hits from swift monsters and keep going", [25, 100, 250, 500, 1000], "ha_fast", "c"], ["Monster Traits", "Tough Against Ghostly", "Take hits from ghostly monsters and keep going", [25, 100, 250, 500, 1000], "ha_ghost", "c"], ["Monster Traits", "Tough Against Regenerating", "Take hits from regenerating monsters and keep going", [25, 100, 250, 500, 1000], "ha_regen", "c"], ["Monster Traits", "Tough Against Venomous", "Take hits from venomous monsters and keep going", [25, 100, 250, 500, 1000], "ha_poison", "c"], ["Monster Traits", "Tough Against Fiery", "Take hits from fiery monsters and keep going", [25, 100, 250, 500, 1000], "ha_fire", "c"], ["Monster Traits", "Tough Against Armored", "Take hits from armored monsters and keep going", [25, 100, 250, 500, 1000], "ha_armored", "c"], ["Monster Traits", "Tough Against Huge", "Take hits from huge monsters and keep going", [25, 100, 250, 500, 1000], "ha_huge", "c"], ["Monster Traits", "Tough Against Vampiric", "Take hits from vampiric monsters and keep going", [25, 100, 250, 500, 1000], "ha_vamp", "c"], ["Monster Traits", "Tough Against Explosive", "Take hits from explosive monsters and keep going", [25, 100, 250, 500, 1000], "ha_explode", "c"], ["Monster Traits", "Tough Against Shielded", "Take hits from shielded monsters and keep going", [25, 100, 250, 500, 1000], "ha_shield", "c"], ["Monster Traits", "Tough Against Raging", "Take hits from raging monsters and keep going", [25, 100, 250, 500, 1000], "ha_rage", "c"], ["Monster Traits", "Tough Against Blinking", "Take hits from blinking monsters and keep going", [25, 100, 250, 500, 1000], "ha_blink", "c"], ["Monster Traits", "Tough Against Summoning", "Take hits from summoning monsters and keep going", [25, 100, 250, 500, 1000], "ha_summon", "c"], ["Monster Traits", "Tough Against Slippery", "Take hits from slippery monsters and keep going", [25, 100, 250, 500, 1000], "ha_dodge", "c"], ["Monster Traits", "Tough Against Flying", "Take hits from flying monsters and keep going", [25, 100, 250, 500, 1000], "ha_fly", "c"], ["Monster Traits", "Tough Against Pack", "Take hits from pack monsters and keep going", [25, 100, 250, 500, 1000], "ha_pack", "c"], ["Monster Traits", "Tough Against Freezing", "Take hits from freezing monsters and keep going", [25, 100, 250, 500, 1000], "ha_slowhit", "c"], ["Monster Traits", "Tough Against Slow", "Take hits from slow monsters and keep going", [25, 100, 250, 500, 1000], "ha_slowmove", "c"], ["Monster Traits", "Tough Against Slamming", "Take hits from slamming monsters and keep going", [25, 100, 250, 500, 1000], "ha_slam", "c"], ["Monster Traits", "Tough Against Charging", "Take hits from charging monsters and keep going", [25, 100, 250, 500, 1000], "ha_charge", "c"], ["Monster Traits", "Tough Against Statue", "Take hits from statue monsters and keep going", [25, 100, 250, 500, 1000], "ha_statue", "c"], ["Monster Traits", "Tough Against Burrowing", "Take hits from burrowing monsters and keep going", [25, 100, 250, 500, 1000], "ha_burrow", "c"], ["Monster Traits", "Tough Against Disguised", "Take hits from disguised monsters and keep going", [25, 100, 250, 500, 1000], "ha_disguise", "c"], ["Monster Traits", "Tough Against Healing", "Take hits from healing monsters and keep going", [25, 100, 250, 500, 1000], "ha_healer", "c"], ["Monster Traits", "Tough Against Shield-Giving", "Take hits from shield-giving monsters and keep going", [25, 100, 250, 500, 1000], "ha_shielder", "c"], ["Monster Traits", "Tough Against Pushing", "Take hits from pushing monsters and keep going", [25, 100, 250, 500, 1000], "ha_push", "c"], ["Monster Traits", "Tough Against Pulling", "Take hits from pulling monsters and keep going", [25, 100, 250, 500, 1000], "ha_pull", "c"], ["Monster Traits", "Tough Against Bomb-Throwing", "Take hits from bomb-throwing monsters and keep going", [25, 100, 250, 500, 1000], "ha_bomber", "c"], ["Monster Traits", "Tough Against Turret", "Take hits from turret monsters and keep going", [25, 100, 250, 500, 1000], "ha_turret", "c"], ["Monster Traits", "Tough Against Sneaky", "Take hits from sneaky monsters and keep going", [25, 100, 250, 500, 1000], "ha_kite", "c"], ["Monster Traits", "Tough Against Draining", "Take hits from draining monsters and keep going", [25, 100, 250, 500, 1000], "ha_weaken", "c"], ["Monster Traits", "Tough Against Alarm", "Take hits from alarm monsters and keep going", [25, 100, 250, 500, 1000], "ha_alarm", "c"], ["Monster Traits", "Tough Against Trap-Setting", "Take hits from trap-setting monsters and keep going", [25, 100, 250, 500, 1000], "ha_trapper", "c"], ["Monster Traits", "Tough Against Illusion", "Take hits from illusion monsters and keep going", [25, 100, 250, 500, 1000], "ha_decoy", "c"], ["Monster Traits", "Tough Against Spiky", "Take hits from spiky monsters and keep going", [25, 100, 250, 500, 1000], "ha_spiky", "c"], ["Monster Traits", "Tough Against Swarming", "Take hits from swarming monsters and keep going", [25, 100, 250, 500, 1000], "ha_swarm", "c"], ["Monster Traits", "Tough Against Magic-Resistant", "Take hits from magic-resistant monsters and keep going", [25, 100, 250, 500, 1000], "ha_resist", "c"], ["Monster Traits", "Tough Against Commanding", "Take hits from commanding monsters and keep going", [25, 100, 250, 500, 1000], "ha_leader", "c"], ["Monster Traits", "Tough Against Glowing", "Take hits from glowing monsters and keep going", [25, 100, 250, 500, 1000], "ha_wisp", "c"], ["Monster Traits", "Tough Against Double-Striking", "Take hits from double-striking monsters and keep going", [25, 100, 250, 500, 1000], "ha_multi", "c"], ["Monster Traits", "Tough Against Re-Shielding", "Take hits from re-shielding monsters and keep going", [25, 100, 250, 500, 1000], "ha_reshield", "c"], ["Monster Traits", "Tough Against Lava-Walking", "Take hits from lava-walking monsters and keep going", [25, 100, 250, 500, 1000], "ha_firewalk", "c"], ["Weapons", "Sword Master", "Defeat monsters while using a sword", [25, 100, 250, 500, 1000], "kw_Sword", "c"], ["Weapons", "Dagger Master", "Defeat monsters while using a dagger", [25, 100, 250, 500, 1000], "kw_Dagger", "c"], ["Weapons", "Axe Master", "Defeat monsters while using a axe", [25, 100, 250, 500, 1000], "kw_Axe", "c"], ["Weapons", "Bow Master", "Defeat monsters while using a bow", [25, 100, 250, 500, 1000], "kw_Bow", "c"], ["Weapons", "Spear Master", "Defeat monsters while using a spear", [25, 100, 250, 500, 1000], "kw_Spear", "c"], ["Weapons", "Hammer Master", "Defeat monsters while using a hammer", [25, 100, 250, 500, 1000], "kw_Hammer", "c"], ["Weapons", "Staff Master", "Defeat monsters while using a staff", [25, 100, 250, 500, 1000], "kw_Staff", "c"], ["Weapons", "Scythe Master", "Defeat monsters while using a scythe", [25, 100, 250, 500, 1000], "kw_Scythe", "c"], ["Weapons", "Exotic Master", "Defeat monsters while using a exotic", [25, 100, 250, 500, 1000], "kw_Exotic", "c"], ["Weapons", "Firearm Master", "Defeat monsters while using a firearm", [25, 100, 250, 500, 1000], "kw_Firearm", "c"], ["Weapons", "Sword Collector", "Find different sword names (30 in all)", [3, 6, 10, 20, 30], "wc_Sword", "s"], ["Weapons", "Dagger Collector", "Find different dagger names (30 in all)", [3, 6, 10, 20, 30], "wc_Dagger", "s"], ["Weapons", "Axe Collector", "Find different axe names (30 in all)", [3, 6, 10, 20, 30], "wc_Axe", "s"], ["Weapons", "Bow Collector", "Find different bow names (30 in all)", [3, 6, 10, 20, 30], "wc_Bow", "s"], ["Weapons", "Spear Collector", "Find different spear names (30 in all)", [3, 6, 10, 20, 30], "wc_Spear", "s"], ["Weapons", "Hammer Collector", "Find different hammer names (30 in all)", [3, 6, 10, 20, 30], "wc_Hammer", "s"], ["Weapons", "Staff Collector", "Find different staff names (30 in all)", [3, 6, 10, 20, 30], "wc_Staff", "s"], ["Weapons", "Scythe Collector", "Find different scythe names (30 in all)", [3, 6, 10, 20, 30], "wc_Scythe", "s"], ["Weapons", "Exotic Collector", "Find different exotic names (30 in all)", [3, 6, 10, 20, 30], "wc_Exotic", "s"], ["Weapons", "Firearm Collector", "Find different firearm names (30 in all)", [3, 6, 10, 20, 30], "wc_Firearm", "s"], ["Weapons", "Sword Power", "Deal damage with a sword", [1000, 10000, 100000, 1000000, 10000000], "dw_Sword", "c"], ["Weapons", "Dagger Power", "Deal damage with a dagger", [1000, 10000, 100000, 1000000, 10000000], "dw_Dagger", "c"], ["Weapons", "Axe Power", "Deal damage with a axe", [1000, 10000, 100000, 1000000, 10000000], "dw_Axe", "c"], ["Weapons", "Bow Power", "Deal damage with a bow", [1000, 10000, 100000, 1000000, 10000000], "dw_Bow", "c"], ["Weapons", "Spear Power", "Deal damage with a spear", [1000, 10000, 100000, 1000000, 10000000], "dw_Spear", "c"], ["Weapons", "Hammer Power", "Deal damage with a hammer", [1000, 10000, 100000, 1000000, 10000000], "dw_Hammer", "c"], ["Weapons", "Staff Power", "Deal damage with a staff", [1000, 10000, 100000, 1000000, 10000000], "dw_Staff", "c"], ["Weapons", "Scythe Power", "Deal damage with a scythe", [1000, 10000, 100000, 1000000, 10000000], "dw_Scythe", "c"], ["Weapons", "Exotic Power", "Deal damage with a exotic", [1000, 10000, 100000, 1000000, 10000000], "dw_Exotic", "c"], ["Weapons", "Firearm Power", "Deal damage with a firearm", [1000, 10000, 100000, 1000000, 10000000], "dw_Firearm", "c"], ["Weapons", "Bow Sharpshooter", "Defeat monsters from a distance with a bow", [10, 50, 100, 250, 500], "kr_Bow", "c"], ["Weapons", "Firearm Sharpshooter", "Defeat monsters from a distance with a firearm", [10, 50, 100, 250, 500], "kr_Firearm", "c"], ["Weapons", "Staff Sharpshooter", "Defeat monsters from a distance with a staff", [10, 50, 100, 250, 500], "kr_Staff", "c"], ["Weapons", "Spear Sharpshooter", "Defeat monsters from a distance with a spear", [10, 50, 100, 250, 500], "kr_Spear", "c"], ["Weapons", "Sharp Expert", "Defeat monsters with a Sharp weapon", [10, 50, 100, 250, 500], "km_Sharp", "c"], ["Weapons", "Dull Expert", "Defeat monsters with a Dull weapon", [10, 50, 100, 250, 500], "km_Dull", "c"], ["Weapons", "Rusty Expert", "Defeat monsters with a Rusty weapon", [10, 50, 100, 250, 500], "km_Rusty", "c"], ["Weapons", "Leeching Expert", "Defeat monsters with a Leeching weapon", [10, 50, 100, 250, 500], "km_Leeching", "c"], ["Weapons", "Flaming Expert", "Defeat monsters with a Flaming weapon", [10, 50, 100, 250, 500], "km_Flaming", "c"], ["Weapons", "Frozen Expert", "Defeat monsters with a Frozen weapon", [10, 50, 100, 250, 500], "km_Frozen", "c"], ["Weapons", "Shocking Expert", "Defeat monsters with a Shocking weapon", [10, 50, 100, 250, 500], "km_Shocking", "c"], ["Weapons", "Heavy Expert", "Defeat monsters with a Heavy weapon", [10, 50, 100, 250, 500], "km_Heavy", "c"], ["Weapons", "Swift Expert", "Defeat monsters with a Swift weapon", [10, 50, 100, 250, 500], "km_Swift", "c"], ["Weapons", "Cursed Expert", "Defeat monsters with a Cursed weapon", [10, 50, 100, 250, 500], "km_Cursed", "c"], ["Weapons", "Poisoned Expert", "Defeat monsters with a Poisoned weapon", [10, 50, 100, 250, 500], "km_Poisoned", "c"], ["Weapons", "Vampiric Expert", "Defeat monsters with a Vampiric weapon", [10, 50, 100, 250, 500], "km_Vampiric", "c"], ["Weapons", "Explosive Expert", "Defeat monsters with a Explosive weapon", [10, 50, 100, 250, 500], "km_Explosive", "c"], ["Weapons", "Piercing Expert", "Defeat monsters with a Piercing weapon", [10, 50, 100, 250, 500], "km_Piercing", "c"], ["Weapons", "Lucky Expert", "Defeat monsters with a Lucky weapon", [10, 50, 100, 250, 500], "km_Lucky", "c"], ["Weapons", "Unstable Expert", "Defeat monsters with a Unstable weapon", [10, 50, 100, 250, 500], "km_Unstable", "c"], ["Weapons", "Blessed Expert", "Defeat monsters with a Blessed weapon", [10, 50, 100, 250, 500], "km_Blessed", "c"], ["Weapons", "Spectral Expert", "Defeat monsters with a Spectral weapon", [10, 50, 100, 250, 500], "km_Spectral", "c"], ["Weapons", "Regenerating Expert", "Defeat monsters with a Regenerating weapon", [10, 50, 100, 250, 500], "km_Regenerating", "c"], ["Weapons", "Echoing Expert", "Defeat monsters with a Echoing weapon", [10, 50, 100, 250, 500], "km_Echoing", "c"], ["Weapons", "Sharp Finder", "Find Sharp weapons", [1, 5, 10, 25, 50], "fm_Sharp", "c"], ["Weapons", "Dull Finder", "Find Dull weapons", [1, 5, 10, 25, 50], "fm_Dull", "c"], ["Weapons", "Rusty Finder", "Find Rusty weapons", [1, 5, 10, 25, 50], "fm_Rusty", "c"], ["Weapons", "Leeching Finder", "Find Leeching weapons", [1, 5, 10, 25, 50], "fm_Leeching", "c"], ["Weapons", "Flaming Finder", "Find Flaming weapons", [1, 5, 10, 25, 50], "fm_Flaming", "c"], ["Weapons", "Frozen Finder", "Find Frozen weapons", [1, 5, 10, 25, 50], "fm_Frozen", "c"], ["Weapons", "Shocking Finder", "Find Shocking weapons", [1, 5, 10, 25, 50], "fm_Shocking", "c"], ["Weapons", "Heavy Finder", "Find Heavy weapons", [1, 5, 10, 25, 50], "fm_Heavy", "c"], ["Weapons", "Swift Finder", "Find Swift weapons", [1, 5, 10, 25, 50], "fm_Swift", "c"], ["Weapons", "Cursed Finder", "Find Cursed weapons", [1, 5, 10, 25, 50], "fm_Cursed", "c"], ["Weapons", "Poisoned Finder", "Find Poisoned weapons", [1, 5, 10, 25, 50], "fm_Poisoned", "c"], ["Weapons", "Vampiric Finder", "Find Vampiric weapons", [1, 5, 10, 25, 50], "fm_Vampiric", "c"], ["Weapons", "Explosive Finder", "Find Explosive weapons", [1, 5, 10, 25, 50], "fm_Explosive", "c"], ["Weapons", "Piercing Finder", "Find Piercing weapons", [1, 5, 10, 25, 50], "fm_Piercing", "c"], ["Weapons", "Lucky Finder", "Find Lucky weapons", [1, 5, 10, 25, 50], "fm_Lucky", "c"], ["Weapons", "Unstable Finder", "Find Unstable weapons", [1, 5, 10, 25, 50], "fm_Unstable", "c"], ["Weapons", "Blessed Finder", "Find Blessed weapons", [1, 5, 10, 25, 50], "fm_Blessed", "c"], ["Weapons", "Spectral Finder", "Find Spectral weapons", [1, 5, 10, 25, 50], "fm_Spectral", "c"], ["Weapons", "Regenerating Finder", "Find Regenerating weapons", [1, 5, 10, 25, 50], "fm_Regenerating", "c"], ["Weapons", "Echoing Finder", "Find Echoing weapons", [1, 5, 10, 25, 50], "fm_Echoing", "c"], ["Gear", "Common Gear", "Equip Common gear", [1, 5, 10, 25, 50], "eq_Common", "c"], ["Gear", "Uncommon Gear", "Equip Uncommon gear", [1, 5, 10, 25, 50], "eq_Uncommon", "c"], ["Gear", "Rare Gear", "Equip Rare gear", [1, 5, 10, 25, 50], "eq_Rare", "c"], ["Gear", "Epic Gear", "Equip Epic gear", [1, 5, 10, 25, 50], "eq_Epic", "c"], ["Gear", "Legendary Gear", "Equip Legendary gear", [1, 5, 10, 25, 50], "eq_Legendary", "c"], ["Gear", "Mythic Gear", "Equip Mythic gear", [1, 5, 10, 25, 50], "eq_Mythic", "c"], ["Gear", "Ancient Gear", "Equip Ancient gear", [1, 5, 10, 25, 50], "eq_Ancient", "c"], ["Gear", "Celestial Gear", "Equip Celestial gear", [1, 5, 10, 25, 50], "eq_Celestial", "c"], ["Gear", "Cosmic Gear", "Equip Cosmic gear", [1, 5, 10, 25, 50], "eq_Cosmic", "c"], ["Gear", "Common Finder", "Find Common gear", [1, 10, 25, 50, 100], "fr_Common", "c"], ["Gear", "Uncommon Finder", "Find Uncommon gear", [1, 10, 25, 50, 100], "fr_Uncommon", "c"], ["Gear", "Rare Finder", "Find Rare gear", [1, 10, 25, 50, 100], "fr_Rare", "c"], ["Gear", "Epic Finder", "Find Epic gear", [1, 10, 25, 50, 100], "fr_Epic", "c"], ["Gear", "Legendary Finder", "Find Legendary gear", [1, 10, 25, 50, 100], "fr_Legendary", "c"], ["Gear", "Mythic Finder", "Find Mythic gear", [1, 10, 25, 50, 100], "fr_Mythic", "c"], ["Gear", "Ancient Finder", "Find Ancient gear", [1, 10, 25, 50, 100], "fr_Ancient", "c"], ["Gear", "Celestial Finder", "Find Celestial gear", [1, 10, 25, 50, 100], "fr_Celestial", "c"], ["Gear", "Cosmic Finder", "Find Cosmic gear", [1, 10, 25, 50, 100], "fr_Cosmic", "c"], ["Gear", "Leather Armor Wearer", "Equip Leather Armor", [1, 3, 5, 10, 25], "ea_Leather Armor", "c"], ["Gear", "Studded Leather Wearer", "Equip Studded Leather", [1, 3, 5, 10, 25], "ea_Studded Leather", "c"], ["Gear", "Chain Mail Wearer", "Equip Chain Mail", [1, 3, 5, 10, 25], "ea_Chain Mail", "c"], ["Gear", "Scale Mail Wearer", "Equip Scale Mail", [1, 3, 5, 10, 25], "ea_Scale Mail", "c"], ["Gear", "Splint Mail Wearer", "Equip Splint Mail", [1, 3, 5, 10, 25], "ea_Splint Mail", "c"], ["Gear", "Plate Armor Wearer", "Equip Plate Armor", [1, 3, 5, 10, 25], "ea_Plate Armor", "c"], ["Gear", "Mithril Mail Wearer", "Equip Mithril Mail", [1, 3, 5, 10, 25], "ea_Mithril Mail", "c"], ["Gear", "Dragon Scale Wearer", "Equip Dragon Scale", [1, 3, 5, 10, 25], "ea_Dragon Scale", "c"], ["Gear", "Star Plate Wearer", "Equip Star Plate", [1, 3, 5, 10, 25], "ea_Star Plate", "c"], ["Gear", "Void Shell Wearer", "Equip Void Shell", [1, 3, 5, 10, 25], "ea_Void Shell", "c"], ["Gear", "Picky Adventurer", "Leave gear behind (destroy it)", [10, 50, 100, 250, 500], "destroy", "c"], ["Gear", "Gear Swapper", "Equip any gear", [10, 50, 100, 250, 500], "equip", "c"], ["Gear", "Armor of Thorns Wearer", "Equip armor with the \"of Thorns\" bonus", [1, 5, 10, 25, 50], "eab_Thorns", "c"], ["Gear", "Armor of Life Wearer", "Equip armor with the \"of Life\" bonus", [1, 5, 10, 25, 50], "eab_Life", "c"], ["Gear", "Armor of Shadows Wearer", "Equip armor with the \"of Shadows\" bonus", [1, 5, 10, 25, 50], "eab_Shadows", "c"], ["Gear", "Armor of Mending Wearer", "Equip armor with the \"of Mending\" bonus", [1, 5, 10, 25, 50], "eab_Mending", "c"], ["Gear", "Armor of the Turtle Wearer", "Equip armor with the \"of the Turtle\" bonus", [1, 5, 10, 25, 50], "eab_the Turtle", "c"], ["Gear", "Leeching Bonus Wielder", "Equip a weapon with the Leeching bonus", [1, 5, 10, 25, 50], "ewb_Leeching", "c"], ["Gear", "Thunder Bonus Wielder", "Equip a weapon with the Thunder bonus", [1, 5, 10, 25, 50], "ewb_Thunder", "c"], ["Gear", "Greed Bonus Wielder", "Equip a weapon with the Greed bonus", [1, 5, 10, 25, 50], "ewb_Greed", "c"], ["Gear", "Fury Bonus Wielder", "Equip a weapon with the Fury bonus", [1, 5, 10, 25, 50], "ewb_Fury", "c"], ["Gear", "Piercing Bonus Wielder", "Equip a weapon with the Piercing bonus", [1, 5, 10, 25, 50], "ewb_Piercing", "c"], ["Floors and Zones", "Treasure Vault Explorer", "Reach the stairs on Treasure Vault floors", [1, 3, 5, 10, 25], "lc_Treasure Vault", "c"], ["Floors and Zones", "Library Explorer", "Reach the stairs on Library floors", [1, 3, 5, 10, 25], "lc_Library", "c"], ["Floors and Zones", "Armory Explorer", "Reach the stairs on Armory floors", [1, 3, 5, 10, 25], "lc_Armory", "c"], ["Floors and Zones", "Royal Treasury Explorer", "Reach the stairs on Royal Treasury floors", [1, 3, 5, 10, 25], "lc_Royal Treasury", "c"], ["Floors and Zones", "Lost Merchant Hall Explorer", "Reach the stairs on Lost Merchant Hall floors", [1, 3, 5, 10, 25], "lc_Lost Merchant Hall", "c"], ["Floors and Zones", "Alchemist's Lab Explorer", "Reach the stairs on Alchemist's Lab floors", [1, 3, 5, 10, 25], "lc_Alchemist's Lab", "c"], ["Floors and Zones", "Enchanter's Workshop Explorer", "Reach the stairs on Enchanter's Workshop floors", [1, 3, 5, 10, 25], "lc_Enchanter's Workshop", "c"], ["Floors and Zones", "Relic Chamber Explorer", "Reach the stairs on Relic Chamber floors", [1, 3, 5, 10, 25], "lc_Relic Chamber", "c"], ["Floors and Zones", "Mimic Gallery Explorer", "Reach the stairs on Mimic Gallery floors", [1, 3, 5, 10, 25], "lc_Mimic Gallery", "c"], ["Floors and Zones", "Dragon's Hoard Explorer", "Reach the stairs on Dragon's Hoard floors", [1, 3, 5, 10, 25], "lc_Dragon's Hoard", "c"], ["Floors and Zones", "Nest Explorer", "Reach the stairs on Nest floors", [1, 3, 5, 10, 25], "lc_Nest", "c"], ["Floors and Zones", "Goblin Warrens Explorer", "Reach the stairs on Goblin Warrens floors", [1, 3, 5, 10, 25], "lc_Goblin Warrens", "c"], ["Floors and Zones", "Skeleton Crypt Explorer", "Reach the stairs on Skeleton Crypt floors", [1, 3, 5, 10, 25], "lc_Skeleton Crypt", "c"], ["Floors and Zones", "Spider Den Explorer", "Reach the stairs on Spider Den floors", [1, 3, 5, 10, 25], "lc_Spider Den", "c"], ["Floors and Zones", "Orc Warcamp Explorer", "Reach the stairs on Orc Warcamp floors", [1, 3, 5, 10, 25], "lc_Orc Warcamp", "c"], ["Floors and Zones", "Rat King's Sewers Explorer", "Reach the stairs on Rat King's Sewers floors", [1, 3, 5, 10, 25], "lc_Rat King's Sewers", "c"], ["Floors and Zones", "Demon Incursion Explorer", "Reach the stairs on Demon Incursion floors", [1, 3, 5, 10, 25], "lc_Demon Incursion", "c"], ["Floors and Zones", "Haunted Barracks Explorer", "Reach the stairs on Haunted Barracks floors", [1, 3, 5, 10, 25], "lc_Haunted Barracks", "c"], ["Floors and Zones", "Slime Pit Explorer", "Reach the stairs on Slime Pit floors", [1, 3, 5, 10, 25], "lc_Slime Pit", "c"], ["Floors and Zones", "Monster Breeding Grounds Explorer", "Reach the stairs on Monster Breeding Grounds floors", [1, 3, 5, 10, 25], "lc_Monster Breeding Grounds", "c"], ["Floors and Zones", "Spike Maze Explorer", "Reach the stairs on Spike Maze floors", [1, 3, 5, 10, 25], "lc_Spike Maze", "c"], ["Floors and Zones", "Flooded Catacombs Explorer", "Reach the stairs on Flooded Catacombs floors", [1, 3, 5, 10, 25], "lc_Flooded Catacombs", "c"], ["Floors and Zones", "Burning Foundry Explorer", "Reach the stairs on Burning Foundry floors", [1, 3, 5, 10, 25], "lc_Burning Foundry", "c"], ["Floors and Zones", "Frozen Labyrinth Explorer", "Reach the stairs on Frozen Labyrinth floors", [1, 3, 5, 10, 25], "lc_Frozen Labyrinth", "c"], ["Floors and Zones", "Poison Garden Explorer", "Reach the stairs on Poison Garden floors", [1, 3, 5, 10, 25], "lc_Poison Garden", "c"], ["Floors and Zones", "Collapsing Mine Explorer", "Reach the stairs on Collapsing Mine floors", [1, 3, 5, 10, 25], "lc_Collapsing Mine", "c"], ["Floors and Zones", "Lightning Conduit Explorer", "Reach the stairs on Lightning Conduit floors", [1, 3, 5, 10, 25], "lc_Lightning Conduit", "c"], ["Floors and Zones", "Sand-Buried Temple Explorer", "Reach the stairs on Sand-Buried Temple floors", [1, 3, 5, 10, 25], "lc_Sand-Buried Temple", "c"], ["Floors and Zones", "Rotting Swamp Explorer", "Reach the stairs on Rotting Swamp floors", [1, 3, 5, 10, 25], "lc_Rotting Swamp", "c"], ["Floors and Zones", "Mirror Hall Explorer", "Reach the stairs on Mirror Hall floors", [1, 3, 5, 10, 25], "lc_Mirror Hall", "c"], ["Floors and Zones", "Forgotten Temple Explorer", "Reach the stairs on Forgotten Temple floors", [1, 3, 5, 10, 25], "lc_Forgotten Temple", "c"], ["Floors and Zones", "Clockwork Labyrinth Explorer", "Reach the stairs on Clockwork Labyrinth floors", [1, 3, 5, 10, 25], "lc_Clockwork Labyrinth", "c"], ["Floors and Zones", "Observatory Explorer", "Reach the stairs on Observatory floors", [1, 3, 5, 10, 25], "lc_Observatory", "c"], ["Floors and Zones", "Underground Archives Explorer", "Reach the stairs on Underground Archives floors", [1, 3, 5, 10, 25], "lc_Underground Archives", "c"], ["Floors and Zones", "Forgotten Village Explorer", "Reach the stairs on Forgotten Village floors", [1, 3, 5, 10, 25], "lc_Forgotten Village", "c"], ["Floors and Zones", "Maze of Doors Explorer", "Reach the stairs on Maze of Doors floors", [1, 3, 5, 10, 25], "lc_Maze of Doors", "c"], ["Floors and Zones", "Echoing Caverns Explorer", "Reach the stairs on Echoing Caverns floors", [1, 3, 5, 10, 25], "lc_Echoing Caverns", "c"], ["Floors and Zones", "Spirit Crossing Explorer", "Reach the stairs on Spirit Crossing floors", [1, 3, 5, 10, 25], "lc_Spirit Crossing", "c"], ["Floors and Zones", "Portal Nexus Explorer", "Reach the stairs on Portal Nexus floors", [1, 3, 5, 10, 25], "lc_Portal Nexus", "c"], ["Floors and Zones", "The Forgotten Prison Explorer", "Reach the stairs on The Forgotten Prison floors", [1, 3, 5, 10, 25], "lc_The Forgotten Prison", "c"], ["Floors and Zones", "Colosseum Explorer", "Reach the stairs on Colosseum floors", [1, 3, 5, 10, 25], "lc_Colosseum", "c"], ["Floors and Zones", "Boss Lair Explorer", "Reach the stairs on Boss Lair floors", [1, 3, 5, 10, 25], "lc_Boss Lair", "c"], ["Floors and Zones", "The King's Court Explorer", "Reach the stairs on The King's Court floors", [1, 3, 5, 10, 25], "lc_The King's Court", "c"], ["Floors and Zones", "Ancient Battlefield Explorer", "Reach the stairs on Ancient Battlefield floors", [1, 3, 5, 10, 25], "lc_Ancient Battlefield", "c"], ["Floors and Zones", "The Living Dungeon Explorer", "Reach the stairs on The Living Dungeon floors", [1, 3, 5, 10, 25], "lc_The Living Dungeon", "c"], ["Floors and Zones", "Crystal Cathedral Explorer", "Reach the stairs on Crystal Cathedral floors", [1, 3, 5, 10, 25], "lc_Crystal Cathedral", "c"], ["Floors and Zones", "Time-Lost Chamber Explorer", "Reach the stairs on Time-Lost Chamber floors", [1, 3, 5, 10, 25], "lc_Time-Lost Chamber", "c"], ["Floors and Zones", "The Cursed Chapel Explorer", "Reach the stairs on The Cursed Chapel floors", [1, 3, 5, 10, 25], "lc_The Cursed Chapel", "c"], ["Floors and Zones", "Secret Developer Room Explorer", "Reach the stairs on Secret Developer Room floors", [1, 2, 3, 5, 10], "lc_Secret Developer Room", "c"], ["Floors and Zones", "The Dungeon Core Explorer", "Reach the stairs on The Dungeon Core floors", [1, 2, 3, 5, 10], "lc_The Dungeon Core", "c"], ["Floors and Zones", "Treasure Vault Bounty", "Finish the bounty on Treasure Vault floors", [1, 3, 5, 10, 25], "lb_Treasure Vault", "c"], ["Floors and Zones", "Library Bounty", "Finish the bounty on Library floors", [1, 3, 5, 10, 25], "lb_Library", "c"], ["Floors and Zones", "Armory Bounty", "Finish the bounty on Armory floors", [1, 3, 5, 10, 25], "lb_Armory", "c"], ["Floors and Zones", "Royal Treasury Bounty", "Finish the bounty on Royal Treasury floors", [1, 3, 5, 10, 25], "lb_Royal Treasury", "c"], ["Floors and Zones", "Lost Merchant Hall Bounty", "Finish the bounty on Lost Merchant Hall floors", [1, 3, 5, 10, 25], "lb_Lost Merchant Hall", "c"], ["Floors and Zones", "Alchemist's Lab Bounty", "Finish the bounty on Alchemist's Lab floors", [1, 3, 5, 10, 25], "lb_Alchemist's Lab", "c"], ["Floors and Zones", "Enchanter's Workshop Bounty", "Finish the bounty on Enchanter's Workshop floors", [1, 3, 5, 10, 25], "lb_Enchanter's Workshop", "c"], ["Floors and Zones", "Relic Chamber Bounty", "Finish the bounty on Relic Chamber floors", [1, 3, 5, 10, 25], "lb_Relic Chamber", "c"], ["Floors and Zones", "Mimic Gallery Bounty", "Finish the bounty on Mimic Gallery floors", [1, 3, 5, 10, 25], "lb_Mimic Gallery", "c"], ["Floors and Zones", "Dragon's Hoard Bounty", "Finish the bounty on Dragon's Hoard floors", [1, 3, 5, 10, 25], "lb_Dragon's Hoard", "c"], ["Floors and Zones", "Nest Bounty", "Finish the bounty on Nest floors", [1, 3, 5, 10, 25], "lb_Nest", "c"], ["Floors and Zones", "Goblin Warrens Bounty", "Finish the bounty on Goblin Warrens floors", [1, 3, 5, 10, 25], "lb_Goblin Warrens", "c"], ["Floors and Zones", "Skeleton Crypt Bounty", "Finish the bounty on Skeleton Crypt floors", [1, 3, 5, 10, 25], "lb_Skeleton Crypt", "c"], ["Floors and Zones", "Spider Den Bounty", "Finish the bounty on Spider Den floors", [1, 3, 5, 10, 25], "lb_Spider Den", "c"], ["Floors and Zones", "Orc Warcamp Bounty", "Finish the bounty on Orc Warcamp floors", [1, 3, 5, 10, 25], "lb_Orc Warcamp", "c"], ["Floors and Zones", "Rat King's Sewers Bounty", "Finish the bounty on Rat King's Sewers floors", [1, 3, 5, 10, 25], "lb_Rat King's Sewers", "c"], ["Floors and Zones", "Demon Incursion Bounty", "Finish the bounty on Demon Incursion floors", [1, 3, 5, 10, 25], "lb_Demon Incursion", "c"], ["Floors and Zones", "Haunted Barracks Bounty", "Finish the bounty on Haunted Barracks floors", [1, 3, 5, 10, 25], "lb_Haunted Barracks", "c"], ["Floors and Zones", "Slime Pit Bounty", "Finish the bounty on Slime Pit floors", [1, 3, 5, 10, 25], "lb_Slime Pit", "c"], ["Floors and Zones", "Monster Breeding Grounds Bounty", "Finish the bounty on Monster Breeding Grounds floors", [1, 3, 5, 10, 25], "lb_Monster Breeding Grounds", "c"], ["Floors and Zones", "Spike Maze Bounty", "Finish the bounty on Spike Maze floors", [1, 3, 5, 10, 25], "lb_Spike Maze", "c"], ["Floors and Zones", "Flooded Catacombs Bounty", "Finish the bounty on Flooded Catacombs floors", [1, 3, 5, 10, 25], "lb_Flooded Catacombs", "c"], ["Floors and Zones", "Burning Foundry Bounty", "Finish the bounty on Burning Foundry floors", [1, 3, 5, 10, 25], "lb_Burning Foundry", "c"], ["Floors and Zones", "Frozen Labyrinth Bounty", "Finish the bounty on Frozen Labyrinth floors", [1, 3, 5, 10, 25], "lb_Frozen Labyrinth", "c"], ["Floors and Zones", "Poison Garden Bounty", "Finish the bounty on Poison Garden floors", [1, 3, 5, 10, 25], "lb_Poison Garden", "c"], ["Floors and Zones", "Collapsing Mine Bounty", "Finish the bounty on Collapsing Mine floors", [1, 3, 5, 10, 25], "lb_Collapsing Mine", "c"], ["Floors and Zones", "Lightning Conduit Bounty", "Finish the bounty on Lightning Conduit floors", [1, 3, 5, 10, 25], "lb_Lightning Conduit", "c"], ["Floors and Zones", "Sand-Buried Temple Bounty", "Finish the bounty on Sand-Buried Temple floors", [1, 3, 5, 10, 25], "lb_Sand-Buried Temple", "c"], ["Floors and Zones", "Rotting Swamp Bounty", "Finish the bounty on Rotting Swamp floors", [1, 3, 5, 10, 25], "lb_Rotting Swamp", "c"], ["Floors and Zones", "Mirror Hall Bounty", "Finish the bounty on Mirror Hall floors", [1, 3, 5, 10, 25], "lb_Mirror Hall", "c"], ["Floors and Zones", "Forgotten Temple Bounty", "Finish the bounty on Forgotten Temple floors", [1, 3, 5, 10, 25], "lb_Forgotten Temple", "c"], ["Floors and Zones", "Clockwork Labyrinth Bounty", "Finish the bounty on Clockwork Labyrinth floors", [1, 3, 5, 10, 25], "lb_Clockwork Labyrinth", "c"], ["Floors and Zones", "Observatory Bounty", "Finish the bounty on Observatory floors", [1, 3, 5, 10, 25], "lb_Observatory", "c"], ["Floors and Zones", "Underground Archives Bounty", "Finish the bounty on Underground Archives floors", [1, 3, 5, 10, 25], "lb_Underground Archives", "c"], ["Floors and Zones", "Forgotten Village Bounty", "Finish the bounty on Forgotten Village floors", [1, 3, 5, 10, 25], "lb_Forgotten Village", "c"], ["Floors and Zones", "Maze of Doors Bounty", "Finish the bounty on Maze of Doors floors", [1, 3, 5, 10, 25], "lb_Maze of Doors", "c"], ["Floors and Zones", "Echoing Caverns Bounty", "Finish the bounty on Echoing Caverns floors", [1, 3, 5, 10, 25], "lb_Echoing Caverns", "c"], ["Floors and Zones", "Spirit Crossing Bounty", "Finish the bounty on Spirit Crossing floors", [1, 3, 5, 10, 25], "lb_Spirit Crossing", "c"], ["Floors and Zones", "Portal Nexus Bounty", "Finish the bounty on Portal Nexus floors", [1, 3, 5, 10, 25], "lb_Portal Nexus", "c"], ["Floors and Zones", "The Forgotten Prison Bounty", "Finish the bounty on The Forgotten Prison floors", [1, 3, 5, 10, 25], "lb_The Forgotten Prison", "c"], ["Floors and Zones", "Colosseum Bounty", "Finish the bounty on Colosseum floors", [1, 3, 5, 10, 25], "lb_Colosseum", "c"], ["Floors and Zones", "Boss Lair Bounty", "Finish the bounty on Boss Lair floors", [1, 3, 5, 10, 25], "lb_Boss Lair", "c"], ["Floors and Zones", "The King's Court Bounty", "Finish the bounty on The King's Court floors", [1, 3, 5, 10, 25], "lb_The King's Court", "c"], ["Floors and Zones", "Ancient Battlefield Bounty", "Finish the bounty on Ancient Battlefield floors", [1, 3, 5, 10, 25], "lb_Ancient Battlefield", "c"], ["Floors and Zones", "The Living Dungeon Bounty", "Finish the bounty on The Living Dungeon floors", [1, 3, 5, 10, 25], "lb_The Living Dungeon", "c"], ["Floors and Zones", "Crystal Cathedral Bounty", "Finish the bounty on Crystal Cathedral floors", [1, 3, 5, 10, 25], "lb_Crystal Cathedral", "c"], ["Floors and Zones", "Time-Lost Chamber Bounty", "Finish the bounty on Time-Lost Chamber floors", [1, 3, 5, 10, 25], "lb_Time-Lost Chamber", "c"], ["Floors and Zones", "The Cursed Chapel Bounty", "Finish the bounty on The Cursed Chapel floors", [1, 3, 5, 10, 25], "lb_The Cursed Chapel", "c"], ["Floors and Zones", "Secret Developer Room Bounty", "Finish the bounty on Secret Developer Room floors", [1, 3, 5, 10, 25], "lb_Secret Developer Room", "c"], ["Floors and Zones", "The Dungeon Core Bounty", "Finish the bounty on The Dungeon Core floors", [1, 3, 5, 10, 25], "lb_The Dungeon Core", "c"], ["Floors and Zones", "Treasure Vault Brawler", "Defeat monsters on Treasure Vault floors", [10, 50, 100, 250, 500], "lk_Treasure Vault", "c"], ["Floors and Zones", "Library Brawler", "Defeat monsters on Library floors", [10, 50, 100, 250, 500], "lk_Library", "c"], ["Floors and Zones", "Armory Brawler", "Defeat monsters on Armory floors", [10, 50, 100, 250, 500], "lk_Armory", "c"], ["Floors and Zones", "Royal Treasury Brawler", "Defeat monsters on Royal Treasury floors", [10, 50, 100, 250, 500], "lk_Royal Treasury", "c"], ["Floors and Zones", "Lost Merchant Hall Brawler", "Defeat monsters on Lost Merchant Hall floors", [10, 50, 100, 250, 500], "lk_Lost Merchant Hall", "c"], ["Floors and Zones", "Alchemist's Lab Brawler", "Defeat monsters on Alchemist's Lab floors", [10, 50, 100, 250, 500], "lk_Alchemist's Lab", "c"], ["Floors and Zones", "Enchanter's Workshop Brawler", "Defeat monsters on Enchanter's Workshop floors", [10, 50, 100, 250, 500], "lk_Enchanter's Workshop", "c"], ["Floors and Zones", "Relic Chamber Brawler", "Defeat monsters on Relic Chamber floors", [10, 50, 100, 250, 500], "lk_Relic Chamber", "c"], ["Floors and Zones", "Mimic Gallery Brawler", "Defeat monsters on Mimic Gallery floors", [10, 50, 100, 250, 500], "lk_Mimic Gallery", "c"], ["Floors and Zones", "Dragon's Hoard Brawler", "Defeat monsters on Dragon's Hoard floors", [10, 50, 100, 250, 500], "lk_Dragon's Hoard", "c"], ["Floors and Zones", "Nest Brawler", "Defeat monsters on Nest floors", [10, 50, 100, 250, 500], "lk_Nest", "c"], ["Floors and Zones", "Goblin Warrens Brawler", "Defeat monsters on Goblin Warrens floors", [10, 50, 100, 250, 500], "lk_Goblin Warrens", "c"], ["Floors and Zones", "Skeleton Crypt Brawler", "Defeat monsters on Skeleton Crypt floors", [10, 50, 100, 250, 500], "lk_Skeleton Crypt", "c"], ["Floors and Zones", "Spider Den Brawler", "Defeat monsters on Spider Den floors", [10, 50, 100, 250, 500], "lk_Spider Den", "c"], ["Floors and Zones", "Orc Warcamp Brawler", "Defeat monsters on Orc Warcamp floors", [10, 50, 100, 250, 500], "lk_Orc Warcamp", "c"], ["Floors and Zones", "Rat King's Sewers Brawler", "Defeat monsters on Rat King's Sewers floors", [10, 50, 100, 250, 500], "lk_Rat King's Sewers", "c"], ["Floors and Zones", "Demon Incursion Brawler", "Defeat monsters on Demon Incursion floors", [10, 50, 100, 250, 500], "lk_Demon Incursion", "c"], ["Floors and Zones", "Haunted Barracks Brawler", "Defeat monsters on Haunted Barracks floors", [10, 50, 100, 250, 500], "lk_Haunted Barracks", "c"], ["Floors and Zones", "Slime Pit Brawler", "Defeat monsters on Slime Pit floors", [10, 50, 100, 250, 500], "lk_Slime Pit", "c"], ["Floors and Zones", "Monster Breeding Grounds Brawler", "Defeat monsters on Monster Breeding Grounds floors", [10, 50, 100, 250, 500], "lk_Monster Breeding Grounds", "c"], ["Floors and Zones", "Spike Maze Brawler", "Defeat monsters on Spike Maze floors", [10, 50, 100, 250, 500], "lk_Spike Maze", "c"], ["Floors and Zones", "Flooded Catacombs Brawler", "Defeat monsters on Flooded Catacombs floors", [10, 50, 100, 250, 500], "lk_Flooded Catacombs", "c"], ["Floors and Zones", "Burning Foundry Brawler", "Defeat monsters on Burning Foundry floors", [10, 50, 100, 250, 500], "lk_Burning Foundry", "c"], ["Floors and Zones", "Frozen Labyrinth Brawler", "Defeat monsters on Frozen Labyrinth floors", [10, 50, 100, 250, 500], "lk_Frozen Labyrinth", "c"], ["Floors and Zones", "Poison Garden Brawler", "Defeat monsters on Poison Garden floors", [10, 50, 100, 250, 500], "lk_Poison Garden", "c"], ["Floors and Zones", "Collapsing Mine Brawler", "Defeat monsters on Collapsing Mine floors", [10, 50, 100, 250, 500], "lk_Collapsing Mine", "c"], ["Floors and Zones", "Lightning Conduit Brawler", "Defeat monsters on Lightning Conduit floors", [10, 50, 100, 250, 500], "lk_Lightning Conduit", "c"], ["Floors and Zones", "Sand-Buried Temple Brawler", "Defeat monsters on Sand-Buried Temple floors", [10, 50, 100, 250, 500], "lk_Sand-Buried Temple", "c"], ["Floors and Zones", "Rotting Swamp Brawler", "Defeat monsters on Rotting Swamp floors", [10, 50, 100, 250, 500], "lk_Rotting Swamp", "c"], ["Floors and Zones", "Mirror Hall Brawler", "Defeat monsters on Mirror Hall floors", [10, 50, 100, 250, 500], "lk_Mirror Hall", "c"], ["Floors and Zones", "Forgotten Temple Brawler", "Defeat monsters on Forgotten Temple floors", [10, 50, 100, 250, 500], "lk_Forgotten Temple", "c"], ["Floors and Zones", "Clockwork Labyrinth Brawler", "Defeat monsters on Clockwork Labyrinth floors", [10, 50, 100, 250, 500], "lk_Clockwork Labyrinth", "c"], ["Floors and Zones", "Observatory Brawler", "Defeat monsters on Observatory floors", [10, 50, 100, 250, 500], "lk_Observatory", "c"], ["Floors and Zones", "Underground Archives Brawler", "Defeat monsters on Underground Archives floors", [10, 50, 100, 250, 500], "lk_Underground Archives", "c"], ["Floors and Zones", "Forgotten Village Brawler", "Defeat monsters on Forgotten Village floors", [10, 50, 100, 250, 500], "lk_Forgotten Village", "c"], ["Floors and Zones", "Maze of Doors Brawler", "Defeat monsters on Maze of Doors floors", [10, 50, 100, 250, 500], "lk_Maze of Doors", "c"], ["Floors and Zones", "Echoing Caverns Brawler", "Defeat monsters on Echoing Caverns floors", [10, 50, 100, 250, 500], "lk_Echoing Caverns", "c"], ["Floors and Zones", "Spirit Crossing Brawler", "Defeat monsters on Spirit Crossing floors", [10, 50, 100, 250, 500], "lk_Spirit Crossing", "c"], ["Floors and Zones", "Portal Nexus Brawler", "Defeat monsters on Portal Nexus floors", [10, 50, 100, 250, 500], "lk_Portal Nexus", "c"], ["Floors and Zones", "The Forgotten Prison Brawler", "Defeat monsters on The Forgotten Prison floors", [10, 50, 100, 250, 500], "lk_The Forgotten Prison", "c"], ["Floors and Zones", "Colosseum Brawler", "Defeat monsters on Colosseum floors", [10, 50, 100, 250, 500], "lk_Colosseum", "c"], ["Floors and Zones", "Boss Lair Brawler", "Defeat monsters on Boss Lair floors", [10, 50, 100, 250, 500], "lk_Boss Lair", "c"], ["Floors and Zones", "The King's Court Brawler", "Defeat monsters on The King's Court floors", [10, 50, 100, 250, 500], "lk_The King's Court", "c"], ["Floors and Zones", "Ancient Battlefield Brawler", "Defeat monsters on Ancient Battlefield floors", [10, 50, 100, 250, 500], "lk_Ancient Battlefield", "c"], ["Floors and Zones", "The Living Dungeon Brawler", "Defeat monsters on The Living Dungeon floors", [10, 50, 100, 250, 500], "lk_The Living Dungeon", "c"], ["Floors and Zones", "Crystal Cathedral Brawler", "Defeat monsters on Crystal Cathedral floors", [10, 50, 100, 250, 500], "lk_Crystal Cathedral", "c"], ["Floors and Zones", "Time-Lost Chamber Brawler", "Defeat monsters on Time-Lost Chamber floors", [10, 50, 100, 250, 500], "lk_Time-Lost Chamber", "c"], ["Floors and Zones", "The Cursed Chapel Brawler", "Defeat monsters on The Cursed Chapel floors", [10, 50, 100, 250, 500], "lk_The Cursed Chapel", "c"], ["Floors and Zones", "Secret Developer Room Brawler", "Defeat monsters on Secret Developer Room floors", [10, 50, 100, 250, 500], "lk_Secret Developer Room", "c"], ["Floors and Zones", "The Dungeon Core Brawler", "Defeat monsters on The Dungeon Core floors", [10, 50, 100, 250, 500], "lk_The Dungeon Core", "c"], ["Floors and Zones", "Old Dungeon Wanderer", "Clear floors in Old Dungeon", [10, 25, 50, 100, 250], "zc_Old Dungeon", "c"], ["Floors and Zones", "Dark Caves Wanderer", "Clear floors in Dark Caves", [10, 25, 50, 100, 250], "zc_Dark Caves", "c"], ["Floors and Zones", "Bone Crypt Wanderer", "Clear floors in Bone Crypt", [10, 25, 50, 100, 250], "zc_Bone Crypt", "c"], ["Floors and Zones", "Twisting Maze Wanderer", "Clear floors in Twisting Maze", [10, 25, 50, 100, 250], "zc_Twisting Maze", "c"], ["Floors and Zones", "Lava Depths Wanderer", "Clear floors in Lava Depths", [10, 25, 50, 100, 250], "zc_Lava Depths", "c"], ["Floors and Zones", "Slime Pits Wanderer", "Clear floors in Slime Pits", [10, 25, 50, 100, 250], "zc_Slime Pits", "c"], ["Floors and Zones", "Shadow Realm Wanderer", "Clear floors in Shadow Realm", [10, 25, 50, 100, 250], "zc_Shadow Realm", "c"], ["Floors and Zones", "Iron Fortress Wanderer", "Clear floors in Iron Fortress", [10, 25, 50, 100, 250], "zc_Iron Fortress", "c"], ["Floors and Zones", "Old Dungeon Legend", "Reach tougher versions of Old Dungeon (II, III, IV...)", [1, 2, 3, 4, 5], "zt_Old Dungeon", "m"], ["Floors and Zones", "Dark Caves Legend", "Reach tougher versions of Dark Caves (II, III, IV...)", [1, 2, 3, 4, 5], "zt_Dark Caves", "m"], ["Floors and Zones", "Bone Crypt Legend", "Reach tougher versions of Bone Crypt (II, III, IV...)", [1, 2, 3, 4, 5], "zt_Bone Crypt", "m"], ["Floors and Zones", "Twisting Maze Legend", "Reach tougher versions of Twisting Maze (II, III, IV...)", [1, 2, 3, 4, 5], "zt_Twisting Maze", "m"], ["Floors and Zones", "Lava Depths Legend", "Reach tougher versions of Lava Depths (II, III, IV...)", [1, 2, 3, 4, 5], "zt_Lava Depths", "m"], ["Floors and Zones", "Slime Pits Legend", "Reach tougher versions of Slime Pits (II, III, IV...)", [1, 2, 3, 4, 5], "zt_Slime Pits", "m"], ["Floors and Zones", "Shadow Realm Legend", "Reach tougher versions of Shadow Realm (II, III, IV...)", [1, 2, 3, 4, 5], "zt_Shadow Realm", "m"], ["Floors and Zones", "Iron Fortress Legend", "Reach tougher versions of Iron Fortress (II, III, IV...)", [1, 2, 3, 4, 5], "zt_Iron Fortress", "m"], ["Floors and Zones", "Old Dungeon Boss Hunter", "Defeat bosses in Old Dungeon", [1, 3, 5, 10, 25], "zb_Old Dungeon", "c"], ["Floors and Zones", "Dark Caves Boss Hunter", "Defeat bosses in Dark Caves", [1, 3, 5, 10, 25], "zb_Dark Caves", "c"], ["Floors and Zones", "Bone Crypt Boss Hunter", "Defeat bosses in Bone Crypt", [1, 3, 5, 10, 25], "zb_Bone Crypt", "c"], ["Floors and Zones", "Twisting Maze Boss Hunter", "Defeat bosses in Twisting Maze", [1, 3, 5, 10, 25], "zb_Twisting Maze", "c"], ["Floors and Zones", "Lava Depths Boss Hunter", "Defeat bosses in Lava Depths", [1, 3, 5, 10, 25], "zb_Lava Depths", "c"], ["Floors and Zones", "Slime Pits Boss Hunter", "Defeat bosses in Slime Pits", [1, 3, 5, 10, 25], "zb_Slime Pits", "c"], ["Floors and Zones", "Shadow Realm Boss Hunter", "Defeat bosses in Shadow Realm", [1, 3, 5, 10, 25], "zb_Shadow Realm", "c"], ["Floors and Zones", "Iron Fortress Boss Hunter", "Defeat bosses in Iron Fortress", [1, 3, 5, 10, 25], "zb_Iron Fortress", "c"], ["Floors and Zones", "Old Dungeon Untouched", "Reach the stairs in Old Dungeon without taking any damage", [1, 5, 10, 25, 50], "zu_Old Dungeon", "c"], ["Floors and Zones", "Dark Caves Untouched", "Reach the stairs in Dark Caves without taking any damage", [1, 5, 10, 25, 50], "zu_Dark Caves", "c"], ["Floors and Zones", "Bone Crypt Untouched", "Reach the stairs in Bone Crypt without taking any damage", [1, 5, 10, 25, 50], "zu_Bone Crypt", "c"], ["Floors and Zones", "Twisting Maze Untouched", "Reach the stairs in Twisting Maze without taking any damage", [1, 5, 10, 25, 50], "zu_Twisting Maze", "c"], ["Floors and Zones", "Lava Depths Untouched", "Reach the stairs in Lava Depths without taking any damage", [1, 5, 10, 25, 50], "zu_Lava Depths", "c"], ["Floors and Zones", "Slime Pits Untouched", "Reach the stairs in Slime Pits without taking any damage", [1, 5, 10, 25, 50], "zu_Slime Pits", "c"], ["Floors and Zones", "Shadow Realm Untouched", "Reach the stairs in Shadow Realm without taking any damage", [1, 5, 10, 25, 50], "zu_Shadow Realm", "c"], ["Floors and Zones", "Iron Fortress Untouched", "Reach the stairs in Iron Fortress without taking any damage", [1, 5, 10, 25, 50], "zu_Iron Fortress", "c"], ["Floor Dangers", "Lava Walker", "Step on lava and survive", [10, 50, 100, 250, 500], "d_Lava Walker", "c"], ["Floor Dangers", "Spike Stepper", "Step on spikes and survive", [10, 50, 100, 250, 500], "d_Spike Stepper", "c"], ["Floor Dangers", "Gas Breather", "Walk through poison gas", [10, 50, 100, 250, 500], "d_Gas Breather", "c"], ["Floor Dangers", "Shock Proof", "Step on shock floors and survive", [10, 50, 100, 250, 500], "d_Shock Proof", "c"], ["Floor Dangers", "Swimmer", "Wade through water", [10, 50, 100, 250, 500], "d_Swimmer", "c"], ["Floor Dangers", "Web Breaker", "Walk through webs", [10, 50, 100, 250, 500], "d_Web Breaker", "c"], ["Floor Dangers", "Mud Stomper", "Walk through mud", [10, 50, 100, 250, 500], "d_Mud Stomper", "c"], ["Floor Dangers", "Sand Strider", "Walk through sand", [10, 50, 100, 250, 500], "d_Sand Strider", "c"], ["Floor Dangers", "Ice Skater", "Slide on ice", [10, 50, 100, 250, 500], "d_Ice Skater", "c"], ["Floor Dangers", "Portal Jumper", "Jump through portals", [10, 50, 100, 250, 500], "d_Portal Jumper", "c"], ["Floor Dangers", "Mushroom Muncher", "Eat mushrooms", [10, 50, 100, 250, 500], "d_Mushroom Muncher", "c"], ["Floor Dangers", "Rock Dodger", "Step off a square before a falling rock lands", [10, 50, 100, 250, 500], "d_Rock Dodger", "c"], ["Floor Dangers", "Bomb Dodger", "Step off a square before a bomb explodes", [10, 50, 100, 250, 500], "d_Bomb Dodger", "c"], ["Floor Dangers", "Darkness Delver", "Clear dark floors", [10, 50, 100, 250, 500], "d_Darkness Delver", "c"], ["Pets", "Friends with Nibbles", "Go down floors with Nibbles the Rat on your team", [10, 25, 50, 100, 250], "pf_0", "c"], ["Pets", "Friends with Pebble", "Go down floors with Pebble the Slime on your team", [10, 25, 50, 100, 250], "pf_1", "c"], ["Pets", "Friends with Pip", "Go down floors with Pip the Cave Bat on your team", [10, 25, 50, 100, 250], "pf_2", "c"], ["Pets", "Friends with Button", "Go down floors with Button the Beetle on your team", [10, 25, 50, 100, 250], "pf_3", "c"], ["Pets", "Friends with Scraps", "Go down floors with Scraps the Goblinling on your team", [10, 25, 50, 100, 250], "pf_4", "c"], ["Pets", "Friends with Dusty", "Go down floors with Dusty the Skeleton Pup on your team", [10, 25, 50, 100, 250], "pf_5", "c"], ["Pets", "Friends with Puddle", "Go down floors with Puddle the Frog on your team", [10, 25, 50, 100, 250], "pf_6", "c"], ["Pets", "Friends with Thread", "Go down floors with Thread the Spiderling on your team", [10, 25, 50, 100, 250], "pf_7", "c"], ["Pets", "Friends with Cinder", "Go down floors with Cinder the Fire Moth on your team", [10, 25, 50, 100, 250], "pf_8", "c"], ["Pets", "Friends with Mallow", "Go down floors with Mallow the Mushroom on your team", [10, 25, 50, 100, 250], "pf_9", "c"], ["Pets", "Friends with Biscuit", "Go down floors with Biscuit the Cave Puppy on your team", [10, 25, 50, 100, 250], "pf_10", "c"], ["Pets", "Friends with Pebbles", "Go down floors with Pebbles the Hamster on your team", [10, 25, 50, 100, 250], "pf_11", "c"], ["Pets", "Friends with Wiggles", "Go down floors with Wiggles the Worm on your team", [10, 25, 50, 100, 250], "pf_12", "c"], ["Pets", "Friends with Tippy", "Go down floors with Tippy the Toad on your team", [10, 25, 50, 100, 250], "pf_13", "c"], ["Pets", "Friends with Flint", "Go down floors with Flint the Firefly on your team", [10, 25, 50, 100, 250], "pf_14", "c"], ["Pets", "Friends with Buttons", "Go down floors with Buttons the Snail on your team", [10, 25, 50, 100, 250], "pf_15", "c"], ["Pets", "Friends with Chirp", "Go down floors with Chirp the Cricket on your team", [10, 25, 50, 100, 250], "pf_16", "c"], ["Pets", "Friends with Mittens", "Go down floors with Mittens the Cave Kitten on your team", [10, 25, 50, 100, 250], "pf_17", "c"], ["Pets", "Friends with Doodle", "Go down floors with Doodle the Dust Bunny on your team", [10, 25, 50, 100, 250], "pf_18", "c"], ["Pets", "Friends with Bramble", "Go down floors with Bramble the Hedgehog on your team", [10, 25, 50, 100, 250], "pf_19", "c"], ["Pets", "Friends with Poppy", "Go down floors with Poppy the Ladybug on your team", [10, 25, 50, 100, 250], "pf_20", "c"], ["Pets", "Friends with Crumb", "Go down floors with Crumb the Mouse on your team", [10, 25, 50, 100, 250], "pf_21", "c"], ["Pets", "Friends with Splash", "Go down floors with Splash the Tadpole on your team", [10, 25, 50, 100, 250], "pf_22", "c"], ["Pets", "Friends with Waffle", "Go down floors with Waffle the Duckling on your team", [10, 25, 50, 100, 250], "pf_23", "c"], ["Pets", "Friends with Tumble", "Go down floors with Tumble the Armadillo on your team", [10, 25, 50, 100, 250], "pf_24", "c"], ["Pets", "Friends with Dot", "Go down floors with Dot the Moth on your team", [10, 25, 50, 100, 250], "pf_25", "c"], ["Pets", "Friends with Squeak", "Go down floors with Squeak the Batling on your team", [10, 25, 50, 100, 250], "pf_26", "c"], ["Pets", "Friends with Mossy", "Go down floors with Mossy the Snail on your team", [10, 25, 50, 100, 250], "pf_27", "c"], ["Pets", "Friends with Dewdrop", "Go down floors with Dewdrop the Slug on your team", [10, 25, 50, 100, 250], "pf_28", "c"], ["Pets", "Friends with Pogo", "Go down floors with Pogo the Grasshopper on your team", [10, 25, 50, 100, 250], "pf_29", "c"], ["Pets", "Friends with Bubbles", "Go down floors with Bubbles the Minnow on your team", [10, 25, 50, 100, 250], "pf_30", "c"], ["Pets", "Friends with Ruffles", "Go down floors with Ruffles the Chick on your team", [10, 25, 50, 100, 250], "pf_31", "c"], ["Pets", "Friends with Tater", "Go down floors with Tater the Mole on your team", [10, 25, 50, 100, 250], "pf_32", "c"], ["Pets", "Friends with Flicker", "Go down floors with Flicker the Glowworm on your team", [10, 25, 50, 100, 250], "pf_33", "c"], ["Pets", "Friends with Patches", "Go down floors with Patches the Raccoon Kit on your team", [10, 25, 50, 100, 250], "pf_34", "c"], ["Pets", "Friends with Acorn", "Go down floors with Acorn the Squirrel on your team", [10, 25, 50, 100, 250], "pf_35", "c"], ["Pets", "Friends with Munch", "Go down floors with Munch the Mini Boar on your team", [10, 25, 50, 100, 250], "pf_36", "c"], ["Pets", "Friends with Clover", "Go down floors with Clover the Field Mouse on your team", [10, 25, 50, 100, 250], "pf_37", "c"], ["Pets", "Friends with Skippy", "Go down floors with Skippy the Gerbil on your team", [10, 25, 50, 100, 250], "pf_38", "c"], ["Pets", "Friends with Tinsel", "Go down floors with Tinsel the Silverfish on your team", [10, 25, 50, 100, 250], "pf_39", "c"], ["Pets", "Friends with Blinky", "Go down floors with Blinky the Eyeball on your team", [10, 25, 50, 100, 250], "pf_40", "c"], ["Pets", "Friends with Misty", "Go down floors with Misty the Puffball on your team", [10, 25, 50, 100, 250], "pf_41", "c"], ["Pets", "Friends with Coco", "Go down floors with Coco the Cave Bat on your team", [10, 25, 50, 100, 250], "pf_42", "c"], ["Pets", "Friends with Noodle", "Go down floors with Noodle the Snakelet on your team", [10, 25, 50, 100, 250], "pf_43", "c"], ["Pets", "Friends with Sprout", "Go down floors with Sprout the Mandrake on your team", [10, 25, 50, 100, 250], "pf_44", "c"], ["Pets", "Friends with Ringo", "Go down floors with Ringo the Rock Crab on your team", [10, 25, 50, 100, 250], "pf_45", "c"], ["Pets", "Friends with Dandy", "Go down floors with Dandy the Dandelion Sprite on your team", [10, 25, 50, 100, 250], "pf_46", "c"], ["Pets", "Friends with Pipkin", "Go down floors with Pipkin the Baby Turtle on your team", [10, 25, 50, 100, 250], "pf_47", "c"], ["Pets", "Friends with Zippy", "Go down floors with Zippy the Ferret on your team", [10, 25, 50, 100, 250], "pf_48", "c"], ["Pets", "Friends with Marble", "Go down floors with Marble the Pebble Golem on your team", [10, 25, 50, 100, 250], "pf_49", "c"], ["Pets", "Friends with Pickles", "Go down floors with Pickles the Mimic Cub on your team", [10, 25, 50, 100, 250], "pf_50", "c"], ["Pets", "Friends with Echo", "Go down floors with Echo the Ghost on your team", [10, 25, 50, 100, 250], "pf_51", "c"], ["Pets", "Friends with Copper", "Go down floors with Copper the Clockwork Mouse on your team", [10, 25, 50, 100, 250], "pf_52", "c"], ["Pets", "Friends with Mossback", "Go down floors with Mossback the Turtle on your team", [10, 25, 50, 100, 250], "pf_53", "c"], ["Pets", "Friends with Zipper", "Go down floors with Zipper the Ferret on your team", [10, 25, 50, 100, 250], "pf_54", "c"], ["Pets", "Friends with Bubbles 2", "Go down floors with Bubbles the Water Sprite on your team", [10, 25, 50, 100, 250], "pf_55", "c"], ["Pets", "Friends with Soot", "Go down floors with Soot the Baby Salamander on your team", [10, 25, 50, 100, 250], "pf_56", "c"], ["Pets", "Friends with Tinker", "Go down floors with Tinker the Cave Cricket on your team", [10, 25, 50, 100, 250], "pf_57", "c"], ["Pets", "Friends with Clover 2", "Go down floors with Clover the Meadow Hare on your team", [10, 25, 50, 100, 250], "pf_58", "c"], ["Pets", "Friends with Pogo 2", "Go down floors with Pogo the Pocket Golem on your team", [10, 25, 50, 100, 250], "pf_59", "c"], ["Pets", "Friends with Glimmer", "Go down floors with Glimmer the Cave Moth on your team", [10, 25, 50, 100, 250], "pf_60", "c"], ["Pets", "Friends with Rattle", "Go down floors with Rattle the Bone Snake on your team", [10, 25, 50, 100, 250], "pf_61", "c"], ["Pets", "Friends with Miso", "Go down floors with Miso the Lantern Lizard on your team", [10, 25, 50, 100, 250], "pf_62", "c"], ["Pets", "Friends with Whisk", "Go down floors with Whisk the Dust Fox on your team", [10, 25, 50, 100, 250], "pf_63", "c"], ["Pets", "Friends with Chisel", "Go down floors with Chisel the Stone Mouse on your team", [10, 25, 50, 100, 250], "pf_64", "c"], ["Pets", "Friends with Marshmallow", "Go down floors with Marshmallow the Bog Sprite on your team", [10, 25, 50, 100, 250], "pf_65", "c"], ["Pets", "Friends with Creak", "Go down floors with Creak the Wooden Owl on your team", [10, 25, 50, 100, 250], "pf_66", "c"], ["Pets", "Friends with Tumbleweed", "Go down floors with Tumbleweed the Desert Mouse on your team", [10, 25, 50, 100, 250], "pf_67", "c"], ["Pets", "Friends with Glint", "Go down floors with Glint the Copper Beetle on your team", [10, 25, 50, 100, 250], "pf_68", "c"], ["Pets", "Friends with Frosty", "Go down floors with Frosty the Snow Hare on your team", [10, 25, 50, 100, 250], "pf_69", "c"], ["Pets", "Friends with Bramblebud", "Go down floors with Bramblebud the Thornling on your team", [10, 25, 50, 100, 250], "pf_70", "c"], ["Pets", "Friends with Sproing", "Go down floors with Sproing the Spring Frog on your team", [10, 25, 50, 100, 250], "pf_71", "c"], ["Pets", "Friends with Whisper", "Go down floors with Whisper the Tiny Ghost on your team", [10, 25, 50, 100, 250], "pf_72", "c"], ["Pets", "Friends with Murk", "Go down floors with Murk the Marsh Eel on your team", [10, 25, 50, 100, 250], "pf_73", "c"], ["Pets", "Friends with Penny", "Go down floors with Penny the Coin Sprite on your team", [10, 25, 50, 100, 250], "pf_74", "c"], ["Pets", "Friends with Gasket", "Go down floors with Gasket the Tin Beetle on your team", [10, 25, 50, 100, 250], "pf_75", "c"], ["Pets", "Friends with Shiver", "Go down floors with Shiver the Ice Moth on your team", [10, 25, 50, 100, 250], "pf_76", "c"], ["Pets", "Friends with Scribble", "Go down floors with Scribble the Ink Slime on your team", [10, 25, 50, 100, 250], "pf_77", "c"], ["Pets", "Friends with Dapple", "Go down floors with Dapple the Fawn on your team", [10, 25, 50, 100, 250], "pf_78", "c"], ["Pets", "Friends with Rivet", "Go down floors with Rivet the Clockwork Cricket on your team", [10, 25, 50, 100, 250], "pf_79", "c"], ["Pets", "Friends with Mimsy", "Go down floors with Mimsy the Mimic Mouse on your team", [10, 25, 50, 100, 250], "pf_80", "c"], ["Pets", "Friends with Glowcap", "Go down floors with Glowcap the Mushroom on your team", [10, 25, 50, 100, 250], "pf_81", "c"], ["Pets", "Friends with Skitter", "Go down floors with Skitter the Sand Spider on your team", [10, 25, 50, 100, 250], "pf_82", "c"], ["Pets", "Friends with Fizzle", "Go down floors with Fizzle the Spark Sprite on your team", [10, 25, 50, 100, 250], "pf_83", "c"], ["Pets", "Friends with Crumble", "Go down floors with Crumble the Clay Pup on your team", [10, 25, 50, 100, 250], "pf_84", "c"], ["Pets", "Friends with Breezy", "Go down floors with Breezy the Wind Wisp on your team", [10, 25, 50, 100, 250], "pf_85", "c"], ["Pets", "Friends with Gingersnap", "Go down floors with Gingersnap the Ember Fox on your team", [10, 25, 50, 100, 250], "pf_86", "c"], ["Pets", "Friends with Taffy", "Go down floors with Taffy the Candy Slime on your team", [10, 25, 50, 100, 250], "pf_87", "c"], ["Pets", "Friends with Pebblehorn", "Go down floors with Pebblehorn the Mini Goat on your team", [10, 25, 50, 100, 250], "pf_88", "c"], ["Pets", "Friends with Murmur", "Go down floors with Murmur the Bat Owl on your team", [10, 25, 50, 100, 250], "pf_89", "c"], ["Pets", "Friends with Dizzy", "Go down floors with Dizzy the Spinning Beetle on your team", [10, 25, 50, 100, 250], "pf_90", "c"], ["Pets", "Friends with Buttonhook", "Go down floors with Buttonhook the Sprite on your team", [10, 25, 50, 100, 250], "pf_91", "c"], ["Pets", "Friends with Cobbles", "Go down floors with Cobbles the Rock Toad on your team", [10, 25, 50, 100, 250], "pf_92", "c"], ["Pets", "Friends with Rainbell", "Go down floors with Rainbell the Cloud Sprite on your team", [10, 25, 50, 100, 250], "pf_93", "c"], ["Pets", "Friends with Fanglet", "Go down floors with Fanglet the Wolf Pup on your team", [10, 25, 50, 100, 250], "pf_94", "c"], ["Pets", "Friends with Candlewick", "Go down floors with Candlewick the Candle Imp on your team", [10, 25, 50, 100, 250], "pf_95", "c"], ["Pets", "Friends with Pipsqueak", "Go down floors with Pipsqueak the Clockwork Chick on your team", [10, 25, 50, 100, 250], "pf_96", "c"], ["Pets", "Friends with Sundae", "Go down floors with Sundae the Frost Slime on your team", [10, 25, 50, 100, 250], "pf_97", "c"], ["Pets", "Friends with Digger", "Go down floors with Digger the Mole Pup on your team", [10, 25, 50, 100, 250], "pf_98", "c"], ["Pets", "Friends with Goldie", "Go down floors with Goldie the Cave Carp on your team", [10, 25, 50, 100, 250], "pf_99", "c"], ["Pets", "Friends with Emberfang", "Go down floors with Emberfang the Fox on your team", [10, 25, 50, 100, 250], "pf_100", "c"], ["Pets", "Friends with Glimmerwing", "Go down floors with Glimmerwing the Crystal Moth on your team", [10, 25, 50, 100, 250], "pf_101", "c"], ["Pets", "Friends with Wicket", "Go down floors with Wicket the Mini Troll on your team", [10, 25, 50, 100, 250], "pf_102", "c"], ["Pets", "Friends with Hush", "Go down floors with Hush the Shadow Cat on your team", [10, 25, 50, 100, 250], "pf_103", "c"], ["Pets", "Friends with Rumble", "Go down floors with Rumble the Rockling on your team", [10, 25, 50, 100, 250], "pf_104", "c"], ["Pets", "Friends with Frostbit", "Go down floors with Frostbit the Snow Fox on your team", [10, 25, 50, 100, 250], "pf_105", "c"], ["Pets", "Friends with Vial", "Go down floors with Vial the Potion Ooze on your team", [10, 25, 50, 100, 250], "pf_106", "c"], ["Pets", "Friends with Lantern", "Go down floors with Lantern the Will-o'-Wisp on your team", [10, 25, 50, 100, 250], "pf_107", "c"], ["Pets", "Friends with Quill", "Go down floors with Quill the Porcupine on your team", [10, 25, 50, 100, 250], "pf_108", "c"], ["Pets", "Friends with Rook", "Go down floors with Rook the Raven on your team", [10, 25, 50, 100, 250], "pf_109", "c"], ["Pets", "Friends with Cobalt", "Go down floors with Cobalt the Crystal Crab on your team", [10, 25, 50, 100, 250], "pf_110", "c"], ["Pets", "Friends with Ashen", "Go down floors with Ashen the Cinder Wolf on your team", [10, 25, 50, 100, 250], "pf_111", "c"], ["Pets", "Friends with Velvet", "Go down floors with Velvet the Night Ferret on your team", [10, 25, 50, 100, 250], "pf_112", "c"], ["Pets", "Friends with Sapphire", "Go down floors with Sapphire the Ice Sprite on your team", [10, 25, 50, 100, 250], "pf_113", "c"], ["Pets", "Friends with Thistle", "Go down floors with Thistle the Thorn Fox on your team", [10, 25, 50, 100, 250], "pf_114", "c"], ["Pets", "Friends with Whirl", "Go down floors with Whirl the Wind Hawk on your team", [10, 25, 50, 100, 250], "pf_115", "c"], ["Pets", "Friends with Runeclaw", "Go down floors with Runeclaw the Glyph Cat on your team", [10, 25, 50, 100, 250], "pf_116", "c"], ["Pets", "Friends with Gloom", "Go down floors with Gloom the Cave Panther on your team", [10, 25, 50, 100, 250], "pf_117", "c"], ["Pets", "Friends with Coppercoil", "Go down floors with Coppercoil the Serpent on your team", [10, 25, 50, 100, 250], "pf_118", "c"], ["Pets", "Friends with Starling", "Go down floors with Starling the Astral Bird on your team", [10, 25, 50, 100, 250], "pf_119", "c"], ["Pets", "Friends with Magma", "Go down floors with Magma the Lava Pup on your team", [10, 25, 50, 100, 250], "pf_120", "c"], ["Pets", "Friends with Tundra", "Go down floors with Tundra the Snow Owl on your team", [10, 25, 50, 100, 250], "pf_121", "c"], ["Pets", "Friends with Prism", "Go down floors with Prism the Rainbow Slime on your team", [10, 25, 50, 100, 250], "pf_122", "c"], ["Pets", "Friends with Gravelfang", "Go down floors with Gravelfang the Badger on your team", [10, 25, 50, 100, 250], "pf_123", "c"], ["Pets", "Friends with Vesper", "Go down floors with Vesper the Ghost Moth on your team", [10, 25, 50, 100, 250], "pf_124", "c"], ["Pets", "Friends with Bolt", "Go down floors with Bolt the Storm Mouse on your team", [10, 25, 50, 100, 250], "pf_125", "c"], ["Pets", "Friends with Mender", "Go down floors with Mender the Healing Sprite on your team", [10, 25, 50, 100, 250], "pf_126", "c"], ["Pets", "Friends with Garnet", "Go down floors with Garnet the Crystal Beetle on your team", [10, 25, 50, 100, 250], "pf_127", "c"], ["Pets", "Friends with Rift", "Go down floors with Rift the Portal Kitten on your team", [10, 25, 50, 100, 250], "pf_128", "c"], ["Pets", "Friends with Thumper", "Go down floors with Thumper the Cave Ram on your team", [10, 25, 50, 100, 250], "pf_129", "c"], ["Pets", "Friends with Sable", "Go down floors with Sable the Shadow Raven on your team", [10, 25, 50, 100, 250], "pf_130", "c"], ["Pets", "Friends with Crescent", "Go down floors with Crescent the Moon Hare on your team", [10, 25, 50, 100, 250], "pf_131", "c"], ["Pets", "Friends with Solstice", "Go down floors with Solstice the Sun Moth on your team", [10, 25, 50, 100, 250], "pf_132", "c"], ["Pets", "Friends with Boulderback", "Go down floors with Boulderback the Mini Bear on your team", [10, 25, 50, 100, 250], "pf_133", "c"], ["Pets", "Friends with Hex", "Go down floors with Hex the Spell Toad on your team", [10, 25, 50, 100, 250], "pf_134", "c"], ["Pets", "Friends with Fangora", "Go down floors with Fangora the Spider Fox on your team", [10, 25, 50, 100, 250], "pf_135", "c"], ["Pets", "Friends with Dynamo", "Go down floors with Dynamo the Electric Eel on your team", [10, 25, 50, 100, 250], "pf_136", "c"], ["Pets", "Friends with Mirage", "Go down floors with Mirage the Sand Cat on your team", [10, 25, 50, 100, 250], "pf_137", "c"], ["Pets", "Friends with Hollow", "Go down floors with Hollow the Bone Crow on your team", [10, 25, 50, 100, 250], "pf_138", "c"], ["Pets", "Friends with Opal", "Go down floors with Opal the Crystal Hare on your team", [10, 25, 50, 100, 250], "pf_139", "c"], ["Pets", "Friends with Briar", "Go down floors with Briar the Hedge Wolf on your team", [10, 25, 50, 100, 250], "pf_140", "c"], ["Pets", "Friends with Mistral", "Go down floors with Mistral the Breeze Sprite on your team", [10, 25, 50, 100, 250], "pf_141", "c"], ["Pets", "Friends with Cinderbell", "Go down floors with Cinderbell the Fire Beetle on your team", [10, 25, 50, 100, 250], "pf_142", "c"], ["Pets", "Friends with Moonstone", "Go down floors with Moonstone the Cave Deer on your team", [10, 25, 50, 100, 250], "pf_143", "c"], ["Pets", "Friends with Grit", "Go down floors with Grit the Iron Mole on your team", [10, 25, 50, 100, 250], "pf_144", "c"], ["Pets", "Friends with Riptide", "Go down floors with Riptide the Water Fox on your team", [10, 25, 50, 100, 250], "pf_145", "c"], ["Pets", "Friends with Dreadwing", "Go down floors with Dreadwing the Mini Gargoyle on your team", [10, 25, 50, 100, 250], "pf_146", "c"], ["Pets", "Friends with Lumen", "Go down floors with Lumen the Prism Wisp on your team", [10, 25, 50, 100, 250], "pf_147", "c"], ["Pets", "Friends with Rascal", "Go down floors with Rascal the Treasure Imp on your team", [10, 25, 50, 100, 250], "pf_148", "c"], ["Pets", "Friends with Ironwhisker", "Go down floors with Ironwhisker the Steel Rat on your team", [10, 25, 50, 100, 250], "pf_149", "c"], ["Pets", "Friends with Sir Pounce", "Go down floors with Sir Pounce the Lion Cub on your team", [10, 25, 50, 100, 250], "pf_150", "c"], ["Pets", "Friends with Volt", "Go down floors with Volt the Storm Sprite on your team", [10, 25, 50, 100, 250], "pf_151", "c"], ["Pets", "Friends with Rune", "Go down floors with Rune the Baby Dragon on your team", [10, 25, 50, 100, 250], "pf_152", "c"], ["Pets", "Friends with Velvetwing", "Go down floors with Velvetwing the Vampire Bat on your team", [10, 25, 50, 100, 250], "pf_153", "c"], ["Pets", "Friends with Bramblefang", "Go down floors with Bramblefang the Thorn Wolf on your team", [10, 25, 50, 100, 250], "pf_154", "c"], ["Pets", "Friends with Gearbox", "Go down floors with Gearbox the Mini Mech on your team", [10, 25, 50, 100, 250], "pf_155", "c"], ["Pets", "Friends with Oracle", "Go down floors with Oracle the Owl on your team", [10, 25, 50, 100, 250], "pf_156", "c"], ["Pets", "Friends with Doodle 2", "Go down floors with Doodle the Living Spellbook on your team", [10, 25, 50, 100, 250], "pf_157", "c"], ["Pets", "Friends with Prismtail", "Go down floors with Prismtail the Crystal Fox on your team", [10, 25, 50, 100, 250], "pf_158", "c"], ["Pets", "Friends with Sprocket", "Go down floors with Sprocket the Clockwork Spider on your team", [10, 25, 50, 100, 250], "pf_159", "c"], ["Pets", "Friends with Tempest", "Go down floors with Tempest the Thunder Hawk on your team", [10, 25, 50, 100, 250], "pf_160", "c"], ["Pets", "Friends with Aegis", "Go down floors with Aegis the Shield Turtle on your team", [10, 25, 50, 100, 250], "pf_161", "c"], ["Pets", "Friends with Inferno", "Go down floors with Inferno the Ember Drake on your team", [10, 25, 50, 100, 250], "pf_162", "c"], ["Pets", "Friends with Glacier", "Go down floors with Glacier the Ice Wolf on your team", [10, 25, 50, 100, 250], "pf_163", "c"], ["Pets", "Friends with Nightshade", "Go down floors with Nightshade the Shadow Lynx on your team", [10, 25, 50, 100, 250], "pf_164", "c"], ["Pets", "Friends with Starforge", "Go down floors with Starforge the Astral Golem on your team", [10, 25, 50, 100, 250], "pf_165", "c"], ["Pets", "Friends with Quasar", "Go down floors with Quasar the Cosmic Jellyfish on your team", [10, 25, 50, 100, 250], "pf_166", "c"], ["Pets", "Friends with Warden", "Go down floors with Warden the Miniature Gargoyle on your team", [10, 25, 50, 100, 250], "pf_167", "c"], ["Pets", "Friends with Mirrormask", "Go down floors with Mirrormask the Mimic on your team", [10, 25, 50, 100, 250], "pf_168", "c"], ["Pets", "Friends with Lifebloom", "Go down floors with Lifebloom the Forest Spirit on your team", [10, 25, 50, 100, 250], "pf_169", "c"], ["Pets", "Friends with Stormcoil", "Go down floors with Stormcoil the Sky Serpent on your team", [10, 25, 50, 100, 250], "pf_170", "c"], ["Pets", "Friends with Obsidian", "Go down floors with Obsidian the Shadow Bear on your team", [10, 25, 50, 100, 250], "pf_171", "c"], ["Pets", "Friends with Sunbeam", "Go down floors with Sunbeam the Solar Fox on your team", [10, 25, 50, 100, 250], "pf_172", "c"], ["Pets", "Friends with Frostcrown", "Go down floors with Frostcrown the Ice Stag on your team", [10, 25, 50, 100, 250], "pf_173", "c"], ["Pets", "Friends with Venomveil", "Go down floors with Venomveil the Serpent on your team", [10, 25, 50, 100, 250], "pf_174", "c"], ["Pets", "Friends with Goldcrest", "Go down floors with Goldcrest the Treasure Phoenix on your team", [10, 25, 50, 100, 250], "pf_175", "c"], ["Pets", "Friends with Chronicle", "Go down floors with Chronicle the Time Owl on your team", [10, 25, 50, 100, 250], "pf_176", "c"], ["Pets", "Friends with Runebark", "Go down floors with Runebark the Ancient Treant on your team", [10, 25, 50, 100, 250], "pf_177", "c"], ["Pets", "Friends with Voidwhisker", "Go down floors with Voidwhisker the Rift Cat on your team", [10, 25, 50, 100, 250], "pf_178", "c"], ["Pets", "Friends with Magnetron", "Go down floors with Magnetron the Metal Golem on your team", [10, 25, 50, 100, 250], "pf_179", "c"], ["Pets", "Friends with Thunderhoof", "Go down floors with Thunderhoof the Storm Ram on your team", [10, 25, 50, 100, 250], "pf_180", "c"], ["Pets", "Friends with Dreamdust", "Go down floors with Dreamdust the Sleep Sprite on your team", [10, 25, 50, 100, 250], "pf_181", "c"], ["Pets", "Friends with Cavern King", "Go down floors with Cavern King the Crystal Mole on your team", [10, 25, 50, 100, 250], "pf_182", "c"], ["Pets", "Friends with Ashwing", "Go down floors with Ashwing the Phoenix Fox on your team", [10, 25, 50, 100, 250], "pf_183", "c"], ["Pets", "Friends with Fable", "Go down floors with Fable the Storybook Dragon on your team", [10, 25, 50, 100, 250], "pf_184", "c"], ["Pets", "Friends with Ironbloom", "Go down floors with Ironbloom the Steel Treant on your team", [10, 25, 50, 100, 250], "pf_185", "c"], ["Pets", "Friends with Tidecaller", "Go down floors with Tidecaller the Sea Serpent on your team", [10, 25, 50, 100, 250], "pf_186", "c"], ["Pets", "Friends with Galeclaw", "Go down floors with Galeclaw the Wind Griffin on your team", [10, 25, 50, 100, 250], "pf_187", "c"], ["Pets", "Friends with Hexspark", "Go down floors with Hexspark the Arcane Imp on your team", [10, 25, 50, 100, 250], "pf_188", "c"], ["Pets", "Friends with Moonveil", "Go down floors with Moonveil the Lunar Wolf on your team", [10, 25, 50, 100, 250], "pf_189", "c"], ["Pets", "Friends with Crystalheart", "Go down floors with Crystalheart the Gem Golem on your team", [10, 25, 50, 100, 250], "pf_190", "c"], ["Pets", "Friends with Flaretail", "Go down floors with Flaretail the Comet Fox on your team", [10, 25, 50, 100, 250], "pf_191", "c"], ["Pets", "Friends with Fungalord", "Go down floors with Fungalord the Mushroom Sprite on your team", [10, 25, 50, 100, 250], "pf_192", "c"], ["Pets", "Friends with Riftguard", "Go down floors with Riftguard the Portal Tortoise on your team", [10, 25, 50, 100, 250], "pf_193", "c"], ["Pets", "Friends with Banshee Belle", "Go down floors with Banshee Belle the Ghost on your team", [10, 25, 50, 100, 250], "pf_194", "c"], ["Pets", "Friends with Dreadscale", "Go down floors with Dreadscale the Cave Drake on your team", [10, 25, 50, 100, 250], "pf_195", "c"], ["Pets", "Friends with Spellstorm", "Go down floors with Spellstorm the Arcane Owl on your team", [10, 25, 50, 100, 250], "pf_196", "c"], ["Pets", "Friends with Silvershade", "Go down floors with Silvershade the Phantom Deer on your team", [10, 25, 50, 100, 250], "pf_197", "c"], ["Pets", "Friends with Embercore", "Go down floors with Embercore the Magma Golem on your team", [10, 25, 50, 100, 250], "pf_198", "c"], ["Pets", "Friends with Skyshard", "Go down floors with Skyshard the Crystal Griffin on your team", [10, 25, 50, 100, 250], "pf_199", "c"], ["Pets", "Friends with Sol", "Go down floors with Sol the Phoenix Chick on your team", [10, 25, 50, 100, 250], "pf_200", "c"], ["Pets", "Friends with Umbra", "Go down floors with Umbra the Void Kitten on your team", [10, 25, 50, 100, 250], "pf_201", "c"], ["Pets", "Friends with Atlas", "Go down floors with Atlas the Miniature Titan on your team", [10, 25, 50, 100, 250], "pf_202", "c"], ["Pets", "Friends with Chrono", "Go down floors with Chrono the Time Wisp on your team", [10, 25, 50, 100, 250], "pf_203", "c"], ["Pets", "Friends with Midas", "Go down floors with Midas the Golden Beetle on your team", [10, 25, 50, 100, 250], "pf_204", "c"], ["Pets", "Friends with Nyx", "Go down floors with Nyx the Night Dragon on your team", [10, 25, 50, 100, 250], "pf_205", "c"], ["Pets", "Friends with Aurora", "Go down floors with Aurora the Star Deer on your team", [10, 25, 50, 100, 250], "pf_206", "c"], ["Pets", "Friends with Levi", "Go down floors with Levi the Pocket Hydra on your team", [10, 25, 50, 100, 250], "pf_207", "c"], ["Pets", "Friends with Cipher", "Go down floors with Cipher the Ancient Mimic on your team", [10, 25, 50, 100, 250], "pf_208", "c"], ["Pets", "Friends with Dungeonling", "Go down floors with Dungeonling the Living Core on your team", [10, 25, 50, 100, 250], "pf_209", "c"], ["Pets", "Friends with Eclipse", "Go down floors with Eclipse the Sun-Moon Fox on your team", [10, 25, 50, 100, 250], "pf_210", "c"], ["Pets", "Friends with Worldroot", "Go down floors with Worldroot the Ancient Treant on your team", [10, 25, 50, 100, 250], "pf_211", "c"], ["Pets", "Friends with Tempora", "Go down floors with Tempora the Clockwork Dragon on your team", [10, 25, 50, 100, 250], "pf_212", "c"], ["Pets", "Friends with Aether", "Go down floors with Aether the Celestial Griffin on your team", [10, 25, 50, 100, 250], "pf_213", "c"], ["Pets", "Friends with Voidfang", "Go down floors with Voidfang the Rift Wolf on your team", [10, 25, 50, 100, 250], "pf_214", "c"], ["Pets", "Friends with Starheart", "Go down floors with Starheart the Cosmic Slime on your team", [10, 25, 50, 100, 250], "pf_215", "c"], ["Pets", "Friends with Everfrost", "Go down floors with Everfrost the Ice Phoenix on your team", [10, 25, 50, 100, 250], "pf_216", "c"], ["Pets", "Friends with Infernal Crown", "Go down floors with Infernal Crown the Fire Drake on your team", [10, 25, 50, 100, 250], "pf_217", "c"], ["Pets", "Friends with Titanbolt", "Go down floors with Titanbolt the Storm Golem on your team", [10, 25, 50, 100, 250], "pf_218", "c"], ["Pets", "Friends with Dreamweaver", "Go down floors with Dreamweaver the Moon Moth on your team", [10, 25, 50, 100, 250], "pf_219", "c"], ["Pets", "Friends with Fortuna", "Go down floors with Fortuna the Luck Sprite on your team", [10, 25, 50, 100, 250], "pf_220", "c"], ["Pets", "Friends with Kingshard", "Go down floors with Kingshard the Crystal Lion on your team", [10, 25, 50, 100, 250], "pf_221", "c"], ["Pets", "Friends with Astralune", "Go down floors with Astralune the Cosmic Owl on your team", [10, 25, 50, 100, 250], "pf_222", "c"], ["Pets", "Friends with Gravemarch", "Go down floors with Gravemarch the Bone Dragon on your team", [10, 25, 50, 100, 250], "pf_223", "c"], ["Pets", "Friends with Seraphina", "Go down floors with Seraphina the Light Phoenix on your team", [10, 25, 50, 100, 250], "pf_224", "c"], ["Pets", "Friends with Dreadking", "Go down floors with Dreadking the Shadow Panther on your team", [10, 25, 50, 100, 250], "pf_225", "c"], ["Pets", "Friends with Stormveil", "Go down floors with Stormveil the Thunder Serpent on your team", [10, 25, 50, 100, 250], "pf_226", "c"], ["Pets", "Friends with Worldcoil", "Go down floors with Worldcoil the Ancient Serpent on your team", [10, 25, 50, 100, 250], "pf_227", "c"], ["Pets", "Friends with Prismarch", "Go down floors with Prismarch the Rainbow Dragon on your team", [10, 25, 50, 100, 250], "pf_228", "c"], ["Pets", "Friends with Runebreaker", "Go down floors with Runebreaker the Stone Titan on your team", [10, 25, 50, 100, 250], "pf_229", "c"], ["Pets", "Friends with Miracle", "Go down floors with Miracle the Healing Star on your team", [10, 25, 50, 100, 250], "pf_230", "c"], ["Pets", "Friends with Blackstar", "Go down floors with Blackstar the Void Raven on your team", [10, 25, 50, 100, 250], "pf_231", "c"], ["Pets", "Friends with Sunforge", "Go down floors with Sunforge the Golden Golem on your team", [10, 25, 50, 100, 250], "pf_232", "c"], ["Pets", "Friends with Moonbreaker", "Go down floors with Moonbreaker the Lunar Stag on your team", [10, 25, 50, 100, 250], "pf_233", "c"], ["Pets", "Friends with Riftwing", "Go down floors with Riftwing the Dimension Bat on your team", [10, 25, 50, 100, 250], "pf_234", "c"], ["Pets", "Friends with Crownfire", "Go down floors with Crownfire the Royal Phoenix on your team", [10, 25, 50, 100, 250], "pf_235", "c"], ["Pets", "Friends with Frostnova", "Go down floors with Frostnova the Glacier Dragon on your team", [10, 25, 50, 100, 250], "pf_236", "c"], ["Pets", "Friends with Ironoracle", "Go down floors with Ironoracle the Ancient Mech on your team", [10, 25, 50, 100, 250], "pf_237", "c"], ["Pets", "Friends with Soulbell", "Go down floors with Soulbell the Spirit Deer on your team", [10, 25, 50, 100, 250], "pf_238", "c"], ["Pets", "Friends with Gemkeeper", "Go down floors with Gemkeeper the Crystal Dragon on your team", [10, 25, 50, 100, 250], "pf_239", "c"], ["Pets", "Friends with Abyssal", "Go down floors with Abyssal the Deep-Sea Hydra on your team", [10, 25, 50, 100, 250], "pf_240", "c"], ["Pets", "Friends with Thunderstar", "Go down floors with Thunderstar the Celestial Hawk on your team", [10, 25, 50, 100, 250], "pf_241", "c"], ["Pets", "Friends with Evergreen", "Go down floors with Evergreen the Elder Dryad on your team", [10, 25, 50, 100, 250], "pf_242", "c"], ["Pets", "Friends with Nightcomet", "Go down floors with Nightcomet the Shadow Dragon on your team", [10, 25, 50, 100, 250], "pf_243", "c"], ["Pets", "Friends with Golden Hour", "Go down floors with Golden Hour the Time Fox on your team", [10, 25, 50, 100, 250], "pf_244", "c"], ["Pets", "Friends with Skybreaker", "Go down floors with Skybreaker the Storm Griffin on your team", [10, 25, 50, 100, 250], "pf_245", "c"], ["Pets", "Friends with Ancient Echo", "Go down floors with Ancient Echo the Spirit Whale on your team", [10, 25, 50, 100, 250], "pf_246", "c"], ["Pets", "Friends with Infinity", "Go down floors with Infinity the Rune Serpent on your team", [10, 25, 50, 100, 250], "pf_247", "c"], ["Pets", "Friends with Dawnkeeper", "Go down floors with Dawnkeeper the Radiant Lion on your team", [10, 25, 50, 100, 250], "pf_248", "c"], ["Pets", "Friends with The First Spark", "Go down floors with The First Spark on your team", [10, 25, 50, 100, 250], "pf_249", "c"], ["Pets", "Friends with Worldender", "Go down floors with Worldender the Star Dragon on your team", [10, 25, 50, 100, 250], "pf_250", "c"], ["Pets", "Friends with Genesis", "Go down floors with Genesis the Primordial Slime on your team", [10, 25, 50, 100, 250], "pf_251", "c"], ["Pets", "Friends with Omniscale", "Go down floors with Omniscale the Cosmic Serpent on your team", [10, 25, 50, 100, 250], "pf_252", "c"], ["Pets", "Friends with Eternity", "Go down floors with Eternity the Time Phoenix on your team", [10, 25, 50, 100, 250], "pf_253", "c"], ["Pets", "Friends with Dreamking", "Go down floors with Dreamking the Astral Stag on your team", [10, 25, 50, 100, 250], "pf_254", "c"], ["Pets", "Friends with Oblivion", "Go down floors with Oblivion the Void Hydra on your team", [10, 25, 50, 100, 250], "pf_255", "c"], ["Pets", "Friends with Celestia", "Go down floors with Celestia the Star Whale on your team", [10, 25, 50, 100, 250], "pf_256", "c"], ["Pets", "Friends with Paradox", "Go down floors with Paradox the Time Cat on your team", [10, 25, 50, 100, 250], "pf_257", "c"], ["Pets", "Friends with Primus", "Go down floors with Primus the Ancient Golem on your team", [10, 25, 50, 100, 250], "pf_258", "c"], ["Pets", "Friends with Nightfall", "Go down floors with Nightfall the Eclipse Dragon on your team", [10, 25, 50, 100, 250], "pf_259", "c"], ["Pets", "Friends with Dawnstar", "Go down floors with Dawnstar the Solar Griffin on your team", [10, 25, 50, 100, 250], "pf_260", "c"], ["Pets", "Friends with Omnibloom", "Go down floors with Omnibloom the World Tree Sprite on your team", [10, 25, 50, 100, 250], "pf_261", "c"], ["Pets", "Friends with Abyssheart", "Go down floors with Abyssheart the Deep Leviathan on your team", [10, 25, 50, 100, 250], "pf_262", "c"], ["Pets", "Friends with Null", "Go down floors with Null the Silence Wisp on your team", [10, 25, 50, 100, 250], "pf_263", "c"], ["Pets", "Friends with Infinitywing", "Go down floors with Infinitywing the Cosmic Moth on your team", [10, 25, 50, 100, 250], "pf_264", "c"], ["Pets", "Friends with Runesovereign", "Go down floors with Runesovereign the Ancient Owl on your team", [10, 25, 50, 100, 250], "pf_265", "c"], ["Pets", "Friends with Cataclysm", "Go down floors with Cataclysm the Magma Titan on your team", [10, 25, 50, 100, 250], "pf_266", "c"], ["Pets", "Friends with Absolute Zero", "Go down floors with Absolute Zero the Ice Dragon on your team", [10, 25, 50, 100, 250], "pf_267", "c"], ["Pets", "Friends with Heavenshard", "Go down floors with Heavenshard the Crystal Phoenix on your team", [10, 25, 50, 100, 250], "pf_268", "c"], ["Pets", "Friends with Soulkeeper", "Go down floors with Soulkeeper the Eternal Raven on your team", [10, 25, 50, 100, 250], "pf_269", "c"], ["Pets", "Friends with Starweaver", "Go down floors with Starweaver the Cosmic Spider on your team", [10, 25, 50, 100, 250], "pf_270", "c"], ["Pets", "Friends with Realitybender", "Go down floors with Realitybender the Rift Fox on your team", [10, 25, 50, 100, 250], "pf_271", "c"], ["Pets", "Friends with Worldheart", "Go down floors with Worldheart the Living Core on your team", [10, 25, 50, 100, 250], "pf_272", "c"], ["Pets", "Friends with Thunderlord", "Go down floors with Thunderlord the Storm Dragon on your team", [10, 25, 50, 100, 250], "pf_273", "c"], ["Pets", "Friends with Fatewhisper", "Go down floors with Fatewhisper the Oracle Serpent on your team", [10, 25, 50, 100, 250], "pf_274", "c"], ["Pets", "Friends with Goldrealm", "Go down floors with Goldrealm the Treasure Dragon on your team", [10, 25, 50, 100, 250], "pf_275", "c"], ["Pets", "Friends with Nightmare", "Go down floors with Nightmare the Dream Wolf on your team", [10, 25, 50, 100, 250], "pf_276", "c"], ["Pets", "Friends with Mirrormoon", "Go down floors with Mirrormoon the Lunar Sprite on your team", [10, 25, 50, 100, 250], "pf_277", "c"], ["Pets", "Friends with Evergale", "Go down floors with Evergale the Wind Phoenix on your team", [10, 25, 50, 100, 250], "pf_278", "c"], ["Pets", "Friends with Gravitas", "Go down floors with Gravitas the Gravity Golem on your team", [10, 25, 50, 100, 250], "pf_279", "c"], ["Pets", "Friends with Riftmaw", "Go down floors with Riftmaw the Dimension Drake on your team", [10, 25, 50, 100, 250], "pf_280", "c"], ["Pets", "Friends with Starforged", "Go down floors with Starforged the Celestial Mech on your team", [10, 25, 50, 100, 250], "pf_281", "c"], ["Pets", "Friends with Lifebringer", "Go down floors with Lifebringer the Dawn Sprite on your team", [10, 25, 50, 100, 250], "pf_282", "c"], ["Pets", "Friends with Doombell", "Go down floors with Doombell the Spectral Whale on your team", [10, 25, 50, 100, 250], "pf_283", "c"], ["Pets", "Friends with Frostrealm", "Go down floors with Frostrealm the Snow Dragon on your team", [10, 25, 50, 100, 250], "pf_284", "c"], ["Pets", "Friends with Embereternal", "Go down floors with Embereternal the Phoenix King on your team", [10, 25, 50, 100, 250], "pf_285", "c"], ["Pets", "Friends with Verdant Crown", "Go down floors with Verdant Crown the Forest Dragon on your team", [10, 25, 50, 100, 250], "pf_286", "c"], ["Pets", "Friends with The Silent Monarch", "Go down floors with The Silent Monarch on your team", [10, 25, 50, 100, 250], "pf_287", "c"], ["Pets", "Friends with The Crystal Architect", "Go down floors with The Crystal Architect on your team", [10, 25, 50, 100, 250], "pf_288", "c"], ["Pets", "Friends with The Forgotten Star", "Go down floors with The Forgotten Star on your team", [10, 25, 50, 100, 250], "pf_289", "c"], ["Pets", "Friends with The Last Guardian", "Go down floors with The Last Guardian on your team", [10, 25, 50, 100, 250], "pf_290", "c"], ["Pets", "Friends with The Hollow Emperor", "Go down floors with The Hollow Emperor on your team", [10, 25, 50, 100, 250], "pf_291", "c"], ["Pets", "Friends with The Astral Librarian", "Go down floors with The Astral Librarian on your team", [10, 25, 50, 100, 250], "pf_292", "c"], ["Pets", "Friends with The Infinite Mimic", "Go down floors with The Infinite Mimic on your team", [10, 25, 50, 100, 250], "pf_293", "c"], ["Pets", "Friends with The Clockwork Sovereign", "Go down floors with The Clockwork Sovereign on your team", [10, 25, 50, 100, 250], "pf_294", "c"], ["Pets", "Friends with The Eternal Lantern", "Go down floors with The Eternal Lantern on your team", [10, 25, 50, 100, 250], "pf_295", "c"], ["Pets", "Friends with The World Seraph", "Go down floors with The World Seraph on your team", [10, 25, 50, 100, 250], "pf_296", "c"], ["Pets", "Friends with The Abyssal Crown", "Go down floors with The Abyssal Crown on your team", [10, 25, 50, 100, 250], "pf_297", "c"], ["Pets", "Friends with The First Guardian", "Go down floors with The First Guardian on your team", [10, 25, 50, 100, 250], "pf_298", "c"], ["Pets", "Friends with The Dungeon Heart", "Go down floors with The Dungeon Heart on your team", [10, 25, 50, 100, 250], "pf_299", "c"], ["Pets", "Common Pet Finder", "Find common pets", [1, 5, 10, 25, 50], "pr_Common", "c"], ["Pets", "Uncommon Pet Finder", "Find uncommon pets", [1, 5, 10, 25, 50], "pr_Uncommon", "c"], ["Pets", "Rare Pet Finder", "Find rare pets", [1, 5, 10, 25, 50], "pr_Rare", "c"], ["Pets", "Epic Pet Finder", "Find epic pets", [1, 5, 10, 25, 50], "pr_Epic", "c"], ["Pets", "Legendary Pet Finder", "Find legendary pets", [1, 5, 10, 25, 50], "pr_Legendary", "c"], ["Pets", "Mythical Pet Finder", "Find mythical pets", [1, 5, 10, 25, 50], "pr_Mythical", "c"], ["Pets", "Common Pet Trainer", "Level a common pet to level 5", [1, 2, 3, 5, 10], "pl5_Common", "c"], ["Pets", "Uncommon Pet Trainer", "Level a uncommon pet to level 5", [1, 2, 3, 5, 10], "pl5_Uncommon", "c"], ["Pets", "Rare Pet Trainer", "Level a rare pet to level 5", [1, 2, 3, 5, 10], "pl5_Rare", "c"], ["Pets", "Epic Pet Trainer", "Level a epic pet to level 5", [1, 2, 3, 5, 10], "pl5_Epic", "c"], ["Pets", "Legendary Pet Trainer", "Level a legendary pet to level 5", [1, 2, 3, 5, 10], "pl5_Legendary", "c"], ["Pets", "Mythical Pet Trainer", "Level a mythical pet to level 5", [1, 2, 3, 5, 10], "pl5_Mythical", "c"], ["Pets", "Pet Collector", "Find different pets (300 in all)", [10, 50, 100, 200, 300], "petset", "s"], ["Pets", "Full Team", "Go down floors with 5 pets on your team", [10, 50, 100, 250, 500], "fullteam", "c"], ["Pets", "Pet Power", "Monsters defeated by your pets", [10, 50, 100, 250, 500], "petkill", "c"], ["Pets", "Saved by a Friend", "Get saved from defeat by a pet", [1, 3, 5, 10, 25], "petsave", "c"], ["Pets", "Pet Blocker", "Hits blocked by your pets", [10, 50, 100, 250, 500], "petblock", "c"], ["Pets", "Pet Healer", "HP healed by your pets", [100, 1000, 5000, 25000, 100000], "petheal", "c"], ["Classes", "Tier 1 Owner (Beginners)", "Own Tier 1 classes", [1, 5, 10, 20, 30], "ct_1", "s"], ["Classes", "Tier 2 Owner (Skilled Adventurers)", "Own Tier 2 classes", [1, 5, 10, 20, 30], "ct_2", "s"], ["Classes", "Tier 3 Owner (Experts)", "Own Tier 3 classes", [1, 5, 10, 20, 30], "ct_3", "s"], ["Classes", "Tier 4 Owner (Masters)", "Own Tier 4 classes", [1, 5, 10, 20, 30], "ct_4", "s"], ["Classes", "Tier 5 Owner (Legendary)", "Own Tier 5 classes", [1, 5, 10, 20, 30], "ct_5", "s"], ["Classes", "Tier 6 Owner (Mythic)", "Own Tier 6 classes", [1, 5, 10, 20, 30], "ct_6", "s"], ["Classes", "Tier 7 Owner (Cosmic)", "Own Tier 7 classes", [1, 5, 10, 20, 30], "ct_7", "s"], ["Classes", "Tier 8 Owner (Reality)", "Own Tier 8 classes", [1, 5, 10, 20, 30], "ct_8", "s"], ["Classes", "Tier 9 Owner (Divine)", "Own Tier 9 classes", [1, 5, 10, 20, 30], "ct_9", "s"], ["Classes", "Tier 10 Owner (Ultimate)", "Own Tier 10 classes", [1, 5, 10, 20, 30], "ct_10", "s"], ["Classes", "Tier 1 Fighter", "Defeat monsters with a Tier 1 class equipped", [25, 100, 250, 500, 1000], "ck_1", "c"], ["Classes", "Tier 2 Fighter", "Defeat monsters with a Tier 2 class equipped", [25, 100, 250, 500, 1000], "ck_2", "c"], ["Classes", "Tier 3 Fighter", "Defeat monsters with a Tier 3 class equipped", [25, 100, 250, 500, 1000], "ck_3", "c"], ["Classes", "Tier 4 Fighter", "Defeat monsters with a Tier 4 class equipped", [25, 100, 250, 500, 1000], "ck_4", "c"], ["Classes", "Tier 5 Fighter", "Defeat monsters with a Tier 5 class equipped", [25, 100, 250, 500, 1000], "ck_5", "c"], ["Classes", "Tier 6 Fighter", "Defeat monsters with a Tier 6 class equipped", [25, 100, 250, 500, 1000], "ck_6", "c"], ["Classes", "Tier 7 Fighter", "Defeat monsters with a Tier 7 class equipped", [25, 100, 250, 500, 1000], "ck_7", "c"], ["Classes", "Tier 8 Fighter", "Defeat monsters with a Tier 8 class equipped", [25, 100, 250, 500, 1000], "ck_8", "c"], ["Classes", "Tier 9 Fighter", "Defeat monsters with a Tier 9 class equipped", [25, 100, 250, 500, 1000], "ck_9", "c"], ["Classes", "Tier 10 Fighter", "Defeat monsters with a Tier 10 class equipped", [25, 100, 250, 500, 1000], "ck_10", "c"], ["Classes", "Tier 1 Diver", "Reach a deep floor with a Tier 1 class equipped", [10, 25, 50, 75, 100], "cd_1", "m"], ["Classes", "Tier 2 Diver", "Reach a deep floor with a Tier 2 class equipped", [10, 25, 50, 75, 100], "cd_2", "m"], ["Classes", "Tier 3 Diver", "Reach a deep floor with a Tier 3 class equipped", [10, 25, 50, 75, 100], "cd_3", "m"], ["Classes", "Tier 4 Diver", "Reach a deep floor with a Tier 4 class equipped", [10, 25, 50, 75, 100], "cd_4", "m"], ["Classes", "Tier 5 Diver", "Reach a deep floor with a Tier 5 class equipped", [10, 25, 50, 75, 100], "cd_5", "m"], ["Classes", "Tier 6 Diver", "Reach a deep floor with a Tier 6 class equipped", [10, 25, 50, 75, 100], "cd_6", "m"], ["Classes", "Tier 7 Diver", "Reach a deep floor with a Tier 7 class equipped", [10, 25, 50, 75, 100], "cd_7", "m"], ["Classes", "Tier 8 Diver", "Reach a deep floor with a Tier 8 class equipped", [10, 25, 50, 75, 100], "cd_8", "m"], ["Classes", "Tier 9 Diver", "Reach a deep floor with a Tier 9 class equipped", [10, 25, 50, 75, 100], "cd_9", "m"], ["Classes", "Tier 10 Diver", "Reach a deep floor with a Tier 10 class equipped", [10, 25, 50, 75, 100], "cd_10", "m"], ["Classes", "Class Collector", "Own different classes (300 in all)", [5, 25, 50, 150, 300], "clsset", "s"], ["Classes", "Class Hopper", "Switch classes", [5, 25, 50, 100, 250], "clsswitch", "c"], ["Classes", "Class Power", "Monsters defeated by class powers", [10, 50, 100, 250, 500], "clskill", "c"], ["Classes", "Saved by Training", "Get saved from defeat by a class power", [1, 3, 5, 10, 25], "clssave", "c"], ["Perks and Levels", "Tough Picker", "Get the Tough perk", [5, 25, 50, 100, 250], "pp_Tough", "c"], ["Perks and Levels", "Strong Picker", "Get the Strong perk", [5, 25, 50, 100, 250], "pp_Strong", "c"], ["Perks and Levels", "Guarded Picker", "Get the Guarded perk", [5, 25, 50, 100, 250], "pp_Guarded", "c"], ["Perks and Levels", "Vampire Picker", "Get the Vampire perk", [5, 25, 50, 100, 250], "pp_Vampire", "c"], ["Perks and Levels", "Critical Picker", "Get the Critical perk", [5, 25, 50, 100, 250], "pp_Critical", "c"], ["Perks and Levels", "Thorns Picker", "Get the Thorns perk", [5, 25, 50, 100, 250], "pp_Thorns", "c"], ["Perks and Levels", "Nimble Picker", "Get the Nimble perk", [5, 25, 50, 100, 250], "pp_Nimble", "c"], ["Perks and Levels", "Greedy Picker", "Get the Greedy perk", [5, 25, 50, 100, 250], "pp_Greedy", "c"], ["Perks and Levels", "Regenerate Picker", "Get the Regenerate perk", [5, 25, 50, 100, 250], "pp_Regenerate", "c"], ["Perks and Levels", "Supplies Picker", "Get the Supplies perk", [5, 25, 50, 100, 250], "pp_Supplies", "c"], ["Perks and Levels", "Scholar Picker", "Get the Scholar perk", [5, 25, 50, 100, 250], "pp_Scholar", "c"], ["Perks and Levels", "Stacked Tough", "Have Tough several times in one run", [2, 3, 5, 7, 10], "ps_Tough", "m"], ["Perks and Levels", "Stacked Strong", "Have Strong several times in one run", [2, 3, 5, 7, 10], "ps_Strong", "m"], ["Perks and Levels", "Stacked Guarded", "Have Guarded several times in one run", [2, 3, 5, 7, 10], "ps_Guarded", "m"], ["Perks and Levels", "Stacked Vampire", "Have Vampire several times in one run", [2, 3, 5, 7, 10], "ps_Vampire", "m"], ["Perks and Levels", "Stacked Critical", "Have Critical several times in one run", [2, 3, 5, 7, 10], "ps_Critical", "m"], ["Perks and Levels", "Stacked Thorns", "Have Thorns several times in one run", [2, 3, 5, 7, 10], "ps_Thorns", "m"], ["Perks and Levels", "Stacked Nimble", "Have Nimble several times in one run", [2, 3, 5, 7, 10], "ps_Nimble", "m"], ["Perks and Levels", "Stacked Greedy", "Have Greedy several times in one run", [2, 3, 5, 7, 10], "ps_Greedy", "m"], ["Perks and Levels", "Stacked Regenerate", "Have Regenerate several times in one run", [2, 3, 5, 7, 10], "ps_Regenerate", "m"], ["Perks and Levels", "Stacked Supplies", "Have Supplies several times in one run", [2, 3, 5, 7, 10], "ps_Supplies", "m"], ["Perks and Levels", "Stacked Scholar", "Have Scholar several times in one run", [2, 3, 5, 7, 10], "ps_Scholar", "m"], ["Perks and Levels", "Level Up", "Reach a high level in one run", [10, 25, 50, 100, 200], "lvl", "m"], ["Perks and Levels", "Perk Planner", "Save perks for different levels", [5, 10, 25, 50, 100], "perksaved", "s"], ["Perks and Levels", "Blessed", "Get Blessing perks", [1, 5, 10, 25, 50], "blessed", "c"], ["Items and Places", "Potion Drinker", "Drink potions", [5, 25, 50, 100, 250], "i_Potion Drinker", "c"], ["Items and Places", "Fire Starter", "Read Fire scrolls", [5, 25, 50, 100, 250], "i_Fire Starter", "c"], ["Items and Places", "Ice Maker", "Read Freeze scrolls", [5, 25, 50, 100, 250], "i_Ice Maker", "c"], ["Items and Places", "Teleporter", "Read Teleport scrolls", [5, 25, 50, 100, 250], "i_Teleporter", "c"], ["Items and Places", "Mapmaker", "Read Map scrolls", [5, 25, 50, 100, 250], "i_Mapmaker", "c"], ["Items and Places", "Fire Finisher", "Defeat monsters with Fire scrolls", [5, 25, 50, 100, 250], "i_Fire Finisher", "c"], ["Items and Places", "Freezer", "Freeze monsters with Freeze scrolls", [5, 25, 50, 100, 250], "i_Freezer", "c"], ["Items and Places", "Chest Opener Plus", "Open treasure chests", [5, 25, 50, 100, 250], "i_Chest Opener Plus", "c"], ["Items and Places", "Mimic Spotter", "Find Mimics", [5, 25, 50, 100, 250], "i_Mimic Spotter", "c"], ["Items and Places", "Shrine Rester", "Rest at shrines", [5, 25, 50, 100, 250], "i_Shrine Rester", "c"], ["Items and Places", "Shrine Prayer", "Pray at shrines", [5, 25, 50, 100, 250], "i_Shrine Prayer", "c"], ["Items and Places", "Enchanter", "Use enchanting tables", [5, 25, 50, 100, 250], "i_Enchanter", "c"], ["Items and Places", "Relic Hunter", "Pick up relics", [5, 25, 50, 100, 250], "i_Relic Hunter", "c"], ["Items and Places", "Potion Shopper", "Buy potions from merchants", [5, 25, 50, 100, 250], "i_Potion Shopper", "c"], ["Items and Places", "Scroll Shopper", "Buy scrolls from merchants", [5, 25, 50, 100, 250], "i_Scroll Shopper", "c"], ["Items and Places", "Gear Shopper", "Buy gear from merchants", [5, 25, 50, 100, 250], "i_Gear Shopper", "c"], ["Items and Places", "Hoarder", "Carry many potions at once", [5, 25, 50, 100, 250], "i_Hoarder", "m"], ["Items and Places", "Library Card", "Carry many scrolls at once", [5, 25, 50, 100, 250], "i_Library Card", "m"], ["Items and Places", "Emergency Fire", "Read a Fire scroll when below 25% HP", [1, 5, 10, 25, 50], "se_Fire", "c"], ["Items and Places", "Emergency Freeze", "Read a Freeze scroll when below 25% HP", [1, 5, 10, 25, 50], "se_Freeze", "c"], ["Items and Places", "Emergency Teleport", "Read a Teleport scroll when below 25% HP", [1, 5, 10, 25, 50], "se_Teleport", "c"], ["Items and Places", "Emergency Map", "Read a Map scroll when below 25% HP", [1, 5, 10, 25, 50], "se_Map", "c"], ["Combat", "Critical Striker", "Land critical hits", [25, 100, 500, 1000, 5000], "c_Critical Striker", "c"], ["Combat", "Dodger", "Dodge attacks", [25, 100, 500, 1000, 5000], "c_Dodger", "c"], ["Combat", "Shield Breaker", "Break monster shields", [10, 50, 100, 250, 500], "c_Shield Breaker", "c"], ["Combat", "Thorny", "Defeat monsters with thorns", [5, 25, 50, 100, 250], "c_Thorny", "c"], ["Combat", "Leech", "Heal from weapon hits", [100, 1000, 10000, 100000, 1000000], "c_Leech", "c"], ["Combat", "One Hit Wonder", "Defeat monsters in a single hit", [25, 100, 250, 500, 1000], "c_One Hit Wonder", "c"], ["Combat", "Big Hitter", "Deal a huge hit (bigger every level)", [50, 200, 1000, 5000, 25000], "c_Big Hitter", "m"], ["Combat", "Damage Dealer", "Deal damage in total", [10000, 100000, 1000000, 10000000, 100000000], "c_Damage Dealer", "c"], ["Combat", "Damage Taker", "Take damage and survive", [1000, 10000, 100000, 1000000, 10000000], "c_Damage Taker", "c"], ["Combat", "Explosion Survivor", "Survive explosions", [5, 25, 50, 100, 250], "c_Explosion Survivor", "c"], ["Combat", "Poison Survivor", "Survive being poisoned", [10, 50, 100, 250, 500], "c_Poison Survivor", "c"], ["Combat", "Unweakened", "Recover from being weakened", [10, 50, 100, 250, 500], "c_Unweakened", "c"], ["Combat", "Unslowed", "Recover from being slowed", [10, 50, 100, 250, 500], "c_Unslowed", "c"], ["Combat", "Stunner", "Stun monsters", [10, 50, 100, 250, 500], "c_Stunner", "c"], ["Combat", "Burner", "Set monsters burning", [10, 50, 100, 250, 500], "c_Burner", "c"], ["Combat", "Bleeder", "Make monsters bleed", [10, 50, 100, 250, 500], "c_Bleeder", "c"], ["Combat", "Knockback King", "Knock monsters back", [10, 50, 100, 250, 500], "c_Knockback King", "c"], ["Combat", "Chain Lightning", "Make lightning jump between monsters", [10, 50, 100, 250, 500], "c_Chain Lightning", "c"], ["Combat", "Sweeper", "Hit 3 or more monsters with one scythe swing", [5, 25, 50, 100, 250], "c_Sweeper", "c"], ["Combat", "Echo Master", "Land echoing hits", [10, 50, 100, 250, 500], "c_Echo Master", "c"], ["Combat", "Free Turn", "Get free turns from Swift weapons", [10, 50, 100, 250, 500], "c_Free Turn", "c"], ["Combat", "Frozen Finisher", "Defeat frozen monsters", [10, 50, 100, 250, 500], "c_Frozen Finisher", "c"], ["Combat", "Sneak Attack", "Defeat monsters before they notice you", [10, 50, 100, 250, 500], "c_Sneak Attack", "c"], ["Combat", "Surprise!", "Find hidden monsters", [5, 25, 50, 100, 250], "c_Surprise!", "c"], ["Combat", "Illusion Popper", "Pop illusions", [5, 25, 50, 100, 250], "c_Illusion Popper", "c"], ["Combat", "Split Ender", "Defeat small slimes", [10, 50, 100, 250, 500], "c_Split Ender", "c"], ["Combat", "Thief Catcher", "Get stolen gold back from thieves", [5, 25, 50, 100, 250], "c_Thief Catcher", "c"], ["Combat", "Close Call", "Survive with 1 HP", [1, 3, 5, 10, 25], "c_Close Call", "c"], ["Combat", "Glass Cannon", "Defeat a boss while below 10% HP", [1, 3, 5, 10, 25], "c_Glass Cannon", "c"], ["Combat", "Untouchable", "Reach the stairs without taking any damage", [5, 25, 50, 100, 250], "c_Untouchable", "c"], ["Bounties", "Monster Bounty", "Finish \"defeat monsters\" bounties", [5, 25, 50, 100, 250], "b_Monster Bounty", "c"], ["Bounties", "Hunting Bounty", "Finish \"defeat 2 of a kind\" bounties", [5, 25, 50, 100, 250], "b_Hunting Bounty", "c"], ["Bounties", "Chest Bounty", "Finish chest bounties", [5, 25, 50, 100, 250], "b_Chest Bounty", "c"], ["Bounties", "Big Game Bounty", "Finish boss and champion bounties", [5, 25, 50, 100, 250], "b_Big Game Bounty", "c"], ["Bounties", "Speed Bounty", "Finish \"reach the stairs in time\" bounties", [5, 25, 50, 100, 250], "b_Speed Bounty", "c"], ["Bounties", "Careful Bounty", "Finish \"lose less HP\" bounties", [5, 25, 50, 100, 250], "b_Careful Bounty", "c"], ["Bounties", "Bounty Streak", "Finish bounties on floors in a row", [3, 5, 10, 20, 50], "bstreak", "m"], ["Bosses", "Boss Lair Champion", "Defeat the boss on Boss Lair floors", [1, 3, 5, 10, 25], "bl_Boss Lair", "c"], ["Bosses", "Colosseum Champion", "Defeat the boss on Colosseum floors", [1, 3, 5, 10, 25], "bl_Colosseum", "c"], ["Bosses", "The King's Court Champion", "Defeat the boss on The King's Court floors", [1, 3, 5, 10, 25], "bl_The King's Court", "c"], ["Bosses", "Dragon's Hoard Champion", "Defeat the boss on Dragon's Hoard floors", [1, 3, 5, 10, 25], "bl_Dragon's Hoard", "c"], ["Bosses", "The Dungeon Core Champion", "Defeat the boss on The Dungeon Core floors", [1, 3, 5, 10, 25], "bl_The Dungeon Core", "c"], ["Bosses", "Champion Hunter Plus", "Defeat champions", [5, 25, 50, 100, 250], "champkill", "c"], ["Bosses", "Boss Treasure", "Get gear from bosses", [1, 5, 10, 25, 50], "bossgear", "c"], ["Adventure", "Deep Diver Plus", "Reach a deeper floor", [10, 25, 50, 100, 200], "a_Deep Diver Plus", "m"], ["Adventure", "Stair Climber", "Go down floors", [25, 100, 250, 1000, 5000], "a_Stair Climber", "c"], ["Adventure", "Adventurer", "Start runs", [5, 25, 50, 100, 250], "a_Adventurer", "c"], ["Adventure", "Elevator Rider", "Ride the elevator", [5, 25, 50, 100, 250], "a_Elevator Rider", "c"], ["Adventure", "Step Counter", "Take steps", [1000, 10000, 50000, 100000, 500000], "a_Step Counter", "c"], ["Adventure", "Long Walk", "Walk somewhere far in one tap", [10, 50, 100, 250, 500], "a_Long Walk", "c"], ["Adventure", "Turn Taker", "Play turns", [1000, 10000, 50000, 100000, 500000], "a_Turn Taker", "c"], ["Adventure", "Map Filler", "Fill in squares on the map", [500, 5000, 25000, 100000, 500000], "a_Map Filler", "c"], ["Adventure", "Speedrunner", "Reach the stairs in under 20 turns", [5, 25, 50, 100, 250], "a_Speedrunner", "c"], ["Adventure", "Peaceful Path", "Reach the stairs without defeating anything", [5, 25, 50, 100, 250], "a_Peaceful Path", "c"], ["Adventure", "Rich Run", "Bring home lots of gold in one run", [500, 5000, 50000, 500000, 5000000], "a_Rich Run", "m"], ["Adventure", "Big Spender", "Spend gold at camp", [1000, 10000, 100000, 1000000, 10000000], "a_Big Spender", "c"], ["Adventure", "Upgrade Fan", "Buy camp upgrades", [5, 25, 50, 100, 250], "a_Upgrade Fan", "c"], ["Adventure", "Class Shopper", "Spend gold on classes", [1000, 100000, 1000000, 100000000, 10000000000], "a_Class Shopper", "c"], ["Adventure", "Merchant Friend", "Spend gold at merchants", [100, 1000, 10000, 100000, 1000000], "a_Merchant Friend", "c"], ["Adventure", "Ascender", "Ascend", [1, 3, 5, 10, 25], "a_Ascender", "c"], ["Adventure", "Star Gazer", "Earn stars", [1, 5, 10, 25, 50], "a_Star Gazer", "s"], ["Adventure", "Discoverer", "Discover new things (monsters, traits, weapons, floors)", [10, 50, 100, 250, 500], "a_Discoverer", "s"], ["Adventure", "Comeback Kid", "Beat your deepest floor right after a short run", [1, 3, 5, 10, 25], "a_Comeback Kid", "c"], ["Adventure", "Achievement Hunter", "Earn achievement levels", [10, 50, 100, 250, 500], "a_Achievement Hunter", "s"], ["Adventure", "Max HP Upgrader", "Buy Max HP upgrades", [1, 5, 10, 25, 50], "up_Max HP", "c"], ["Adventure", "Attack Upgrader", "Buy Attack upgrades", [1, 5, 10, 25, 50], "up_Attack", "c"], ["Adventure", "Armor Upgrader", "Buy Armor upgrades", [1, 5, 10, 25, 50], "up_Armor", "c"], ["Adventure", "Starting potions Upgrader", "Buy Starting potions upgrades", [1, 5, 10, 25, 50], "up_Starting potions", "c"], ["Adventure", "Starting scrolls Upgrader", "Buy Starting scrolls upgrades", [1, 5, 10, 25, 50], "up_Starting scrolls", "c"], ["Adventure", "Blessing Upgrader", "Buy Blessing upgrades", [1, 5, 10, 25, 50], "up_Blessing", "c"], ["Adventure", "Camp Bank", "Have lots of gold saved at camp", [1000, 10000, 100000, 1000000, 10000000], "a_Camp Bank", "m"], ["Adventure", "Full Health Finish", "Reach the stairs with full HP", [10, 50, 100, 250, 500], "a_Full Health Finish", "c"], ["Adventure", "Potion Saver", "Clear floors in a row without drinking a potion", [5, 10, 25, 50, 100], "a_Potion Saver", "m"], ["Adventure", "Lucky Chest", "Find Legendary or better gear in a chest", [1, 5, 10, 25, 50], "a_Lucky Chest", "c"], ["Adventure", "Deep Start", "Start runs on a deep floor with the elevator", [5, 25, 50, 100, 250], "a_Deep Start", "c"], ["Adventure", "Boss Pet Rescue", "Find pets hiding with bosses", [1, 3, 5, 10, 25], "a_Boss Pet Rescue", "c"]];
+var ACHIDX = {};
+(function () { for (var i = 0; i < ACH2.length; i++) ACHIDX[ACH2[i][4]] = i; })();
+var killHow = '', clsHitting = false;
 var SYL1 = ['Gr', 'Kr', 'Zar', 'Mor', 'Vex', 'Ul', 'Dra', 'Sk', 'Bel', 'Thr', 'Nag', 'Xor', 'Gol', 'Ruk', 'Fen'];
 var SYL2 = ['uk', 'ax', 'ok', 'ith', 'orn', 'ag', 'esh', 'ul', 'im', 'oth', 'ar', 'ek'];
 var SYL3 = ['', '', 'gar', 'nok', 'mir', 'dun', 'zz', 'ash'];
@@ -378,7 +385,7 @@ var CAPS = { crit: 50, thorns: 60, dodge: 40 };
 
 var S = null;          // everything that gets saved
 var stacked = false;   // narrow screens put the controls under the map
-var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1, book: '', bookTop: false, pets: false, classes: false, clsTier: 1 };
+var ui = { showCode: false, codeMsg: '', elev: false, bag: false, pick: 1, startAt: 1, book: '', bookTop: false, pets: false, classes: false, clsTier: 1, achs: false, achSec: 0, achPage: 0, achNote: '', wpns: false, cwTier: 1, cwPage: 0 };
 
 // Size the map so the map and every control fit on one screen.
 function fitMap() {
@@ -404,7 +411,7 @@ function fitMap() {
 // ================= SAVING =================
 function freshSave() {
   return { v: VERSION, gold: 0, up: {}, perkAt: {}, best: 0, runs: 0, run: null, last: null,
-           stats: {}, ach: {}, seen: {}, stars: 0, asc: 0, peak: 0, pets: {}, team: [], cls: 0, clsOwn: { 0: 1 } };
+           stats: {}, ach: {}, seen: {}, stars: 0, asc: 0, peak: 0, pets: {}, team: [], cls: 0, clsOwn: { 0: 1 }, cw: {}, cwEq: -1 };
 }
 function fixSave() {
   for (var i = 0; i < UPS.length; i++) if (!S.up[UPS[i].id]) S.up[UPS[i].id] = 0;
@@ -419,6 +426,8 @@ function fixSave() {
   if (!S.team) S.team = [];
   if (!S.clsOwn) S.clsOwn = { 0: 1 };
   if (!S.cls || !S.clsOwn[S.cls]) S.cls = 0;
+  if (!S.cw) S.cw = {};
+  if (S.cwEq === undefined || (S.cwEq >= 0 && !S.cw[S.cwEq])) S.cwEq = -1;
   if (!S.stats.deep || S.stats.deep < S.best) S.stats.deep = S.best;
 }
 function load() {
@@ -440,13 +449,14 @@ function load() {
   }
   ui.startAt = S.best || 1;
   if (S.run) checkPanels();
+  else { campClaim(); save(); }
 }
 function save() {
   try { window.localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
 }
 function saveCode() {
   return btoa(JSON.stringify({ g: S.gold, u: S.up, b: S.best, r: S.runs, p: S.perkAt, st: S.stats,
-                               a: S.ach, sn: S.seen, s: S.stars, as: S.asc, pk: S.peak, pt: S.pets, tm: S.team, cl: S.cls, co: S.clsOwn }));
+                               a: S.ach, sn: S.seen, s: S.stars, as: S.asc, pk: S.peak, pt: S.pets, tm: S.team, cl: S.cls, co: S.clsOwn, cw: S.cw, ce: S.cwEq }));
 }
 function loadCode() {
   var box = document.getElementById('codeIn');
@@ -459,6 +469,7 @@ function loadCode() {
     for (var i = 0; i < UPS.length; i++) S.up[UPS[i].id] = d.u[UPS[i].id] || 0;
     S.perkAt = d.p || {}; S.stats = d.st || {}; S.ach = d.a || {}; S.seen = d.sn || {};
     S.stars = d.s || 0; S.asc = d.as || 0; S.peak = d.pk || 0; S.pets = d.pt || {}; S.team = d.tm || []; S.cls = d.cl || 0; S.clsOwn = d.co || { 0: 1 };
+    S.cw = d.cw || {}; S.cwEq = d.ce === undefined ? -1 : d.ce;
     fixSave();
     S.run = null; S.last = null;
     ui.codeMsg = 'Save code loaded.';
@@ -495,6 +506,7 @@ function roman(n) {
 function cheb(ax, ay, bx, by) { return Math.max(Math.abs(ax - bx), Math.abs(ay - by)); }
 function say(t) { S.run.log.push(t); }
 function stat(k, n) { S.stats[k] = (S.stats[k] || 0) + (n === undefined ? 1 : n); }
+function statMax(k, v) { if (v > (S.stats[k] || 0)) S.stats[k] = v; }
 function monAt(x, y) {
   var ms = S.run.mons;
   for (var i = 0; i < ms.length; i++) if (ms[i].x === x && ms[i].y === y) return ms[i];
@@ -592,6 +604,8 @@ function goldAmt(v) { return Math.round(v * (1 + fx('greed') / 100 + 0.08 * petS
 function hurt(d, who) {
   var r = S.run;
   r.hp -= d; r.fd += d; r.lastHurt = who;
+  stat('c_Damage Taker', d);
+  if (r.hp === 1) stat('c_Close Call');
   var b = r.bounty;
   if (b && b.state === 'on' && b.t === 'safe' && r.fd >= b.need) { b.state = 'failed'; say('Bounty failed: you lost too much HP.'); }
 }
@@ -599,6 +613,7 @@ function hurt(d, who) {
 function applyPerk(id) {
   var r = S.run, i;
   r.pf[id] = (r.pf[id] || 0) + 1;
+  stat('pp_' + perkInfo(id).n); statMax('ps_' + perkInfo(id).n, r.pf[id]);
   if (id === 'tough') { r.maxHp += 8; r.hp += 8; }
   else if (id === 'strong') r.atk += 2;
   else if (id === 'guard') r.def += 1;
@@ -707,6 +722,7 @@ function gearDesc(g) {
 function rarName(g) { return RAR[g.rar || 0]; }
 function noteGear(g) {
   if (g.slot !== 'wpn') return;
+  if (g.camp !== undefined) { S.seen['o' + g.mod] = 1; return; }
   S.seen['w' + g.base.replace(/ \+\d+$/, '')] = 1;
   S.seen['o' + g.mod] = 1;
 }
@@ -756,11 +772,30 @@ function compareHTML(g) {
 function destroyHere() {
   var r = S.run, it = hereItem();
   if (!it || it.k !== 'gear') { closePanel(); return; }
+  stat('destroy');
   r.items.splice(r.items.indexOf(it), 1);
   r.log = ['You leave the ' + it.g.name + ' behind. It crumbles to dust.'];
   closePanel();
 }
 
+// Achievement counts for gear you find and gear you put on.
+var AFX_NAME = { thorns: 'Thorns', life: 'Life', dodge: 'Shadows', regen: 'Mending', guard: 'the Turtle' };
+var WFX_NAME = { leech: 'Leeching', crit: 'Thunder', greed: 'Greed', fury: 'Fury', pierce: 'Piercing' };
+function gearFound(g) {
+  if (!g || g.found) return;
+  g.found = 1;
+  stat('fr_' + RAR[g.rar || 0]);
+  if (g.slot === 'wpn') stat('fm_' + modInfo(g.mod).n);
+}
+function gearOn(g) {
+  stat('equip'); stat('eq_' + RAR[g.rar || 0]);
+  var names = g.slot === 'wpn' ? WFX_NAME : AFX_NAME, done = {};
+  if (g.slot !== 'wpn') stat('ea_' + g.base.replace(/ \+\d+$/, ''));
+  for (var i = 0; i < g.fxs.length; i++) {
+    var n = names[g.fxs[i].fx];
+    if (n && !done[n]) { done[n] = 1; stat((g.slot === 'wpn' ? 'ewb_' : 'eab_') + n); }
+  }
+}
 function equip(g) {
   var r = S.run;
   noteGear(g);
@@ -919,7 +954,7 @@ function petHas(e) { for (var k = 0; k < S.team.length; k++) if (PETS[S.team[k]]
 function hiddenMon(m) {
   if (m.revealed || petHas('seehidden') || cv('seehidden')) return false;
   var r = S.run, d = cheb(m.x, m.y, r.px, r.py);
-  if (d <= 1) { m.revealed = true; return false; }
+  if (d <= 1) { m.revealed = true; if (has(m, 'burrow') || has(m, 'disguise')) stat('c_Surprise!'); return false; }
   return has(m, 'burrow') || has(m, 'disguise');
 }
 
@@ -1295,6 +1330,9 @@ function payBounty() {
   b.state = 'done';
   r.goldRun += g;
   stat('bounties');
+  stat('b_' + { kills: 'Monster Bounty', type: 'Hunting Bounty', chest: 'Chest Bounty', big: 'Big Game Bounty', speed: 'Speed Bounty', safe: 'Careful Bounty' }[b.t]);
+  if (r.level) stat('lb_' + r.level);
+  r.bst = (r.bst || 0) + 1; statMax('bstreak', r.bst);
   if (b.bonus) r.scrolls[b.bonus]++;
   say('Bounty complete! +' + g + ' gold' + (b.bonus ? ' and a ' + scrollInfo(b.bonus).n + ' scroll' : '') + '.');
 }
@@ -1321,9 +1359,10 @@ function countSeen(prefix) {
 }
 
 function reveal() {
-  var r = S.run, v = view();
+  var r = S.run, v = view(), n = 0;
   for (var y = Math.max(0, r.py - v); y <= Math.min(H - 1, r.py + v); y++)
-    for (var x = Math.max(0, r.px - v); x <= Math.min(W - 1, r.px + v); x++) r.seen[y][x] = 1;
+    for (var x = Math.max(0, r.px - v); x <= Math.min(W - 1, r.px + v); x++) if (!r.seen[y][x]) { r.seen[y][x] = 1; n++; }
+  if (n) stat('a_Map Filler', n);
 }
 function visible(x, y) {
   var v = view();
@@ -1348,22 +1387,26 @@ function startRun() {
             goldRun: 0, kills: 0, log: [], pf: {}, queue: [], poison: 0, weak: 0, slow: 0, hits: 0, turns: 0, panel: null,
             level: '', wpn: null, arm: null, ft: 0, fd: 0, lastHurt: '', bounty: null, blasts: [], portals: [], petCd: {}, revived: false };
   var r = S.run;
+  r.cb = !!(S.last && S.last.floor && S.best > 4 && S.last.floor < S.best / 2);   // a short run last time
+  stat('a_Adventurer'); if (f >= 10) stat('a_Deep Start');
   for (i = 0; i < u.scr; i++) r.scrolls[pick(SCROLLS).id]++;
   var saved = 0, free = 0;
   for (i = 1; i <= u.perk; i++) {
-    if (S.perkAt['B' + i]) { applyPerk(S.perkAt['B' + i]); saved++; }
+    if (S.perkAt['B' + i]) { applyPerk(S.perkAt['B' + i]); saved++; stat('blessed'); }
     else r.queue.push('B' + i);
   }
   if (f > 1) {
-    equip(makeGear(f - 1, 'wpn'));
+    equip(S.cwEq >= 0 ? campWpn(S.cwEq) : makeGear(f - 1, 'wpn'));
     equip(makeGear(f - 1, 'arm'));
     // levels you skip with the elevator: use your saved perk for that level, or a random one
     for (i = 2; i <= r.lv; i += 2) {
       if (S.perkAt['L' + i]) { applyPerk(S.perkAt['L' + i]); saved++; }
       else { applyPerk(randomPerk()); free++; }
     }
-  } else equip({ slot: 'wpn', cat: 0, base: 'Ironfang', mod: 'dull', atk: 1, def: 0, fxs: [], rar: 0, mv: 2, name: 'Dull Ironfang' });
+  } else if (S.cwEq >= 0) equip(campWpn(S.cwEq));
+  else equip({ slot: 'wpn', cat: 0, base: 'Ironfang', mod: 'dull', atk: 1, def: 0, fxs: [], rar: 0, mv: 2, name: 'Dull Ironfang' });
   r.hp = r.maxHp;
+  statMax('lvl', r.lv);
   S.runs++;
   S.last = null;
   ui.elev = false; ui.bag = false;
@@ -1378,7 +1421,12 @@ function nextFloor(quiet) {
   var r = S.run;
   ui.elev = false; ui.bag = false;
   r.floor++;
+  if (r.floor > S.best && r.cb) { r.cb = false; stat('a_Comeback Kid'); }
   if (r.floor > S.best) S.best = r.floor;
+  var zi = Math.floor((r.floor - 1) / 10);
+  statMax('a_Deep Diver Plus', r.floor);
+  statMax('zt_' + ZONES[zi % ZONES.length].n, Math.floor(zi / ZONES.length) + 1);
+  statMax('cd_' + curClass()[2], r.floor);
   if (r.floor > (S.stats.deep || 0)) S.stats.deep = r.floor;
   if (!quiet) stat('floors');
   if (r.floor > 1) heal(Math.ceil(r.maxHp / 10 + r.maxHp * 0.08 * petSum('floorheal')));
@@ -1392,12 +1440,29 @@ function blocked() {
 function descend() {
   var r = S.run;
   if (!r || r.panel || r.px !== r.sx || r.py !== r.sy) return;
+  floorDone();
   nextFloor(); discover(); checkPanels(); save(); render();
+}
+// Achievement counts for finishing a floor by taking the stairs.
+function floorDone() {
+  var r = S.run, zn = ZONES[Math.floor((r.floor - 1) / 10) % ZONES.length].n, L = curLevel(), k;
+  stat('a_Stair Climber'); stat('zc_' + zn);
+  if (r.level) stat('lc_' + r.level);
+  if (r.fd === 0) { stat('c_Untouchable'); stat('zu_' + zn); }
+  if (r.hp >= r.maxHp) stat('a_Full Health Finish');
+  if (r.ft < 20) stat('a_Speedrunner');
+  if (!r.ks) stat('a_Peaceful Path');
+  if ((L && L.dark) || zoneOf(r.floor).hz === 'dark') stat('d_Darkness Delver');
+  if (!r.bounty || r.bounty.state !== 'done') r.bst = 0;
+  r.nps = (r.nps || 0) + 1; statMax('a_Potion Saver', r.nps);
+  for (k = 0; k < S.team.length; k++) stat('pf_' + S.team[k]);
+  if (S.team.length >= TEAM_MAX) stat('fullteam');
 }
 function endRun(killer) {
   var r = S.run;
   S.gold += r.goldRun;
   stat('gold', r.goldRun);
+  statMax('a_Rich Run', r.goldRun);
   S.last = { floor: r.floor, gold: r.goldRun, killer: killer, kills: r.kills, lv: r.lv };
   S.run = null;
   S.last.ach = claimAch();
@@ -1411,11 +1476,14 @@ function upMax(id) {
   for (var i = 0; i < UPS.length; i++) if (UPS[i].id === id) return UPS[i].max || 0;
   return 0;
 }
+function upName(id) { for (var i = 0; i < UPS.length; i++) if (UPS[i].id === id) return UPS[i].name; return ''; }
 function maxed(id) { return upMax(id) > 0 && S.up[id] >= upMax(id); }
 function buy(id) {
   var c = upCost(id);
   if (S.gold < c || maxed(id)) return;
   S.gold -= c; S.up[id]++;
+  stat('up_' + upName(id)); stat('a_Upgrade Fan'); stat('a_Big Spender', c);
+  campClaim();
   save(); render();
 }
 
@@ -1423,17 +1491,61 @@ function buy(id) {
 function achNeed(a, t) { return a.lin ? a.lin * (t + 1) : a.base * [1, 2, 5][t % 3] * Math.pow(10, Math.floor(t / 3)); }
 function achReward(t) { return Math.round(25 * Math.pow(1.5, t)); }
 function claimAch() {
-  var out = [];
-  for (var i = 0; i < ACH.length; i++) {
-    var a = ACH[i], t = S.ach[a.id] || 0;
+  var out = [], i, pass, t, g;
+  statMax('a_Camp Bank', S.gold);
+  for (i = 0; i < ACH.length; i++) {
+    var a = ACH[i];
+    t = S.ach[a.id] || 0;
     while ((S.stats[a.id] || 0) >= achNeed(a, t)) {
-      var g = achReward(t);
+      g = achReward(t);
       S.gold += g; t++;
-      out.push(a.n + ' ' + roman(t) + ' (+' + g + ' gold)');
+      out.push(a.n + ' ' + roman(t) + ' (+' + fmt(g) + ' gold)');
     }
     S.ach[a.id] = t;
   }
+  for (pass = 0; pass < 2; pass++) for (i = 0; i < ACH2.length; i++) {
+    var A = ACH2[i], v = achVal(A);
+    t = S.ach[A[4]] || 0;
+    while (v >= achNeed2(A, t)) {
+      g = achReward(t);
+      S.gold += g; t++;
+      out.push(A[1] + ' ' + roman(t) + ' (+' + fmt(g) + ' gold)');
+    }
+    if (t) S.ach[A[4]] = t;
+  }
   return out;
+}
+// After level V, every level needs twice as much as the one before.
+function achNeed2(A, t) { return t < 5 ? A[3][t] : A[3][4] * Math.pow(2, t - 4); }
+function countKeys(o) { var n = 0; for (var k in o) if (o.hasOwnProperty(k)) n++; return n; }
+function achVal(A) { return A[5] === 's' ? achSpecial(A[4]) : (S.stats[A[4]] || 0); }
+function achSpecial(k) {
+  var n = 0, i, j;
+  if (k.indexOf('wc_') === 0) {
+    for (i = 0; i < WCATS.length; i++) if ('wc_' + WCATS[i].n === k) for (j = 0; j < WNAMES[i].length; j++) if (S.seen['w' + WNAMES[i][j]]) n++;
+    return n;
+  }
+  if (k.indexOf('ct_') === 0) {
+    var tier = parseInt(k.slice(3), 10);
+    for (i = 0; i < CLASSES.length; i++) if (CLASSES[i][2] === tier && S.clsOwn[i]) n++;
+    return n;
+  }
+  if (k === 'petset') return countKeys(S.pets);
+  if (k === 'clsset') return countKeys(S.clsOwn);
+  if (k === 'perksaved') return countKeys(S.perkAt);
+  if (k === 'a_Star Gazer') return S.stars || 0;
+  if (k === 'a_Discoverer') return countKeys(S.seen);
+  if (k === 'a_Achievement Hunter') { for (var q in S.ach) if (S.ach.hasOwnProperty(q)) n += S.ach[q]; return n; }
+  return 0;
+}
+function achTotal() { var n = 0; for (var q in S.ach) if (S.ach.hasOwnProperty(q)) n += S.ach[q]; return n; }
+// Claim at camp (after buying things) and show what you earned.
+function campClaim() {
+  var got = claimAch();
+  if (got.length) ui.achNote = achList(got);
+}
+function achList(got) {
+  return (got.length > 6 ? got.slice(0, 6).join(', ') + ' and ' + (got.length - 6) + ' more' : got.join(', '));
 }
 
 // ================= ASCENSION =================
@@ -1447,10 +1559,12 @@ function ascend() {
                       ' star' + (n > 1 ? 's' : '') + '. Saved perks, achievements and stars stay forever.')) return;
   S.peak = Math.max(S.peak, S.best);
   S.stars += n; S.asc++;
+  stat('a_Ascender');
   S.gold = 0; S.best = 0; S.run = null;
   for (var i = 0; i < UPS.length; i++) S.up[UPS[i].id] = 0;
   ui.startAt = 1;
   S.last = { note: 'You ascended! You now have ' + S.stars + ' stars: +' + (S.stars * 10) + '% attack, HP and gold, forever.' };
+  campClaim();
   save(); render();
 }
 
@@ -1479,6 +1593,7 @@ function rideElevator() {
   if (!onElevator()) return;
   ui.elev = false;
   if (ui.pick === r.floor) { render(); return; }
+  stat('a_Elevator Rider');
   r.floor = ui.pick;
   genFloor();
   floorIntro('The elevator takes you to floor ' + r.floor + '.', true);
@@ -1503,6 +1618,7 @@ function choosePerk(id) {
   applyPerk(id);
   var key = r.queue.shift();
   if (key) S.perkAt[key] = id;
+  if (key && key.charAt(0) === 'B') stat('blessed');
   r.log = ['You chose ' + perkInfo(id).n + '. It\'s saved: you\'ll get it again every time you reach ' + slotName(key) + '.'];
   closePanel();
 }
@@ -1513,7 +1629,7 @@ function hereItem() {
 function equipHere() {
   var r = S.run, it = hereItem();
   if (!it || it.k !== 'gear') { closePanel(); return; }
-  equip(it.g);
+  equip(it.g); gearOn(it.g);
   r.items.splice(r.items.indexOf(it), 1);
   r.log = ['You equip the ' + it.g.name + '.'];
   closePanel();
@@ -1524,15 +1640,17 @@ function shopBuy(j) {
   var s = it.stock[j];
   if (!s || s.sold || r.goldRun < s.price) return;
   r.goldRun -= s.price; s.sold = true;
-  if (s.k === 'potion') { r.potions++; r.log = ['You buy a potion.']; }
-  else if (s.k === 'scroll') { r.scrolls[s.s]++; r.log = ['You buy a ' + scrollInfo(s.s).n + ' scroll.']; }
-  else { equip(s.g); r.log = ['You buy and equip the ' + s.g.name + '.']; }
+  stat('a_Merchant Friend', s.price);
+  if (s.k === 'potion') { r.potions++; stat('i_Potion Shopper'); r.log = ['You buy a potion.']; }
+  else if (s.k === 'scroll') { r.scrolls[s.s]++; stat('i_Scroll Shopper'); r.log = ['You buy a ' + scrollInfo(s.s).n + ' scroll.']; }
+  else { equip(s.g); gearOn(s.g); stat('i_Gear Shopper'); r.log = ['You buy and equip the ' + s.g.name + '.']; }
   save(); render();
 }
 function shrineUse(how) {
   var r = S.run, it = hereItem();
   if (!it || it.k !== 'shrine') { closePanel(); return; }
   r.items.splice(r.items.indexOf(it), 1);
+  stat(how === 'rest' ? 'i_Shrine Rester' : 'i_Shrine Prayer');
   if (how === 'rest') {
     r.hp = r.maxHp; r.poison = 0; r.weak = 0; r.slow = 0;
     r.log = ['You rest at the shrine. Fully healed!'];
@@ -1552,6 +1670,7 @@ function altarUse() {
   var old = modInfo(r.wpn.mod), M = pick(pool);
   r.wpn.atk = Math.max(1, Math.round(r.wpn.atk / (1 + old.pct / 100) * (1 + M.pct / 100)));
   r.wpn.mod = M.id;
+  stat('i_Enchanter');
   r.wpn.name = M.n + ' ' + r.wpn.base;
   noteGear(r.wpn);
   r.items.splice(r.items.indexOf(it), 1);
@@ -1576,6 +1695,7 @@ function levelCheck() {
   var r = S.run;
   while (r.xp >= r.lv * 10) {
     r.xp -= r.lv * 10; r.lv++;
+    statMax('lvl', r.lv);
     r.maxHp += Math.round(4 * starMul() * petHpMul()); r.atk += 1;
     heal(Math.ceil(r.maxHp / 3));
     if (r.lv % 2 === 0) {
@@ -1610,13 +1730,15 @@ function dropAt(x, y, item) {
   return false;
 }
 function revealAll() {
-  var r = S.run;
-  for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) r.seen[y][x] = 1;
+  var r = S.run, n = 0;
+  for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) if (!r.seen[y][x]) { r.seen[y][x] = 1; n++; }
+  if (n) stat('a_Map Filler', n);
 }
 function killMon(m) {
   var r = S.run, idx = r.mons.indexOf(m);
   if (idx < 0) return;
   r.mons.splice(idx, 1);
+  achKill(m);
   var g = goldAmt(m.gold) + m.stolen;
   r.goldRun += g; r.kills++; r.xp += Math.round(m.xp * (1 + cv('xp') / 100));
   r.ks = (r.ks || 0) + 1; if (cv('killbuff')) r.kb = 3;
@@ -1627,16 +1749,17 @@ function killMon(m) {
   if (fx('vamp')) heal(fx('vamp'));
   if (m.kind === 'boss' && Math.random() < 0.35) {
     var bp = rollPet(r.floor, 1);
-    if (dropAt(m.x, m.y, { k: 'pet', p: bp })) say('A pet was hiding with the boss: ' + petName(bp) + ' (p)!');
+    if (dropAt(m.x, m.y, { k: 'pet', p: bp })) { stat('a_Boss Pet Rescue'); say('A pet was hiding with the boss: ' + petName(bp) + ' (p)!'); }
   }
   if (m.drop) {
     var gear = makeGear(r.floor + 1, '', m.kind === 'boss' ? 2 : 1);
-    if (dropAt(m.x, m.y, { k: 'gear', g: gear })) say('It dropped a ' + rarName(gear) + ' ' + gear.name + '!');
+    if (dropAt(m.x, m.y, { k: 'gear', g: gear })) { if (m.kind === 'boss') stat('bossgear'); say('It dropped a ' + rarName(gear) + ' ' + gear.name + '!'); }
   }
   if (has(m, 'wisp')) { revealAll(); say('Its light shows you the whole floor!'); }
   if (has(m, 'explode') && cheb(m.x, m.y, r.px, r.py) <= 1) {
     var ed = Math.max(1, Math.round(m.atk * 0.6) + rnd(-1, 1) - defOf());
     hurt(ed, 'an explosion');
+    if (r.hp > 0) stat('c_Explosion Survivor');
     say(The(m.name) + ' explodes! You take ' + ed + ' damage.');
   }
   if (has(m, 'split') && !m.small) {
@@ -1656,6 +1779,39 @@ function killMon(m) {
   bountyEvent('kill', m);
   levelCheck();
 }
+// Achievement counts for every monster you defeat.
+function achKill(m) {
+  var r = S.run, how = killHow, T = TYPES[m.i], j;
+  killHow = '';
+  if (m.name === 'Illusion') stat('c_Illusion Popper');
+  if (m.minion) return;
+  stat('k_' + T.c); stat('kf_' + T.fam);
+  var extra = m.abs.length - T.ab.length;
+  if (extra >= 2) stat('kt2');
+  if (extra >= 3) stat('kt3');
+  if (extra >= 4) stat('kt4');
+  for (j = 0; j < m.abs.length; j++) stat('ka_' + m.abs[j]);
+  if (r.wpn) {
+    var wn = WCATS[r.wpn.cat || 0].n;
+    stat('kw_' + wn); stat('km_' + modInfo(r.wpn.mod).n);
+    if (how === 'far' && ACHIDX['kr_' + wn] !== undefined) stat('kr_' + wn);
+  }
+  if (r.level) stat('lk_' + r.level);
+  stat('ck_' + curClass()[2]);
+  if (m.frozen > 0) stat('c_Frozen Finisher');
+  if (m.small) stat('c_Split Ender');
+  if (m.stolen > 0) stat('c_Thief Catcher');
+  if (how === 'fire') stat('i_Fire Finisher');
+  else if (how === 'pet') stat('petkill');
+  else if (how === 'cls') stat('clskill');
+  else if (how === 'thorns') stat('c_Thorny');
+  if (m.kind === 'champ') stat('champkill');
+  if (m.kind === 'boss') {
+    stat('zb_' + ZONES[Math.floor((r.floor - 1) / 10) % ZONES.length].n);
+    if (r.level && ACHIDX['bl_' + r.level] !== undefined) stat('bl_' + r.level);
+    if (r.hp < r.maxHp * 0.1) stat('c_Glass Cannon');
+  }
+}
 function setDot(m, frac, turns, w) {
   m.dot = { d: Math.max(1, Math.round(atkOf() * frac)), t: turns, w: w };   // refreshes instead of stacking
 }
@@ -1663,10 +1819,10 @@ function setDot(m, frac, turns, w) {
 function strike(m, mult, primary, verb) {
   var r = S.run;
   if (!m || r.mons.indexOf(m) < 0) return;
-  var wasAwake = m.awake, far = Math.abs(m.x - r.px) + Math.abs(m.y - r.py) > 1;
+  var wasAwake = m.awake, far = Math.abs(m.x - r.px) + Math.abs(m.y - r.py) > 1, full = m.hp >= m.max;
   m.awake = true; m.revealed = true;
   if (primary && has(m, 'dodge') && chance(15)) { say(The(m.name) + ' dodges your attack!'); return; }
-  if (m.shield) { m.shield = false; say(The(m.name) + '\'s shield blocks your hit! The shield breaks.'); return; }
+  if (m.shield) { m.shield = false; stat('c_Shield Breaker'); say(The(m.name) + '\'s shield blocks your hit! The shield breaks.'); return; }
   var C = wcat(), mod = wmod(), def = Math.max(0, m.def - fx('pierce') - Math.round(petSum('armordmg') * (1 + r.floor / 15)));
   if (mod === 'piercing') def = Math.round(def * 0.8);
   if (cv('pierce')) def = Math.round(def * (1 - cv('pierce') / 100));
@@ -1674,7 +1830,7 @@ function strike(m, mult, primary, verb) {
   var d = Math.max(1, Math.round(atkOf() * mult + rnd(-1, 1) - def)), notes = [];
   var cc = fx('crit') + (C && C.crit ? C.crit : 0) + (mod === 'lucky' ? 5 : 0);
   if (cc > 0 && chance(cc)) {
-    d = Math.round(d * (2 + cv('critdmg') / 100)); notes.push('Critical hit!');
+    d = Math.round(d * (2 + cv('critdmg') / 100)); notes.push('Critical hit!'); stat('c_Critical Striker');
     if (cv('critheal')) heal(Math.max(1, Math.round(r.maxHp * cv('critheal') / 200)));
   }
   if (mod === 'sharp' && chance(15)) { d = Math.round(d * 1.5); notes.push('Sharp hit!'); }
@@ -1696,9 +1852,11 @@ function strike(m, mult, primary, verb) {
   if (pm > 1) d = Math.round(d * pm);
   if (has(m, 'swarm')) d = Math.max(1, Math.ceil(d / 2));
   m.hp -= d;
+  stat('c_Damage Dealer', d); statMax('c_Big Hitter', d);
+  if (r.wpn) stat('dw_' + WCATS[r.wpn.cat || 0].n, d);
   var lh = fx('leech') + (mod === 'leeching' ? r.wpn.mv : 0);
-  if (lh) heal(lh);
-  if (mod === 'vampiric') heal(Math.ceil(d * 0.08));
+  if (lh) { heal(lh); stat('c_Leech', lh); }
+  if (mod === 'vampiric') { heal(Math.ceil(d * 0.08)); stat('c_Leech', Math.ceil(d * 0.08)); }
   say(notes.join(' ') + (notes.length ? ' ' : '') + 'You ' + (verb || 'hit') + ' ' + the(m.name) + ' for ' + d + '.');
   if (has(m, 'spiky') && cheb(m.x, m.y, r.px, r.py) <= 1) {
     var sd = Math.max(1, Math.round(d * 0.2));
@@ -1713,34 +1871,40 @@ function strike(m, mult, primary, verb) {
       for (var i = 0; i < near.length; i++) if (near[i] !== m && cheb(near[i].x, near[i].y, m.x, m.y) <= 1) strike(near[i], mult * 0.5, false, 'blast');
     }
   }
-  if (m.hp <= 0) { killMon(m); return; }
+  if (m.hp <= 0) {
+    if (primary && full) stat('c_One Hit Wonder');
+    if (!wasAwake) stat('c_Sneak Attack');
+    killHow = far ? 'far' : 'wpn';
+    killMon(m); return;
+  }
   // effects on a monster that's still standing
-  if (cv('burnhit') && chance(cv('burnhit'))) setDot(m, 0.4, 2, 'burning');
+  if (cv('burnhit') && chance(cv('burnhit'))) { setDot(m, 0.4, 2, 'burning'); stat('c_Burner'); }
   if (cv('slowhit') && chance(cv('slowhit'))) m.slowT = 2;
-  if (mod === 'dull' && chance(20)) { m.frozen = Math.max(m.frozen, 1); say(The(m.name) + ' is stunned.'); }
-  if (C && C.stun && chance(C.stun)) { m.frozen = Math.max(m.frozen, 1); say(The(m.name) + ' is stunned.'); }
-  if (mod === 'rusty' && chance(20)) setDot(m, 0.4, 3, 'bleeding');
-  if (mod === 'flaming' && chance(25)) setDot(m, 0.6, 2, 'burning');
+  if (mod === 'dull' && chance(20)) { m.frozen = Math.max(m.frozen, 1); stat('c_Stunner'); say(The(m.name) + ' is stunned.'); }
+  if (C && C.stun && chance(C.stun)) { m.frozen = Math.max(m.frozen, 1); stat('c_Stunner'); say(The(m.name) + ' is stunned.'); }
+  if (mod === 'rusty' && chance(20)) { setDot(m, 0.4, 3, 'bleeding'); stat('c_Bleeder'); }
+  if (mod === 'flaming' && chance(25)) { setDot(m, 0.6, 2, 'burning'); stat('c_Burner'); }
   if (mod === 'poisoned' && chance(25)) setDot(m, 0.4, 3, 'poisoned');
   if (mod === 'frozen' && chance(20)) m.slowT = 2;
   if (mod === 'heavy' && chance(20)) {
     var kx = m.x + sign(m.x - r.px), ky = m.y + sign(m.y - r.py);
     if (canStep(kx, ky, m)) { m.x = kx; m.y = ky; }
     m.frozen = Math.max(m.frozen, 1);
+    stat('c_Knockback King');
     say('You knock ' + the(m.name) + ' back!');
   }
   if (primary) {
     if (mod === 'shocking' && chance(15)) {
       for (var j = 0; j < r.mons.length; j++) {
         var o = r.mons[j];
-        if (o !== m && cheb(o.x, o.y, m.x, m.y) <= 2) { say('Lightning jumps!'); strike(o, mult * 0.5, false, 'shock'); break; }
+        if (o !== m && cheb(o.x, o.y, m.x, m.y) <= 2) { say('Lightning jumps!'); stat('c_Chain Lightning'); strike(o, mult * 0.5, false, 'shock'); break; }
       }
     }
-    if (mod === 'echoing' && r.hits % 4 === 0) strike(m, mult * 0.35, false, 'echo-hit');
+    if (mod === 'echoing' && r.hits % 4 === 0) { stat('c_Echo Master'); strike(m, mult * 0.35, false, 'echo-hit'); }
     if (mod === 'swift' && chance(15)) strike(m, mult * 0.5, false, 'quickly hit');
     if (cv('double') && chance(cv('double'))) strike(m, mult * 0.5, false, 'strike again and hit');
     if (C && C.dbl && chance(C.dbl)) strike(m, mult * 0.6, false, 'hit again');
-    if (mod === 'swift' && chance(20)) r.freeTurn = true;
+    if (mod === 'swift' && chance(20)) { r.freeTurn = true; stat('c_Free Turn'); }
     if (mod === 'heavy' && chance(15)) r.extraStep = true;
   }
 }
@@ -1748,19 +1912,20 @@ function attack(m) {
   var r = S.run, C = wcat();
   strike(m, 1, true);
   if (C && C.sweep) {
-    var near = r.mons.slice();
+    var near = r.mons.slice(), hit = 1;
     for (var i = 0; i < near.length; i++) {
       var o = near[i];
-      if (o !== m && cheb(o.x, o.y, r.px, r.py) <= 1 && !hiddenMon(o)) strike(o, 1, false, 'sweep');
+      if (o !== m && cheb(o.x, o.y, r.px, r.py) <= 1 && !hiddenMon(o)) { strike(o, 1, false, 'sweep'); hit++; }
     }
+    if (hit >= 3) stat('c_Sweeper');
   }
 }
 function monHits(m, kind) {
   var r = S.run, dg = fx('dodge');
-  if (dg && chance(dg)) { say('You dodge ' + the(m.name) + '!'); return; }
-  if (r.petShield) { r.petShield = false; say('Your pet\'s shield blocks ' + the(m.name) + '\'s attack!'); return; }
+  if (dg && chance(dg)) { stat('c_Dodger'); say('You dodge ' + the(m.name) + '!'); return; }
+  if (r.petShield) { r.petShield = false; stat('petblock'); say('Your pet\'s shield blocks ' + the(m.name) + '\'s attack!'); return; }
   if (r.clsShield > 0) { r.clsShield--; say('Your class shield blocks ' + the(m.name) + '\'s attack!'); return; }
-  if (petSum('block') && chance(Math.min(50, 4 * petSum('block')))) { say('Your pet blocks ' + the(m.name) + '\'s attack!'); return; }
+  if (petSum('block') && chance(Math.min(50, 4 * petSum('block')))) { stat('petblock'); say('Your pet blocks ' + the(m.name) + '\'s attack!'); return; }
   var a = monAtk(m), slam = false;
   r.wasHit = true;
   if (!kind && has(m, 'slam')) { m.ac++; if (m.ac % 3 === 0) { a *= 2; slam = true; } }
@@ -1775,6 +1940,8 @@ function monHits(m, kind) {
   else if (slam) say(The(m.name) + ' slams you for ' + d + '!');
   else say(The(m.name) + ' hits you for ' + d + '.');
   if (r.hp <= 0) return;
+  for (var ai = 0; ai < m.abs.length; ai++) stat('ha_' + m.abs[ai]);
+  stat('hf_' + TYPES[m.i].fam);
   if (has(m, 'vamp')) m.hp = Math.min(m.max, m.hp + d);
   if (has(m, 'poison')) { if (!r.poison) say('You are poisoned!'); r.poison = 3; }
   if (has(m, 'weaken')) { if (!r.weak) say('You feel weaker!'); r.weak = 3; }
@@ -1793,7 +1960,7 @@ function monHits(m, kind) {
   var th = fx('thorns');
   if (th && !kind) {
     m.hp -= Math.max(1, Math.round(d * th / 100));
-    if (m.hp <= 0) { say('Your thorns finish off ' + the(m.name) + '!'); killMon(m); }
+    if (m.hp <= 0) { say('Your thorns finish off ' + the(m.name) + '!'); killHow = 'thorns'; killMon(m); }
   }
 }
 function lineClear(x0, y0, x1, y1) {
@@ -1839,7 +2006,7 @@ function placeNear(x, y, m, who) {
 function addBlast(x, y, d, who) {
   var r = S.run;
   for (var i = 0; i < r.blasts.length; i++) if (r.blasts[i].x === x && r.blasts[i].y === y) return;
-  r.blasts.push({ x: x, y: y, t: 1, d: d, who: who });
+  r.blasts.push({ x: x, y: y, t: 1, d: d, who: who, onYou: x === r.px && y === r.py });
 }
 // Monster helpers: summoning, healing, shields, traps, decoys, bombs.
 function specialMoves(m, i, dist) {
@@ -1960,29 +2127,32 @@ function hazardDmg(d) { return Math.max(1, Math.round(d * (1 - Math.min(0.9, 0.1
 function slowResist() { return chance(Math.min(90, 15 * petSum('slowres'))); }
 function stepOn() {
   var r = S.run, t = r.map[r.py][r.px], d;
-  if (t === 2) { d = hazardDmg(Math.ceil(r.maxHp * 0.15)); hurt(d, 'lava'); say('The lava burns you for ' + d + '!'); }
-  else if (t === 3) { d = hazardDmg(Math.ceil(r.maxHp * 0.1)); hurt(d, 'spikes'); say('Spikes! You take ' + d + ' damage.'); }
-  else if (t === 4) { d = Math.ceil(r.maxHp * 0.25); heal(d); r.map[r.py][r.px] = 0; say('You eat a mushroom. +' + d + ' HP.'); }
-  else if (t === 5 && !slowResist()) { if (!r.slow) say('The ' + r.slowName + ' slows you down.'); r.slow = Math.max(r.slow, 1); }
-  else if (t === 7) { if (!r.poison) say('You breathe poison gas!'); r.poison = 3; }
-  else if (t === 8) { d = hazardDmg(Math.ceil(r.maxHp * 0.12)); hurt(d, 'a shock'); say('Zap! The floor shocks you for ' + d + '.'); }
+  if (t === 2) { d = hazardDmg(Math.ceil(r.maxHp * 0.15)); hurt(d, 'lava'); say('The lava burns you for ' + d + '!'); if (r.hp > 0) stat('d_Lava Walker'); }
+  else if (t === 3) { d = hazardDmg(Math.ceil(r.maxHp * 0.1)); hurt(d, 'spikes'); say('Spikes! You take ' + d + ' damage.'); if (r.hp > 0) stat('d_Spike Stepper'); }
+  else if (t === 4) { d = Math.ceil(r.maxHp * 0.25); heal(d); r.map[r.py][r.px] = 0; stat('d_Mushroom Muncher'); say('You eat a mushroom. +' + d + ' HP.'); }
+  else if (t === 5) {
+    stat({ web: 'd_Web Breaker', mud: 'd_Mud Stomper', sand: 'd_Sand Strider' }[r.slowName] || 'd_Swimmer');
+    if (!slowResist()) { if (!r.slow) say('The ' + r.slowName + ' slows you down.'); r.slow = Math.max(r.slow, 1); }
+  }
+  else if (t === 7) { stat('d_Gas Breather'); if (!r.poison) say('You breathe poison gas!'); r.poison = 3; }
+  else if (t === 8) { d = hazardDmg(Math.ceil(r.maxHp * 0.12)); hurt(d, 'a shock'); say('Zap! The floor shocks you for ' + d + '.'); if (r.hp > 0) stat('d_Shock Proof'); }
   else if (t === 9 && r.portals.length === 2) {
     var o = r.portals[0][0] === r.px && r.portals[0][1] === r.py ? r.portals[1] : r.portals[0];
-    if (!monAt(o[0], o[1])) { r.px = o[0]; r.py = o[1]; say('The portal pulls you through!'); reveal(); }
+    if (!monAt(o[0], o[1])) { r.px = o[0]; r.py = o[1]; stat('d_Portal Jumper'); say('The portal pulls you through!'); reveal(); }
   }
   pickup();
 }
 // Move to a square. On ice you keep sliding until something stops you.
 function moveTo(nx, ny, dx, dy) {
   var r = S.run, slid = 0;
-  r.px = nx; r.py = ny; stepOn();
+  r.px = nx; r.py = ny; stat('a_Step Counter'); stepOn();
   while (r.map[r.py][r.px] === 6 && slid < 8 && !r.panel && r.hp > 0) {
     var tx = r.px + dx, ty = r.py + dy;
     if (tx < 0 || ty < 0 || tx >= W || ty >= H || r.map[ty][tx] === 1 || monAt(tx, ty)) break;
     r.px = tx; r.py = ty; slid++;
     stepOn();
   }
-  if (slid) say('You slide on the ice!');
+  if (slid) { stat('d_Ice Skater'); say('You slide on the ice!'); }
 }
 function pickup() {
   var r = S.run, i = itemAt(r.px, r.py);
@@ -1992,11 +2162,11 @@ function pickup() {
     else if (it.k === 'potion') { r.potions++; say('You find a potion.'); r.items.splice(i, 1); }
     else if (it.k === 'scroll') { r.scrolls[it.s]++; say('You find a ' + scrollInfo(it.s).n + ' scroll.'); r.items.splice(i, 1); }
     else if (it.k === 'relic') {
-      var p = randomPerk(); applyPerk(p); r.items.splice(i, 1);
+      var p = randomPerk(); applyPerk(p); r.items.splice(i, 1); stat('i_Relic Hunter');
       say('An ancient relic! You gain ' + perkInfo(p).n + ': ' + perkInfo(p).d + '.');
     }
     else if (it.k === 'chest') openChest(i);
-    else if (it.k === 'gear') { noteGear(it.g); say('There is a ' + it.g.name + ' here.'); r.panel = { t: 'loot' }; }
+    else if (it.k === 'gear') { noteGear(it.g); gearFound(it.g); say('There is a ' + it.g.name + ' here.'); r.panel = { t: 'loot' }; }
     else if (it.k === 'shop') { say('A merchant waves at you.'); r.panel = { t: 'shop' }; }
     else if (it.k === 'shrine') { say('You find a shrine.'); r.panel = { t: 'shrine' }; }
     else if (it.k === 'altar') { say('You find an enchanting table.'); r.panel = { t: 'altar' }; }
@@ -2009,13 +2179,14 @@ function pickup() {
 }
 function openChest(i) {
   var r = S.run, it = r.items[i];
-  stat('chests');
+  stat('chests'); stat('i_Chest Opener Plus');
   bountyEvent('chest');
   if (it.mimic === undefined ? (r.floor >= 3 && chance(r.mimicP)) : it.mimic) {
     var m = makeMimic(r.floor);
     if (placeNear(r.px, r.py, m, null)) {
       r.items.splice(r.items.indexOf(it), 1);
       r.mons.push(m);
+      stat('i_Mimic Spotter');
       say('The chest grows teeth! It\'s a Mimic (MI)!');
       return;
     }
@@ -2023,7 +2194,8 @@ function openChest(i) {
   var g = goldAmt(rnd(3, 8) + r.floor);
   r.goldRun += g;
   it.k = 'gear'; it.g = makeGear(r.floor + 1, '', r.chestRar);
-  noteGear(it.g);
+  noteGear(it.g); gearFound(it.g);
+  if (it.g.rar >= 4) stat('a_Lucky Chest');
   say('You open the chest: ' + g + ' gold and a ' + rarName(it.g) + ' ' + it.g.name + '.');
   r.panel = { t: 'loot' };
 }
@@ -2037,7 +2209,8 @@ function blastsTick() {
       var d = Math.max(1, b.d - Math.floor(defOf() / 2));
       if (b.who === 'a falling rock') d = hazardDmg(d);
       hurt(d, b.who); say('Boom! ' + cap(b.who) + ' hits you for ' + d + '.');
-    }
+      if (r.hp > 0 && b.who !== 'a falling rock') stat('c_Explosion Survivor');
+    } else if (b.onYou) stat(b.who === 'a falling rock' ? 'd_Rock Dodger' : 'd_Bomb Dodger');
     var m = monAt(b.x, b.y);
     if (m && !TYPES[m.i].heart) { m.hp -= Math.max(1, Math.round(b.d / 2)); if (m.hp <= 0) killMon(m); }
   }
@@ -2056,12 +2229,16 @@ function blastsTick() {
 function passTurn() {
   var r = S.run;
   r.turns++; r.ft++;
+  stat('a_Turn Taker');
+  statMax('i_Hoarder', r.potions); statMax('i_Library Card', scrollCount());
   blastsTick();
   if (r.hp > 0) petsAct();
   if (r.hp > 0) classAct();
   if (r.hp > 0) monstersAct(false);
   if (r.hp > 0 && (r.slow > 0 || r.extraStep)) monstersAct(true);
   r.extraStep = false;
+  if (r.slow === 1 && r.hp > 0) stat('c_Unslowed');
+  if (r.weak === 1 && r.hp > 0) stat('c_Unweakened');
   if (r.slow > 0) r.slow--;
   if (r.weak > 0) r.weak--;
   if (r.kb > 0) r.kb--;
@@ -2069,13 +2246,14 @@ function passTurn() {
     var pd = Math.round((1 + Math.floor(r.floor / 6)) * (1 - Math.min(0.9, 0.2 * petSum('poisonres'))));
     r.poison--;
     if (pd > 0) { hurt(pd, 'poison'); say('Poison hurts you for ' + pd + '.'); }
+    if (!r.poison && r.hp > 0) stat('c_Poison Survivor');
   }
   if (r.hp <= 0 && cv('reviveFloor') && !r.clsRevF) {
-    r.clsRevF = true; r.hp = Math.max(1, Math.round(r.maxHp * cv('reviveFloor') / 100));
+    r.clsRevF = true; stat('clssave'); r.hp = Math.max(1, Math.round(r.maxHp * cv('reviveFloor') / 100));
     say('Your ' + curClass()[0] + ' power saves you from defeat! You get back up with ' + r.hp + ' HP.');
   }
   if (r.hp <= 0 && cv('revive') && !r.clsRev) {
-    r.clsRev = true; r.hp = Math.max(1, Math.round(r.maxHp * cv('revive') / 100));
+    r.clsRev = true; stat('clssave'); r.hp = Math.max(1, Math.round(r.maxHp * cv('revive') / 100));
     say('Your ' + curClass()[0] + ' power saves you from defeat! You get back up with ' + r.hp + ' HP.');
   }
   if (r.hp > 0 && cv('lowshield') && !r.clsLow && r.hp < r.maxHp * 0.3) { r.clsLow = true; r.clsShield = (r.clsShield || 0) + 1; say('A shield appears around you!'); }
@@ -2090,12 +2268,12 @@ function passTurn() {
   if (r.hp <= 0 && petHas('revive') && !r.revived) {
     var rv = 0;
     for (var q = 0; q < S.team.length; q++) if (PETS[S.team[q]][3] === 'revive') { rv = S.team[q]; break; }
-    r.revived = true; r.hp = Math.max(1, Math.round(r.maxHp * Math.min(0.8, 0.1 * petPower(rv))));
+    r.revived = true; stat('petsave'); r.hp = Math.max(1, Math.round(r.maxHp * Math.min(0.8, 0.1 * petPower(rv))));
     say(petName(rv) + ' saves you from defeat! You get back up with ' + r.hp + ' HP.');
   }
   if (r.hp <= 0) { endRun(r.lastHurt || 'the dungeon'); return true; }
   if (fx('regen') && r.turns % 3 === 0) heal(fx('regen'));
-  if (petSum('regen') && r.turns % 4 === 0) heal(Math.max(1, Math.round(r.maxHp * 0.01 * petSum('regen'))));
+  if (petSum('regen') && r.turns % 4 === 0) { var ph = Math.max(1, Math.round(r.maxHp * 0.01 * petSum('regen'))); if (r.hp < r.maxHp) stat('petheal', Math.min(ph, r.maxHp - r.hp)); heal(ph); }
   if (petHas('teleport') && !r.petTele && r.hp < r.maxHp * 0.25) {
     var spots = [], tx, ty;
     for (ty = 0; ty < H; ty++) for (tx = 0; tx < W; tx++) {
@@ -2131,7 +2309,7 @@ function act(dx, dy) {
     if (nx < 0 || ny < 0 || nx >= W || ny >= H) return;
     var m = monAt(nx, ny);
     if (m) {
-      if (!m.revealed && (has(m, 'burrow') || has(m, 'disguise'))) { m.revealed = true; say('Surprise! It\'s ' + aName(m.name) + '!'); }
+      if (!m.revealed && (has(m, 'burrow') || has(m, 'disguise'))) { m.revealed = true; stat('c_Surprise!'); say('Surprise! It\'s ' + aName(m.name) + '!'); }
       attack(m);
     }
     else if (r.map[ny][nx] === 1) { say('A wall blocks the way.'); render(); return; }
@@ -2162,6 +2340,7 @@ function drink() {
   ui.bag = false; ui.elev = false;
   r.log = [];
   r.potions--;
+  stat('i_Potion Drinker'); r.nps = 0;
   heal(Math.ceil(r.maxHp / 2 * (1 + 0.1 * petSum('potion') + cv('potion') / 100)));
   r.poison = 0; r.weak = 0;
   say('You drink a potion. HP ' + r.hp + '/' + r.maxHp + '.');
@@ -2187,6 +2366,8 @@ function readScroll(id) {
   ui.bag = false;
   r.log = [];
   r.scrolls[id]--;
+  stat({ fire: 'i_Fire Starter', freeze: 'i_Ice Maker', tele: 'i_Teleporter', map: 'i_Mapmaker' }[id]);
+  if (r.hp < r.maxHp * 0.25) stat('se_' + scrollInfo(id).n);
   if (id === 'fire') {
     ms = seenMonsters();
     var dmg = Math.max(5, atkOf() * 2);
@@ -2194,10 +2375,11 @@ function readScroll(id) {
     for (i = 0; i < ms.length; i++) {
       var dd = has(ms[i], 'resist') ? Math.ceil(dmg / 2) : dmg;
       ms[i].hp -= dd; ms[i].awake = true;
-      if (ms[i].hp <= 0) killMon(ms[i]);
+      if (ms[i].hp <= 0) { killHow = 'fire'; killMon(ms[i]); }
     }
   } else if (id === 'freeze') {
     ms = seenMonsters();
+    if (ms.length) stat('i_Freezer', ms.length);
     for (i = 0; i < ms.length; i++) ms[i].frozen = has(ms[i], 'resist') ? 1 : 3;
     say(ms.length ? 'Ice covers ' + ms.length + (ms.length === 1 ? ' monster.' : ' monsters.') : 'Ice spreads out, but nothing is in sight.');
   } else if (id === 'tele') {
@@ -2243,13 +2425,13 @@ function findPath(tx, ty) {
 }
 // Walk many steps in one tap. Monsters still take their turns; you stop if anything hits you.
 function walkTo(path) {
-  var r = S.run;
+  var r = S.run, walked = 0;
   r.log = [];
   for (var i = 0; i < path.length; i++) {
     var nx = path[i][0], ny = path[i][1];
     var m = monAt(nx, ny);
     if (m) {
-      if (!m.revealed && (has(m, 'burrow') || has(m, 'disguise'))) { m.revealed = true; say('Surprise! It\'s ' + aName(m.name) + '!'); }
+      if (!m.revealed && (has(m, 'burrow') || has(m, 'disguise'))) { m.revealed = true; stat('c_Surprise!'); say('Surprise! It\'s ' + aName(m.name) + '!'); }
       break;
     }
     var hp0 = r.hp;
@@ -2257,6 +2439,7 @@ function walkTo(path) {
     moveTo(nx, ny, nx - r.px, ny - r.py);
     if (passTurn()) return;
     if (r.px !== nx || r.py !== ny) break;
+    if (++walked === 6) stat('a_Long Walk');
     // keep walking past monsters; stop only if something hits or hurts you, or there's a choice to make
     if (r.wasHit || r.hp < hp0 || r.panel || r.queue.length > 0) break;
   }
@@ -2587,7 +2770,7 @@ function renderRun() {
 
 // ================= ENCYCLOPEDIA: every enemy, weapon, modifier and feature =================
 var BOOK_TABS = [['enemies', 'Enemies'], ['weapons', 'Weapons'], ['mods', 'Modifiers'], ['traits', 'Traits'],
-                 ['floors', 'Floor types'], ['zones', 'Zones'], ['pets', 'Pets'], ['more', 'Perks & items']];
+                 ['floors', 'Floor types'], ['zones', 'Zones'], ['pets', 'Pets'], ['ach', 'Achievements'], ['more', 'Perks & items']];
 var FAMILY_NAME = { B: 'Basic', H: 'Heavy', F: 'Fast', R: 'Ranged', T: 'Tricky', E: 'Elemental', U: 'Undead', I: 'Insect', X: 'Elite / boss', Y: 'Helper' };
 function openBook(tab) { ui.book = tab || 'enemies'; ui.bookTop = true; render(); }
 function found(yes) { return yes ? ' <span class="found">Found</span>' : ''; }
@@ -2681,6 +2864,8 @@ function renderBook() {
       h += '<div class="entry"><b>' + Z.n + '</b>' + found(S.seen['z' + Z.n]) + '<br><span class="each">' + zoneFloors(i) + '. Map: ' + lay + '.</span><br>' + Z.note +
            (Z.fav.length ? ' More ' + typeNames(Z.fav, 999).join(', ') + '.' : '') + (Z.mut ? ' Some monsters are ' + mutAdj(Z.mut) + '.' : '') + '</div>';
     }
+  } else if (tab === 'ach') {
+    h += bookAch();
   } else {
     h += '<h3>Perks</h3><p class="each">You pick one every 2 levels. Each pick is saved for that level.</p>';
     for (i = 0; i < PERKS.length; i++) h += '<div class="entry"><b>' + PERKS[i].n + '</b>: ' + PERKS[i].d + '.</div>';
@@ -2702,8 +2887,7 @@ function renderBook() {
       '<div class="entry"><code>x</code> A bomb or falling rock lands here next turn. Step off it!</div>' +
       '<h3>Camp upgrades</h3>';
     for (i = 0; i < UPS.length; i++) h += '<div class="entry"><b>' + UPS[i].name + '</b>: ' + UPS[i].each + (UPS[i].max ? ' (up to ' + UPS[i].max + ')' : '') + '.</div>';
-    h += '<h3>Achievements</h3>';
-    for (i = 0; i < ACH.length; i++) h += '<div class="entry"><b>' + ACH[i].n + '</b>: ' + ACH[i].what + '. Endless levels, each pays gold.</div>';
+    h += '<h3>Achievements</h3><div class="entry">All ' + fmt(ACH.length + ACH2.length) + ' achievements are in the Achievements tab.</div>';
   }
   h += '<div class="tabs bottom">' + btn('Back to top', 'window.scrollTo(0,0)', 'small') + btn('Close', 'ui.book=\'\';render()', 'small') + '</div>';
   return h + '</div>';
@@ -2807,6 +2991,8 @@ function petTake(how) {
   if (!it || it.k !== 'pet') { closePanel(); return; }
   var i = it.p, lv = petLv(i);
   r.items.splice(r.items.indexOf(it), 1);
+  stat('pr_' + PRAR[PETS[i][2]]);
+  if (lv === 4) stat('pl5_' + PRAR[PETS[i][2]]);
   if (lv >= 5) { var g = goldAmt(30 + 10 * PETS[i][2] * PETS[i][2] + r.floor); r.goldRun += g; r.log = [petName(i) + ' is already the top level. You get ' + g + ' gold.']; closePanel(); return; }
   if (lv > 0) { S.pets[i] = lv + 1; r.log = [petName(i) + ' grows stronger! It is now level ' + (lv + 1) + '.']; closePanel(); return; }
   S.pets[i] = 1;
@@ -2844,7 +3030,7 @@ function petsAct() {
     if (r.petCd[i] > 0) { r.petCd[i]--; continue; }
     var P = petPower(i), nm = petName(i), acted = false, ms = seenMonsters(), m, d;
     if (e === 'healburst') {
-      if (r.hp < r.maxHp * 0.4) { var hv = Math.round(r.maxHp * (0.2 + 0.1 * P)); heal(hv); say(nm + ' heals you for ' + hv + '!'); acted = true; }
+      if (r.hp < r.maxHp * 0.4) { var hv = Math.round(r.maxHp * (0.2 + 0.1 * P)); stat('petheal', Math.min(hv, r.maxHp - r.hp)); heal(hv); say(nm + ' heals you for ' + hv + '!'); acted = true; }
     } else if (e === 'bite') {
       for (j = 0; j < ms.length; j++) if (Math.abs(ms[j].x - r.px) + Math.abs(ms[j].y - r.py) === 1) { m = ms[j]; break; }
       if (m) { petHit(m, 0.12 * P, nm, 'bites'); acted = true; }
@@ -2869,7 +3055,7 @@ function petHit(m, frac, nm, verb) {
   var d = Math.max(1, Math.round(atkOf() * frac - m.def / 2));
   m.hp -= d; m.awake = true;
   if (nm) say(nm + ' ' + verb + ' ' + the(m.name) + ' for ' + d + '.');
-  if (m.hp <= 0) killMon(m);
+  if (m.hp <= 0) { killHow = clsHitting ? 'cls' : 'pet'; killMon(m); }
 }
 function petTeamNames() {
   var out = [];
@@ -2979,6 +3165,7 @@ function clsEffectText(i) {
 function classAct() {
   var r = S.run, e = curClass()[4], k, j, ms;
   if (!r.clsCd) r.clsCd = {};
+  clsHitting = true;
   for (k = 0; k < e.length; k++) {
     var t = e[k][0], v = e[k][1], cdBase = { summon: 4, pulse: 6, chain: 5, freeze: 7 }[t];
     if (!cdBase) continue;
@@ -3001,16 +3188,21 @@ function classAct() {
     }
     if (acted) r.clsCd[t] = cdBase;
   }
+  clsHitting = false;
 }
 // Camp: the class list
 function openClasses() { ui.classes = true; ui.bookTop = true; ui.clsTier = curClass()[2]; render(); }
 function buyClass(i) {
   var c = CLASSES[i];
   if (S.clsOwn[i] || S.gold < c[1]) return;
-  S.gold -= c[1]; S.clsOwn[i] = 1; S.cls = i;
+  S.gold -= c[1]; S.clsOwn[i] = 1;
+  if ((S.cls || 0) !== i) stat('clsswitch');
+  S.cls = i;
+  stat('a_Big Spender', c[1]); stat('a_Class Shopper', c[1]);
+  campClaim();
   save(); render();
 }
-function equipClass(i) { if (S.clsOwn[i]) { S.cls = i; save(); render(); } }
+function equipClass(i) { if (S.clsOwn[i]) { if ((S.cls || 0) !== i) stat('clsswitch'); S.cls = i; campClaim(); save(); render(); } }
 function ownedCount() { var n = 0; for (var k in S.clsOwn) if (S.clsOwn.hasOwnProperty(k)) n++; return n; }
 function renderClasses() {
   var h = '<div class="book"><h2>Classes</h2><div class="tabs">' + btn('Back to camp', 'ui.classes=false;render()', 'small') + '</div>', i;
@@ -3033,6 +3225,174 @@ function renderClasses() {
          '<b>In this game:</b> ' + clsEffectText(i) + '.<br>' + b + '</div>';
   }
   h += '<div class="tabs bottom">' + btn('Back to top', 'window.scrollTo(0,0)', 'small') + btn('Back to camp', 'ui.classes=false;render()', 'small') + '</div>';
+  return h + '</div>';
+}
+
+// ================= ACHIEVEMENTS SCREEN =================
+var ACH_PAGE = 40;
+var ACH_SECS = ['Main'];
+(function () { for (var i = 0; i < ACH2.length; i++) if (ACH_SECS.indexOf(ACH2[i][0]) < 0) ACH_SECS.push(ACH2[i][0]); })();
+function openAch() { ui.achs = true; ui.achPage = 0; ui.bookTop = true; render(); }
+function achSec(n) { ui.achSec = n; ui.achPage = 0; ui.bookTop = true; render(); }
+function achPage(n) { ui.achPage += n; ui.bookTop = true; render(); }
+function achEntry(name, what, t, have, need) {
+  return '<div class="entry"><b>' + name + (t ? ' ' + roman(t) : '') + '</b>' + (t ? ' <span class="found">Level ' + t + '</span>' : '') +
+         '<br><span class="each">' + what + '.</span><br><span class="each">Next level: ' + fmt(Math.min(have, need)) + ' / ' + fmt(need) +
+         ', pays ' + fmt(achReward(t)) + ' gold</span></div>';
+}
+function renderAch() {
+  var h = '<div class="book"><h2>Achievements</h2><div class="tabs">' + btn('Back to camp', 'ui.achs=false;render()', 'small') + '</div>', i, A, t;
+  h += '<p class="each">You\'ve earned <b>' + fmt(achTotal()) + '</b> levels. Every achievement has endless levels: after level V, each new level ' +
+       'needs twice as much and pays more gold. New levels are paid when you get back to camp.</p><div class="tabs">';
+  var lv = {};
+  for (i = 0; i < ACH2.length; i++) lv[ACH2[i][0]] = (lv[ACH2[i][0]] || 0) + (S.ach[ACH2[i][4]] || 0);
+  var mainLv = 0;
+  for (i = 0; i < ACH.length; i++) mainLv += S.ach[ACH[i].id] || 0;
+  for (i = 0; i < ACH_SECS.length; i++) {
+    h += btn(ACH_SECS[i] + ' (' + (i ? lv[ACH_SECS[i]] || 0 : mainLv) + ')', 'achSec(' + i + ')', 'small' + (ui.achSec === i ? ' main' : ''));
+  }
+  h += '</div><h3>' + ACH_SECS[ui.achSec] + '</h3>';
+  if (ui.achSec === 0) {
+    for (i = 0; i < ACH.length; i++) {
+      A = ACH[i]; t = S.ach[A.id] || 0;
+      h += achEntry(A.n, cap(A.what), t, S.stats[A.id] || 0, achNeed(A, t));
+    }
+  } else {
+    var list = [];
+    for (i = 0; i < ACH2.length; i++) if (ACH2[i][0] === ACH_SECS[ui.achSec]) list.push(ACH2[i]);
+    var pages = Math.ceil(list.length / ACH_PAGE);
+    ui.achPage = Math.max(0, Math.min(ui.achPage, pages - 1));
+    var nav = pages > 1 ? '<div class="tabs">' + btn('&laquo; Back', 'achPage(-1)', 'small', ui.achPage <= 0) +
+              '<span class="each"> Page ' + (ui.achPage + 1) + ' of ' + pages + ' </span>' + btn('Next &raquo;', 'achPage(1)', 'small', ui.achPage >= pages - 1) + '</div>' : '';
+    h += nav;
+    for (i = ui.achPage * ACH_PAGE; i < list.length && i < (ui.achPage + 1) * ACH_PAGE; i++) {
+      A = list[i]; t = S.ach[A[4]] || 0;
+      h += achEntry(A[1], A[2], t, achVal(A), achNeed2(A, t));
+    }
+    h += nav;
+  }
+  h += '<div class="tabs bottom">' + btn('Back to top', 'window.scrollTo(0,0)', 'small') + btn('Back to camp', 'ui.achs=false;render()', 'small') + '</div>';
+  return h + '</div>';
+}
+
+// Encyclopedia tab: every achievement with what levels I to V need and pay.
+function lvText(nums) {
+  var out = [];
+  for (var i = 0; i < nums.length; i++) out.push(roman(i + 1) + ': ' + fmt(nums[i]));
+  return out.join(', ');
+}
+function bookAch() {
+  var h = '<p class="each">All ' + fmt(ACH.length + ACH2.length) + ' achievements, in ' + (ACH_SECS.length) + ' sections. You\'ve earned ' + fmt(achTotal()) +
+          ' levels. Every achievement has endless levels: after level V, each new level needs twice as much. ' +
+          'Gold for each level: I: 25, II: 38, III: 56, IV: 84, V: 127, then about 1.5 times more each level. New levels are paid at camp.</p><div class="tabs">', i, A, t;
+  for (i = 0; i < ACH_SECS.length; i++) {
+    var n = 0;
+    if (i === 0) n = ACH.length; else for (var j = 0; j < ACH2.length; j++) if (ACH2[j][0] === ACH_SECS[i]) n++;
+    h += btn(ACH_SECS[i] + ' (' + n + ')', 'achSec(' + i + ')', 'small' + (ui.achSec === i ? ' main' : ''));
+  }
+  h += '</div><h3>' + ACH_SECS[ui.achSec] + '</h3>';
+  function entry(name, what, t, nums) {
+    return '<div class="entry"><b>' + name + '</b>' + (t ? ' <span class="found">Level ' + t + '</span>' : '') +
+           '<br><span class="each">' + what + '.</span><br><span class="each">Needs ' + lvText(nums) + ', then more forever.</span></div>';
+  }
+  if (ui.achSec === 0) {
+    for (i = 0; i < ACH.length; i++) {
+      A = ACH[i];
+      h += entry(A.n, cap(A.what), S.ach[A.id] || 0, [achNeed(A, 0), achNeed(A, 1), achNeed(A, 2), achNeed(A, 3), achNeed(A, 4)]);
+    }
+    return h;
+  }
+  var list = [];
+  for (i = 0; i < ACH2.length; i++) if (ACH2[i][0] === ACH_SECS[ui.achSec]) list.push(ACH2[i]);
+  var pages = Math.ceil(list.length / ACH_PAGE);
+  ui.achPage = Math.max(0, Math.min(ui.achPage, pages - 1));
+  var nav = pages > 1 ? '<div class="tabs">' + btn('&laquo; Back', 'achPage(-1)', 'small', ui.achPage <= 0) +
+            '<span class="each"> Page ' + (ui.achPage + 1) + ' of ' + pages + ' </span>' + btn('Next &raquo;', 'achPage(1)', 'small', ui.achPage >= pages - 1) + '</div>' : '';
+  h += nav;
+  for (i = ui.achPage * ACH_PAGE; i < list.length && i < (ui.achPage + 1) * ACH_PAGE; i++) {
+    A = list[i];
+    h += entry(A[1], A[2], S.ach[A[4]] || 0, A[3]);
+  }
+  return h + nav;
+}
+
+// ================= CAMP WEAPON SHOP =================
+// 5000 weapons you buy at camp and keep forever. The one you equip is your starting weapon on every run.
+var CWORDS = {"adj": ["Ember", "Frost", "Thunder", "Shadow", "Crystal", "Golden", "Silver", "Iron", "Storm", "Moon", "Sun", "Star", "Dragon", "Phoenix", "Titan", "Ancient", "Royal", "Mystic", "Wild", "Brave", "Comet", "Glacier", "Volcano", "Thorn", "Ocean", "Quartz", "Cloud", "Lightning", "Blizzard", "Sapphire", "Ruby", "Emerald", "Onyx", "Copper", "Bronze", "Granite", "Echo", "Lunar", "Solar", "Nova", "Tempest", "Aurora", "Cinder", "Blazing", "Rune", "Spirit", "Falcon", "Griffin", "Wolf", "Tiger"], "noun": [["Blade", "Saber", "Longsword", "Broadsword", "Edge", "Rapier", "Cutlass", "Claymore", "Falchion", "Greatsword"], ["Dagger", "Knife", "Stiletto", "Dirk", "Shiv", "Kris", "Fang Knife", "Twinblade", "Needle", "Talon"], ["Axe", "Hatchet", "Cleaver", "Battleaxe", "Chopper", "Greataxe", "Tomahawk", "Splitter", "Hewer", "Reaver"], ["Bow", "Longbow", "Shortbow", "Recurve", "Warbow", "Flatbow", "Hornbow", "Skybow", "Crossbow", "Arc"], ["Spear", "Pike", "Lance", "Halberd", "Trident", "Javelin", "Glaive", "Partisan", "Harpoon", "Ranseur"], ["Hammer", "Maul", "Mallet", "Warhammer", "Sledge", "Gavel", "Crusher", "Bonker", "Mace", "Morningstar"], ["Staff", "Wand", "Rod", "Scepter", "Stave", "Crook", "Branch", "Focus", "Orb Staff", "Cane"], ["Scythe", "Sickle", "Reaper", "Harvester", "War Scythe", "Crescent", "Hook", "Swing Blade", "Grim Scythe", "Moon Sickle"], ["Chakram", "Whip", "Boomerang", "Katar", "Flail", "Kusarigama", "Sai", "Tessen", "Bladed Fan", "Yo-yo Blade"], ["Pistol", "Musket", "Blunderbuss", "Rifle", "Hand Cannon", "Flintlock", "Arquebus", "Carbine", "Revolver", "Thunder Tube"]]};
+var CW_N = 5000, CW_TIER = 500, CW_PAGE = 25;
+var CW_MODS = ['sharp', 'leeching', 'flaming', 'frozen', 'shocking', 'heavy', 'swift', 'poisoned', 'vampiric', 'explosive',
+               'piercing', 'lucky', 'unstable', 'blessed', 'spectral', 'regenerating', 'echoing'];
+function cwName(i) { var k = Math.floor(i / 10); return CWORDS.adj[k % 50] + ' ' + CWORDS.noun[i % 10][Math.floor(k / 50)]; }
+function niceNum(n) {
+  if (n < 100) return Math.round(n);
+  var p = Math.pow(10, Math.floor(Math.log(n) / Math.LN10) - 1);
+  return Math.round(n / p) * p;
+}
+function cwPrice(i) { return niceNum(100 * Math.pow(1.0045, i)); }
+function cwFloor(i) { return 1 + Math.floor(i / 25); }   // as strong as gear from this floor
+// Builds a fresh copy of camp weapon i (same stats every time).
+function campWpn(i) {
+  var c = i % 10, C = WCATS[c], M = modInfo(CW_MODS[(i * 7 + Math.floor(i / 10)) % CW_MODS.length]), F = cwFloor(i);
+  var raw = (2 + Math.floor(F / 2)) * 1.1;
+  var g = { slot: 'wpn', cat: c, base: cwName(i), mod: M.id, atk: Math.max(1, Math.round(raw * C.mult * (1 + M.pct / 100))),
+            def: 0, fxs: [], mv: 2 + Math.floor(F / 5), rar: Math.min(RAR.length - 1, Math.floor(i / 560)), camp: i };
+  for (var j = 0; j < RAR_FX[g.rar]; j++) { var k = WFX[(i + 2 * j) % WFX.length]; g.fxs.push({ fx: k, v: sfxValue(k, F) }); }
+  g.name = M.n + ' ' + g.base;
+  return g;
+}
+function cwOwned() { return countKeys(S.cw); }
+function openWeapons() {
+  ui.wpns = true; ui.bookTop = true;
+  if (S.cwEq >= 0) { ui.cwTier = Math.floor(S.cwEq / CW_TIER) + 1; ui.cwPage = Math.floor((S.cwEq % CW_TIER) / CW_PAGE); }
+  render();
+}
+function cwGo(tier, page) { ui.cwTier = tier; ui.cwPage = page; ui.bookTop = true; render(); }
+// Jump to the strongest weapon you can afford and don't own yet.
+function cwBest() {
+  for (var i = CW_N - 1; i >= 0; i--) if (!S.cw[i] && cwPrice(i) <= S.gold) { cwGo(Math.floor(i / CW_TIER) + 1, Math.floor((i % CW_TIER) / CW_PAGE)); return; }
+  cwGo(1, 0);
+}
+function buyCW(i) {
+  var c = cwPrice(i);
+  if (S.cw[i] || S.gold < c) return;
+  S.gold -= c; S.cw[i] = 1; S.cwEq = i;
+  stat('a_Big Spender', c);
+  campClaim(); save(); render();
+}
+function equipCW(i) { if (i < 0 || S.cw[i]) { S.cwEq = i; save(); render(); } }
+function cwLine(g) {
+  return '<b>' + g.name + '</b> <i>(' + RAR[g.rar] + ' ' + WCATS[g.cat].n + ')</i>';
+}
+function renderWeapons() {
+  var h = '<div class="book"><h2>Weapon shop</h2><div class="tabs">' + btn('Back to camp', 'ui.wpns=false;render()', 'small') + '</div>', i;
+  h += '<p class="each">You have <b>' + fmt(S.gold) + ' gold</b>. You own ' + cwOwned() + ' of ' + fmt(CW_N) + ' weapons. Weapons you buy are yours forever, even after you ascend. ' +
+       'The one you equip is your starting weapon on every run, and it stays equipped until you buy or pick a different one. ' +
+       'You can still find better weapons in the dungeon, but they only last for that run.</p>';
+  if (S.cwEq >= 0) {
+    var eg = campWpn(S.cwEq);
+    h += '<div class="entry"><b>Equipped:</b> ' + cwLine(eg) + '<br><span class="each">' + gearDesc(eg) + '.</span><br>' +
+         btn('Use the free starter weapon instead', 'equipCW(-1)', 'small') + '</div>';
+  } else h += '<div class="entry"><b>Equipped:</b> the free starter weapon (a Dull Ironfang on floor 1, or a random weapon when you start deeper).</div>';
+  h += '<div class="tabs">' + btn('Best I can afford', 'cwBest()', 'small main') + '</div><h3>Tiers</h3><div class="tabs">';
+  for (i = 1; i <= CW_N / CW_TIER; i++) {
+    h += btn(i + ': ' + fmt(cwPrice((i - 1) * CW_TIER)) + '+', 'cwGo(' + i + ',0)', 'small' + (ui.cwTier === i ? ' main' : ''));
+  }
+  var pages = CW_TIER / CW_PAGE;
+  ui.cwPage = Math.max(0, Math.min(ui.cwPage, pages - 1));
+  var nav = '<div class="tabs">' + btn('&laquo; Back', 'cwGo(' + ui.cwTier + ',' + (ui.cwPage - 1) + ')', 'small', ui.cwPage <= 0) +
+            '<span class="each"> Page ' + (ui.cwPage + 1) + ' of ' + pages + ' </span>' +
+            btn('Next &raquo;', 'cwGo(' + ui.cwTier + ',' + (ui.cwPage + 1) + ')', 'small', ui.cwPage >= pages - 1) + '</div>';
+  h += '</div><h3>Tier ' + ui.cwTier + '</h3>' + nav;
+  var start = (ui.cwTier - 1) * CW_TIER + ui.cwPage * CW_PAGE;
+  for (i = start; i < start + CW_PAGE && i < CW_N; i++) {
+    var g = campWpn(i), own = !!S.cw[i], eq = S.cwEq === i, b, c = cwPrice(i);
+    if (eq) b = '<b class="found">Equipped</b>';
+    else if (own) b = btn('Equip', 'equipCW(' + i + ')', 'small main');
+    else b = btn('Buy for ' + fmt(c) + ' gold', 'buyCW(' + i + ')', 'small', S.gold < c);
+    h += '<div class="entry">#' + (i + 1) + ' ' + cwLine(g) + (own && !eq ? ' <span class="found">Owned</span>' : '') +
+         '<br><span class="each">' + gearDesc(g) + '.</span><br>' + b + '</div>';
+  }
+  h += nav + '<div class="tabs bottom">' + btn('Back to top', 'window.scrollTo(0,0)', 'small') + btn('Back to camp', 'ui.wpns=false;render()', 'small') + '</div>';
   return h + '</div>';
 }
 
@@ -3060,8 +3420,10 @@ function renderCamp() {
          (L.killer ? 'Defeated by ' + L.killer + ' on floor ' + L.floor + '.' : 'You left the dungeon on floor ' + L.floor + '.') +
          ' You brought back ' + L.gold + ' gold.' +
          (L.floor >= S.best && L.floor > 1 ? ' That\'s your deepest yet!' : '') + '</div>';
-    if (L.ach && L.ach.length) h += '<div class="status">New achievement' + (L.ach.length > 1 ? 's' : '') + ': ' + L.ach.join(', ') + '</div>';
-  } else if (S.runs === 0) {
+    if (L.ach && L.ach.length) h += '<div class="status">New achievement level' + (L.ach.length > 1 ? 's' : '') + ': ' + achList(L.ach) + '</div>';
+  }
+  if (ui.achNote) { h += '<div class="status">New achievement levels: ' + ui.achNote + '</div>'; ui.achNote = ''; }
+  if (!S.last && S.runs === 0) {
     h += '<div class="status">Welcome to camp. Head into the dungeon, grab gold, and see how deep you can go.</div>';
   }
 
@@ -3090,6 +3452,8 @@ function renderCamp() {
   h += '<div class="actions">' + btn(ui.startAt > 1 ? 'Enter on floor ' + ui.startAt : 'Enter the dungeon', 'startRun()', 'main big') + '</div>';
   h += '<h2>Class</h2><p class="each"><b>' + curClass()[0] + '</b>: ' + clsEffectText(S.cls || 0) + '. You own ' + ownedCount() + ' of 300 classes.</p>' +
        btn('Classes', 'openClasses()', '');
+  h += '<h2>Weapon</h2><p class="each">' + (S.cwEq >= 0 ? 'Starting weapon: <b>' + campWpn(S.cwEq).name + '</b> (attack ' + campWpn(S.cwEq).atk + ')' : 'Starting weapon: the free starter') +
+       '. You own ' + cwOwned() + ' of ' + fmt(CW_N) + ' shop weapons.</p>' + btn('Weapon shop', 'openWeapons()', '');
   h += '<h2>Pets</h2><p class="each">Team (' + S.team.length + ' of ' + TEAM_MAX + '): ' + (S.team.length ? petTeamNames() : 'none yet. Look for p on the map.') + '</p>' +
        btn('Manage pets', 'openPets()', '');
 
@@ -3104,13 +3468,8 @@ function renderCamp() {
        '<tr><td><b>Pets found:</b> ' + (function () { var n = 0; for (var k in S.pets) if (S.pets.hasOwnProperty(k)) n++; return n; })() + ' of 300</td></tr></table>';
 
   // achievements
-  h += '<h2>Achievements</h2><p class="each">Every achievement has endless levels. Each new level pays gold.</p><table class="shop ach">';
-  for (i = 0; i < ACH.length; i++) {
-    var A = ACH[i], t = S.ach[A.id] || 0, need = achNeed(A, t), hv = S.stats[A.id] || 0;
-    h += '<tr><td><b>' + A.n + (t ? ' ' + roman(t) : '') + '</b><br><span class="each">Next: ' + Math.min(hv, need) + ' / ' + need + ' ' + A.what +
-         ', pays ' + achReward(t) + ' gold</span></td></tr>';
-  }
-  h += '</table>';
+  h += '<h2>Achievements</h2><p class="each">You\'ve earned <b>' + fmt(achTotal()) + '</b> achievement levels. There are ' + fmt(ACH.length + ACH2.length) +
+       ' achievements, and every one has endless levels that pay gold.</p>' + btn('Achievements', 'openAch()', '');
 
   // saved perks
   var keys = [];
@@ -3158,10 +3517,10 @@ function renderCamp() {
 }
 
 function render() {
-  if (S.run) { ui.pets = false; ui.classes = false; }
-  document.body.className = ui.book || ui.pets || ui.classes ? 'inbook' : (S.run ? 'inrun' : '');
+  if (S.run) { ui.pets = false; ui.classes = false; ui.achs = false; ui.wpns = false; }
+  document.body.className = ui.book || ui.pets || ui.classes || ui.achs || ui.wpns ? 'inbook' : (S.run ? 'inrun' : '');
   document.getElementById('game').innerHTML = ui.book ? renderBook() : (ui.pets ? renderPets() : (ui.classes ? renderClasses() :
-                                              (S.run ? renderRun() : renderCamp())));
+                                              (ui.achs ? renderAch() : (ui.wpns ? renderWeapons() : (S.run ? renderRun() : renderCamp())))));
   if (ui.bookTop) { ui.bookTop = false; window.scrollTo(0, 0); }
 }
 window.onresize = function () { fitMap(); if (S) render(); };
