@@ -30,6 +30,7 @@
   <p>Use the arrow buttons, or tap a square next to you. Step into a monster to attack it. Every time you act, each awake monster also gets a turn. Nobody can attack diagonally.</p>
   <p>Tap a square farther away that you've already seen, and you walk all the way there in one tap. This works even with monsters around. You stop as soon as something hits or hurts you, when you level up, or when you step on something to choose (gear, a merchant, a shrine).</p>
   <p><b>Wait</b> skips your turn, which is handy for letting a monster come to you.</p>
+  <p>Messages under the map tell you what happened. When a lot happens in one turn, they turn into a <b>Combat log</b>: a list of everything, in order (like "The Goblin attacks for 6 damage.", "Poison deals 2 damage.", "Your pet heals you for 4 HP.", "You defeat the Goblin and gain 12 XP."), with your HP before and after at the bottom.</p>
 
   <h3>Weapons</h3>
   <p>There are 300 weapons in 10 families. Each family fights differently:</p>
@@ -651,7 +652,10 @@ function defOf() {
   var r = S.run, pa = Math.round((petSum('armor') + 0.5 * petSum('allstats')) * (1 + r.floor / 10));
   return r.def + (r.arm ? r.arm.def : 0) + fx('guard') + pa;
 }
-function heal(n) { var r = S.run; r.hp = Math.min(r.maxHp, r.hp + n); }
+function heal(n) { var r = S.run, before = r.hp; r.hp = Math.min(r.maxHp, r.hp + n); return Math.max(0, r.hp - before); }
+// Start of a turn: clear the log and remember HP, so the combat log can show what changed.
+function newTurn() { var r = S.run; r.log = []; r.hpStart = r.hp; }
+function inFight() { return seenMonsters().length > 0; }
 function goldAmt(v) { return Math.round(v * (1 + fx('greed') / 100 + 0.08 * petSum('gold') + cv('gold') / 100) * starMul()); }
 function hurt(d, who) {
   var r = S.run;
@@ -1929,13 +1933,14 @@ function killMon(m) {
   r.mons.splice(idx, 1);
   achKill(m);
   var g = goldAmt(m.gold) + m.stolen;
-  r.goldRun += g; r.kills++; r.xp += Math.round(m.xp * (1 + cv('xp') / 100));
+  var gx = Math.round(m.xp * (1 + cv('xp') / 100));
+  r.goldRun += g; r.kills++; r.xp += gx;
   r.ks = (r.ks || 0) + 1; if (cv('killbuff')) r.kb = 3;
   if (!m.minion) stat('kills');
   if (m.kind === 'boss') stat('bosses');
   if (m.kind === 'champ') stat('champs');
-  say('You defeat ' + the(m.name) + '!' + (g ? ' +' + g + ' gold' : ''));
-  if (fx('vamp')) heal(fx('vamp'));
+  say('You defeat ' + the(m.name) + ' and gain ' + gx + ' XP' + (g ? ' and ' + g + ' gold' : '') + '.');
+  if (fx('vamp')) { var vh = heal(fx('vamp')); if (vh) say('You drain ' + vh + ' HP.'); }
   if (m.kind === 'boss' && Math.random() < 0.35) {
     var bp = rollPet(r.floor, 1);
     if (dropAt(m.x, m.y, { k: 'pet', p: bp })) { stat('a_Boss Pet Rescue'); say('A pet was hiding with the boss: ' + petName(bp) + ' (p)!'); }
@@ -2043,10 +2048,10 @@ function strike(m, mult, primary, verb) {
   m.hp -= d;
   stat('c_Damage Dealer', d); statMax('c_Big Hitter', d);
   if (r.wpn) stat('dw_' + WCATS[r.wpn.cat || 0].n, d);
-  var lh = fx('leech') + (mod === 'leeching' ? r.wpn.mv : 0);
-  if (lh) { heal(lh); stat('c_Leech', lh); }
-  if (mod === 'vampiric') { heal(Math.ceil(d * 0.08)); stat('c_Leech', Math.ceil(d * 0.08)); }
-  say(notes.join(' ') + (notes.length ? ' ' : '') + 'You ' + (verb || 'hit') + ' ' + the(m.name) + ' for ' + d + '.');
+  var lh = fx('leech') + (mod === 'leeching' ? r.wpn.mv : 0), healed = 0;
+  if (lh) { healed += heal(lh); stat('c_Leech', lh); }
+  if (mod === 'vampiric') { healed += heal(Math.ceil(d * 0.08)); stat('c_Leech', Math.ceil(d * 0.08)); }
+  say(notes.join(' ') + (notes.length ? ' ' : '') + 'You ' + (verb || 'hit') + ' ' + the(m.name) + ' for ' + d + '.' + (healed ? ' You heal ' + healed + ' HP.' : ''));
   if (has(m, 'spiky') && cheb(m.x, m.y, r.px, r.py) <= 1) {
     var sd = Math.max(1, Math.round(d * 0.2));
     hurt(sd, aName(m.name)); say('Its spikes hurt you for ' + sd + '.');
@@ -2123,11 +2128,11 @@ function monHits(m, kind) {
   if (clsDefRed()) d = Math.max(1, Math.round(d * (1 - clsDefRed())));
   hurt(d, aName(m.name));
   var v = TYPES[m.i].v || (has(m, 'archer') && !TYPES[m.i].ab.length ? 'spits at' : 'shoots');
-  if (kind === 'archer') say(The(m.name) + ' ' + v + ' you for ' + d + '.');
-  else if (kind === 'fire') say(The(m.name) + ' breathes fire at you for ' + d + '.');
-  else if (kind === 'charge') say(The(m.name) + ' charges into you for ' + d + '!');
-  else if (slam) say(The(m.name) + ' slams you for ' + d + '!');
-  else say(The(m.name) + ' hits you for ' + d + '.');
+  if (kind === 'archer') say(The(m.name) + ' ' + v + ' you for ' + d + ' damage.');
+  else if (kind === 'fire') say(The(m.name) + ' breathes fire for ' + d + ' damage.');
+  else if (kind === 'charge') say(The(m.name) + ' charges into you for ' + d + ' damage!');
+  else if (slam) say(The(m.name) + ' slams you for ' + d + ' damage!');
+  else say(The(m.name) + ' attacks for ' + d + ' damage.');
   if (r.hp <= 0) return;
   for (var ai = 0; ai < m.abs.length; ai++) stat('ha_' + m.abs[ai]);
   stat('hf_' + TYPES[m.i].fam);
@@ -2148,8 +2153,10 @@ function monHits(m, kind) {
   }
   var th = fx('thorns');
   if (th && !kind) {
-    m.hp -= Math.max(1, Math.round(d * th / 100));
+    var td = Math.max(1, Math.round(d * th / 100));
+    m.hp -= td;
     if (m.hp <= 0) { say('Your thorns finish off ' + the(m.name) + '!'); killHow = 'thorns'; killMon(m); }
+    else say('Your thorns hit ' + the(m.name) + ' for ' + td + '.');
   }
 }
 function lineClear(x0, y0, x1, y1) {
@@ -2434,7 +2441,7 @@ function passTurn() {
   if (r.hp > 0 && r.poison > 0) {
     var pd = Math.round((1 + Math.floor(r.floor / 6)) * (1 - Math.min(0.9, 0.2 * petSum('poisonres'))));
     r.poison--;
-    if (pd > 0) { hurt(pd, 'poison'); say('Poison hurts you for ' + pd + '.'); }
+    if (pd > 0) { hurt(pd, 'poison'); say('Poison deals ' + pd + ' damage.'); }
     if (!r.poison && r.hp > 0) stat('c_Poison Survivor');
   }
   if (r.hp <= 0 && cv('reviveFloor') && !r.clsRevF) {
@@ -2446,7 +2453,7 @@ function passTurn() {
     say('Your ' + curClass()[0] + ' power saves you from defeat! You get back up with ' + r.hp + ' HP.');
   }
   if (r.hp > 0 && cv('lowshield') && !r.clsLow && r.hp < r.maxHp * 0.3) { r.clsLow = true; r.clsShield = (r.clsShield || 0) + 1; say('A shield appears around you!'); }
-  if (r.hp > 0 && cv('regen') && r.turns % 3 === 0) heal(Math.max(1, Math.round(r.maxHp * cv('regen') / 200)));
+  if (r.hp > 0 && cv('regen') && r.turns % 3 === 0) { var ch = heal(Math.max(1, Math.round(r.maxHp * cv('regen') / 200))); if (ch && inFight()) say('Your class heals you for ' + ch + ' HP.'); }
   if (r.hp > 0 && cv('teleport') && !r.clsTele && r.hp < r.maxHp * 0.25) {
     var cs = [], cx2, cy2;
     for (cy2 = 0; cy2 < H; cy2++) for (cx2 = 0; cx2 < W; cx2++) {
@@ -2461,8 +2468,8 @@ function passTurn() {
     say(petName(rv) + ' saves you from defeat! You get back up with ' + r.hp + ' HP.');
   }
   if (r.hp <= 0) { endRun(r.lastHurt || 'the dungeon'); return true; }
-  if (fx('regen') && r.turns % 3 === 0) heal(fx('regen'));
-  if (petSum('regen') && r.turns % 4 === 0) { var ph = Math.max(1, Math.round(r.maxHp * 0.01 * petSum('regen'))); if (r.hp < r.maxHp) stat('petheal', Math.min(ph, r.maxHp - r.hp)); heal(ph); }
+  if (fx('regen') && r.turns % 3 === 0) { var rh = heal(fx('regen')); if (rh && inFight()) say('You regenerate ' + rh + ' HP.'); }
+  if (petSum('regen') && r.turns % 4 === 0) { var ph = heal(Math.max(1, Math.round(r.maxHp * 0.01 * petSum('regen')))); if (ph) { stat('petheal', ph); if (inFight()) say('Your pet heals you for ' + ph + ' HP.'); } }
   if (petHas('teleport') && !r.petTele && r.hp < r.maxHp * 0.25) {
     var spots = [], tx, ty;
     for (ty = 0; ty < H; ty++) for (tx = 0; tx < W; tx++) {
@@ -2492,7 +2499,7 @@ function endTurn() {
 function act(dx, dy) {
   var r = S.run;
   if (blocked()) return;
-  r.log = [];
+  newTurn();
   if (dx || dy) {
     var nx = r.px + dx, ny = r.py + dy;
     if (nx < 0 || ny < 0 || nx >= W || ny >= H) return;
@@ -2511,7 +2518,7 @@ function act(dx, dy) {
 // Shoot or reach a monster that isn't right next to you (bows, spears, staves, firearms).
 function rangedAttack(m) {
   var r = S.run, C = wcat();
-  r.log = [];
+  newTurn();
   strike(m, 1, true, C.range > 2 ? 'shoot' : 'stab');
   endTurn();
 }
@@ -2527,7 +2534,7 @@ function drink() {
   var r = S.run;
   if (!r || r.panel || r.potions < 1) return;
   ui.bag = false; ui.elev = false;
-  r.log = [];
+  newTurn();
   r.potions--;
   stat('i_Potion Drinker'); r.nps = 0;
   heal(Math.ceil(r.maxHp / 2 * (1 + 0.1 * petSum('potion') + cv('potion') / 100)));
@@ -2553,7 +2560,7 @@ function readScroll(id) {
   var r = S.run, i, ms;
   if (!r || r.panel || !r.scrolls[id]) return;
   ui.bag = false;
-  r.log = [];
+  newTurn();
   r.scrolls[id]--;
   stat({ fire: 'i_Fire Starter', freeze: 'i_Ice Maker', tele: 'i_Teleporter', map: 'i_Mapmaker' }[id]);
   if (r.hp < r.maxHp * 0.25) stat('se_' + scrollInfo(id).n);
@@ -2615,7 +2622,7 @@ function findPath(tx, ty) {
 // Walk many steps in one tap. Monsters still take their turns; you stop if anything hits you.
 function walkTo(path) {
   var r = S.run, walked = 0;
-  r.log = [];
+  newTurn();
   for (var i = 0; i < path.length; i++) {
     var nx = path[i][0], ny = path[i][1];
     var m = monAt(nx, ny);
@@ -2861,6 +2868,21 @@ function panelHTML() {
   return h + '</div>';
 }
 
+// Under the map: the last few messages, or a combat log when a lot happened this turn.
+function logHTML() {
+  var r = S.run, L = r.log;
+  if (L.length <= 4) return '<div class="log">' + (L.length ? L.join('<br>') : '&nbsp;') + '</div>';
+  var MAX = 14, h = '<div class="clog"><b>Combat log</b>';
+  if (L.length > MAX) h += '<div class="each">...' + (L.length - MAX) + ' earlier messages</div>';
+  h += '<ul>';
+  for (var i = Math.max(0, L.length - MAX); i < L.length; i++) h += '<li>' + L[i] + '</li>';
+  h += '</ul>';
+  if (r.hpStart !== undefined && r.hpStart !== r.hp) {
+    var dd = r.hp - r.hpStart;
+    h += '<div class="hpchange">HP ' + r.hpStart + ' &rarr; ' + r.hp + ' (' + (dd > 0 ? '+' : '') + dd + ')</div>';
+  }
+  return h + '</div>';
+}
 function renderRun() {
   var r = S.run, h = '', x, y, i, LV = curLevel();
   h += '<div class="bar"><div class="row1"><b class="floor">Floor ' + r.floor + '</b>' +
@@ -2929,7 +2951,7 @@ function renderRun() {
   if (stacked) h += '</td></tr><tr><td class="sidecol">' + side + '</td></tr></table>';
   else h += '</td><td class="sidecol">' + side + '</td></tr></table>';
 
-  h += '<div class="log">' + (r.log.length ? r.log.slice(-4).join('<br>') : '&nbsp;') + '</div>';
+  h += logHTML();
   if (r.bounty) h += '<div class="bounty' + (r.bounty.state !== 'on' ? ' over' : '') + '"><b>Bounty:</b> ' + bountyText() + '</div>';
 
   var near = seenMonsters();
